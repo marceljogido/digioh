@@ -73,7 +73,8 @@ class BaseModel extends Model implements HasMedia
                 }, $columns);
                 break;
             case 'pgsql':
-                $columns = DB::select("SELECT column_name as `Field`, data_type as `Type` FROM information_schema.columns WHERE table_name = '{$table_name}';");
+                // FIX: Menggunakan double quote untuk PostgreSQL & alias yang benar
+                $columns = DB::select("SELECT column_name as \"name\", data_type as \"type\" FROM information_schema.columns WHERE table_name = '{$table_name}';");
                 break;
 
             default:
@@ -141,7 +142,7 @@ class BaseModel extends Model implements HasMedia
     }
 
     /**
-     *  Set 'Name' attribute value.
+     * Set 'Name' attribute value.
      */
     public function setNameAttribute($value)
     {
