@@ -16,7 +16,7 @@ class PostDatabaseSeeder extends Seeder
     public function run()
     {
         // Disable foreign key checks!
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::statement('SET session_replication_role = \'replica\';');
 
         /*
          * Posts Seed
@@ -31,6 +31,6 @@ class PostDatabaseSeeder extends Seeder
         echo " Insert: posts \n\n";
 
         // Enable foreign key checks!
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET session_replication_role = \'origin\';');
     }
 }

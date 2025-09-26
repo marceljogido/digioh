@@ -56,12 +56,11 @@
         </div>
     </form>
 
-    <!--
-@if (Route::has("register"))
+    <!--@if (Route::has("register"))
     <div class="space-x-1 text-center text-sm tracking-widest text-zinc-600 dark:text-zinc-400">
         {{ __('Don\'t have an account?') }}
         <x-frontend.link :href="route('register')" wire:navigate>{{ __("Sign up") }}</x-frontend.link>
     </div>
-@endif
--->
+    @endif
+    -->
 </div>

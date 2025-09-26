@@ -83,61 +83,7 @@
                 </ul>
             </div>
 
-            @guest
-                @if (user_registration())
-                    <a
-                        class="inline-flex cursor-pointer items-center justify-center rounded px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-                        href="{{ route("register") }}" wire:navigate
-                    >
-                        <svg
-                            class="icon icon-tabler icons-tabler-outline icon-tabler-user-bolt me-2"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4c.267 0 .529 .026 .781 .076" />
-                            <path d="M19 16l-2 3h4l-2 3" />
-                        </svg>
-                        <span class="ms-2 hidden sm:block">
-                            {{ __("Register") }}
-                        </span>
-                    </a>
-                @endif
 
-                <a
-                    class="inline-flex cursor-pointer items-center justify-center rounded px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-                    href="{{ route("login") }}" wire:navigate
-                >
-                    <svg
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-login me-2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                        <path d="M21 12h-13l3 -3" />
-                        <path d="M11 15l-3 -3" />
-                    </svg>
-                    <span class="ms-2 hidden sm:block">
-                        {{ __("Login") }}
-                    </span>
-                </a>
-            @endguest
 
             @auth
                 <button
