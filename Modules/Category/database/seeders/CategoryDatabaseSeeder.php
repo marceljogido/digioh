@@ -26,7 +26,7 @@ class CategoryDatabaseSeeder extends Seeder
         // DB::table('categories')->truncate();
         // echo "Truncate: categories \n";
 
-        Category::factory()->count(20)->create();
+        Category::factory()->count(5)->create();
         $rows = Category::all();
         echo " Insert: categories \n\n";
 

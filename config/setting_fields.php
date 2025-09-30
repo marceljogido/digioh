@@ -144,6 +144,41 @@ return [
         ],
 
     ],
+	'about' => [
+		'title' => 'About Us',
+		'desc' => 'Konten halaman About Us',
+		'icon' => 'fas fa-info-circle',
+		'elements' => [
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_title',
+				'label' => 'Judul',
+				'rules' => 'required|min:2|max:150',
+				'class' => '',
+				'value' => 'Tentang DigiOH',
+			],
+			[
+				'type' => 'textarea',
+				'data' => 'string',
+				'name' => 'about_body',
+				'label' => 'Konten',
+				'rules' => 'required',
+				'class' => '',
+				'value' => '<p>DigiOH adalah studio digital yang membantu brand tumbuh melalui solusi kreatif dan teknologi.</p><ul><li>Strategi & Konsultasi</li><li>Desain & Pengembangan</li><li>Pemasaran & Pertumbuhan</li></ul>',
+				'display' => 'raw',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_image',
+				'label' => 'Gambar Hero (URL/Path)',
+				'rules' => 'nullable|max:191',
+				'class' => '',
+				'value' => 'img/default_banner.jpg',
+			],
+		],
+	],
     'meta' => [
         'title' => 'Meta ',
         'desc' => 'Application Meta Data',

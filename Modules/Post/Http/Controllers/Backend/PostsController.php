@@ -69,6 +69,7 @@ class PostsController extends BackendBaseController
             'meta_title' => 'nullable|max:191',
             'meta_keywords' => 'nullable|max:191',
             'order' => 'nullable|integer',
+            'sort_order' => ['nullable','integer','min:0'],
             'meta_description' => 'nullable',
             'meta_og_image' => 'nullable|max:191',
         ]);
@@ -124,6 +125,7 @@ class PostsController extends BackendBaseController
             'meta_title' => 'nullable|max:191',
             'meta_keywords' => 'nullable|max:191',
             'order' => 'nullable|integer',
+            'sort_order' => ['nullable','integer','min:0'],
             'meta_description' => 'nullable',
             'meta_og_image' => 'nullable|max:191',
         ]);

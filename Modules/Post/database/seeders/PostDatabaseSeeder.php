@@ -26,7 +26,7 @@ class PostDatabaseSeeder extends Seeder
         // DB::table('posts')->truncate();
         // echo "Truncate: posts \n";
 
-        Post::factory()->count(20)->create();
+        Post::factory()->count(5)->create();
         $rows = Post::all();
         echo " Insert: posts \n\n";
 

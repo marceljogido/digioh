@@ -62,6 +62,26 @@ $notifications_latest = optional($notifications)->take(5);
         <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
 
         @php
+            $module_name = "clientlogos";
+            $text = __("Client Logos");
+            $icon = "fa-regular fa-handshake";
+            $permission = "view_" . $module_name;
+            $url = route("backend." . $module_name . ".index");
+        @endphp
+
+        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
+
+        @php
+            $module_name = "sliders";
+            $text = __("Sliders");
+            $icon = "fa-solid fa-images";
+            $permission = "view_" . $module_name;
+            $url = route("backend." . $module_name . ".index");
+        @endphp
+
+        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
+
+        @php
             $module_name = "categories";
             $text = __("Categories");
             $icon = "fa-solid fa-diagram-project";

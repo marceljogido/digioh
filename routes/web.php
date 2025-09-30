@@ -5,6 +5,7 @@ use App\Http\Controllers\LanguageController;
 use App\Livewire\Privacy;
 use App\Livewire\Terms;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\ContactController;
 
 /*
 *
@@ -33,6 +34,9 @@ Route::get('dashboard', 'App\Http\Controllers\Frontend\FrontendController@index'
 // pages
 Route::get('terms', Terms::class)->name('terms');
 Route::get('privacy', Privacy::class)->name('privacy');
+Route::view('/about', 'frontend.pages.about')->name('about');
+Route::view('/contact', 'frontend.pages.contact')->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
 Route::group(['namespace' => 'App\Http\Controllers\Frontend', 'as' => 'frontend.'], function () {
     Route::get('/', 'FrontendController@index')->name('index');

@@ -1,0 +1,13 @@
+{
+    "name": "ClientLogo",
+    "alias": "clientlogo",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ClientLogo\\Providers\\ClientLogoServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

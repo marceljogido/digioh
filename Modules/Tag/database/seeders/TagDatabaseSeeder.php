@@ -26,7 +26,7 @@ class TagDatabaseSeeder extends Seeder
         // DB::table('tags')->truncate();
         // echo "Truncate: tags \n";
 
-        Tag::factory()->count(20)->create();
+        Tag::factory()->count(5)->create();
         $rows = Tag::all();
         echo " Insert: tags \n\n";
 

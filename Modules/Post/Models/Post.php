@@ -59,7 +59,7 @@ class Post extends BaseModel
 
     public function scopeFeatured($query)
     {
-        return $query->publishedAndScheduled()->where('is_featured', '=', 'Yes');
+        return $query->publishedAndScheduled()->where('is_featured', '=', 1);
     }
 
     /**
@@ -71,6 +71,11 @@ class Post extends BaseModel
     public function scopeRecentlyPublished($query)
     {
         return $query->publishedAndScheduled()->orderBy('published_at', 'desc');
+    }
+
+    public function scopeSorted($query)
+    {
+        return $query->orderBy('sort_order')->orderBy('id');
     }
 
     /**

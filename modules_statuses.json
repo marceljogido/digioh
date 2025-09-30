@@ -1,5 +1,9 @@
 {
     "Post": true,
     "Category": true,
-    "Tag": true
+    "Tag": true,
+    "OurWork": true,
+    "Slider": true,
+    "Portfolio": true,
+    "ClientLogo": true
 }

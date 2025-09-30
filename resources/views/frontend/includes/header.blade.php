@@ -275,28 +275,29 @@
                 class="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium dark:border-gray-700 dark:bg-gray-800 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:p-0 md:dark:bg-gray-900 rtl:space-x-reverse"
             >
                 <x-frontend.nav-item :active="request()->routeIs('home')">
-                    {{ __("Home") }}
+                    {{ __('Home') }}
                 </x-frontend.nav-item>
+
+                <x-frontend.nav-item :href="route('about')" :active="request()->routeIs('about')">
+                    {{ __('About') }}
+                </x-frontend.nav-item>
+
                 <x-frontend.nav-item
                     :href="route('frontend.posts.index')"
                     :active="request()->routeIs('frontend.posts.*')"
                 >
-                    {{ __("Posts") }}
+                    {{ __('Our Work') }}
                 </x-frontend.nav-item>
+
                 <x-frontend.nav-item
                     :href="route('frontend.categories.index')"
                     :active="request()->routeIs('frontend.categories.*')"
                 >
-                    {{ __("Categories") }}
+                    {{ __('Product & Services') }}
                 </x-frontend.nav-item>
-                <x-frontend.nav-item
-                    :href="route('frontend.tags.index')"
-                    :active="request()->routeIs('frontend.tags.*')"
-                >
-                    {{ __("Tags") }}
-                </x-frontend.nav-item>
-                <x-frontend.nav-item href="https://nasirkhn.com" target="_blank">
-                    {{ __("Contact") }}
+
+                <x-frontend.nav-item :href="route('contact')" :active="request()->routeIs('contact')">
+                    {{ __('Contact') }}
                 </x-frontend.nav-item>
             </ul>
         </div>

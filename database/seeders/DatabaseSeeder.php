@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Modules\Category\database\seeders\CategoryDatabaseSeeder;
+use Modules\Post\database\seeders\PostDatabaseSeeder;
+use Modules\Tag\database\seeders\TagDatabaseSeeder;
+use Modules\Slider\database\seeders\SliderDatabaseSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 
@@ -17,6 +21,10 @@ class DatabaseSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
 
         $this->call(AuthTableSeeder::class);
+        $this->call(PostDatabaseSeeder::class);
+        $this->call(CategoryDatabaseSeeder::class);
+        $this->call(TagDatabaseSeeder::class);
+        $this->call(SliderDatabaseSeeder::class);
 
         Schema::enableForeignKeyConstraints();
 
