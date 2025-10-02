@@ -29,7 +29,7 @@ Route::get('home', [FrontendController::class, 'index'])->name('home');
 // Language Switch
 Route::get('language/{language}', [LanguageController::class, 'switch'])->name('language.switch');
 
-Route::get('dashboard', 'App\Http\Controllers\Frontend\FrontendController@index')->name('dashboard');
+Route::get('dashboard', 'App\Http\Controllers\Frontend\FrontendController@index')->middleware('auth')->name('dashboard');
 
 // pages
 Route::get('terms', Terms::class)->name('terms');

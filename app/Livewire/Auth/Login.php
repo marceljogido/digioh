@@ -41,14 +41,33 @@ class Login extends Component
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
-
-            event(new UserLoginSuccess(request(), $user));
         }
+
+        $user = Auth::user();
+
+        event(new UserLoginSuccess(request(), $user));
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $this->redirectIntended(default: route('frontend.index', absolute: false), navigate: true);
+        // Hapus session URL intended jika berisi URL login untuk mencegah redirect loop
+        if (session()->has('url.intended') && str_contains(session('url.intended'), 'login')) {
+            session()->forget('url.intended');
+        }
+
+        $defaultRoute = $user && $user->can('view_backend')
+            ? route('backend.home', absolute: false)
+            : route('frontend.index', absolute: false);
+
+        // Get the intended URL, but avoid redirecting back to login
+        $intendedUrl = request()->session()->pull('url.intended', $defaultRoute);
+        
+        // If the intended URL is the login page or empty, use the default route instead
+        if (empty($intendedUrl) || $intendedUrl === route('login')) {
+            $intendedUrl = $defaultRoute;
+        }
+        
+        $this->redirect($intendedUrl, navigate: true);
     }
 
     /**

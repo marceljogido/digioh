@@ -33,13 +33,6 @@
                 </svg>
             </button>
 
-            <!-- Language toggle (ID / EN) -->
-            <div class="hidden md:flex items-center rounded-lg bg-gray-100 p-1 dark:bg-gray-800">
-                @php($cur = app()->getLocale())
-                <a href="{{ route('language.switch', 'id') }}" class="px-3 py-1 text-xs font-semibold rounded-md transition {{ $cur === 'id' ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white' }}">ID</a>
-                <a href="{{ route('language.switch', 'en') }}" class="ml-1 px-3 py-1 text-xs font-semibold rounded-md transition {{ $cur === 'en' ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white' }}">EN</a>
-            </div>
-
             @auth
                 <button
                     class="inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
@@ -169,15 +162,10 @@
                 >
                     {{ __('Layanan') }}
                 </x-frontend.nav-item>
+                <x-frontend.nav-item :href="route('contact')" :active="request()->routeIs('contact')">
+                    {{ __("Contact") }}
+                </x-frontend.nav-item>
 
-                @php($__waNum = preg_replace('/[^0-9]/','', setting('whatsapp_number') ?? ''))
-                @php($__waMsg = rawurlencode(setting('whatsapp_prefill') ?? 'Halo DigiOH, saya ingin berdiskusi.'))
-                @php($__waLink = $__waNum ? "https://wa.me/$__waNum?text=$__waMsg" : route('contact'))
-                <li>
-                    <a href="{{ $__waLink }}" target="_blank" rel="noopener" class="block rounded px-3 py-2 text-gray-700 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
-                        {{ __("Contact") }}
-                    </a>
-                </li>
             </ul>
         </div>
     </div>

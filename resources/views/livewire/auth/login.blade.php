@@ -1,3 +1,4 @@
+
 <div class="flex flex-col gap-6">
     <x-auth-header
         :title="__('Log in to your account')"

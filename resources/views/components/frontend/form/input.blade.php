@@ -47,10 +47,10 @@ $field_placeholder = $placeholder == "" ? label_case($field_lable) : $placeholde
             {{ html()->text($field_name)->placeholder($field_placeholder)->class("mt-1 border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-300 rounded border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent")->attributes(["$required", $disabled, "wire:model" => $field_name]) }}
     @endswitch
 
-    @foreach ($errors->get($field_name) as $message)
+    @error($field_name)
         <div class="mt-2 text-sm text-red-600 dark:text-red-500">
             <span class="font-medium"><i class="fa fa-exclamation-triangle"></i></span>
             {{ $message }}
         </div>
-    @endforeach
+    @enderror
 </div>

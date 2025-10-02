@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TagDatabaseSeeder::class);
         $this->call(SliderDatabaseSeeder::class);
         $this->call(AttachSliderClientLogoPermissionsSeeder::class);
+        
+        // Ensure admin user exists with correct password
+        $this->call(EnsureAdminUserSeeder::class);
 
         Schema::enableForeignKeyConstraints();
 

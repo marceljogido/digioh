@@ -28,6 +28,7 @@ class UserTableSeeder extends Seeder
                 'name' => 'Super Admin',
                 'email' => 'super@admin.com',
                 'password' => 'secret',
+                'status' => 1,
                 'email_verified_at' => Carbon::now(),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -38,6 +39,7 @@ class UserTableSeeder extends Seeder
                 'name' => 'Admin Istrator',
                 'email' => 'admin@admin.com',
                 'password' => 'secret',
+                'status' => 1,
                 'email_verified_at' => Carbon::now(),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -48,6 +50,7 @@ class UserTableSeeder extends Seeder
                 'name' => 'Manager User',
                 'email' => 'manager@manager.com',
                 'password' => 'secret',
+                'status' => 1,
                 'email_verified_at' => Carbon::now(),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -58,6 +61,7 @@ class UserTableSeeder extends Seeder
                 'name' => 'Executive User',
                 'email' => 'executive@executive.com',
                 'password' => 'secret',
+                'status' => 1,
                 'email_verified_at' => Carbon::now(),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -68,6 +72,7 @@ class UserTableSeeder extends Seeder
                 'name' => 'General User',
                 'email' => 'user@user.com',
                 'password' => 'secret',
+                'status' => 1,
                 'email_verified_at' => Carbon::now(),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -75,7 +80,11 @@ class UserTableSeeder extends Seeder
         ];
 
         foreach ($users as $user_data) {
-            $user = User::create($user_data);
+            // Update jika user sudah ada, buat baru jika belum ada
+            $user = User::updateOrCreate(
+                ['email' => $user_data['email']], // kondisi pencocokan
+                $user_data // data yang akan diupdate atau dibuat
+            );
 
             event(new UserCreated($user));
         }

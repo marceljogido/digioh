@@ -1,43 +1,47 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Livewire\Auth\ConfirmPassword;
-use App\Livewire\Auth\ForgotPassword;
-use App\Livewire\Auth\Login;
-use App\Livewire\Auth\Register;
-use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    Route::get('login', Login::class)->name('login'); 
-    // Route::get('register', Register::class)->name('register'); // Baris ini dinonaktifkan
+// Login Routes
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('/login', [LoginController::class, 'login'])->middleware('guest');
 
-    // Alihkan semua permintaan ke /register ke halaman login.
-    // Ini adalah praktik yang baik jika user tidak boleh mendaftar sendiri.
-    Route::redirect('/register', '/login')->name('register');
+// Logout Route
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('forgot-password', ForgotPassword::class)->name('password.request');
-    Route::get('reset-password/{token}', ResetPassword::class)->name('password.reset');
-});
+// Registration Routes
+// Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware('guest');
+// Route::post('/register', [RegisterController::class, 'register'])->middleware('guest');
+
+// Temporary redirect to login instead of register
+Route::redirect('/register', '/login')->name('register');
+
+// Password Reset Routes
+Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request')->middleware('guest');
+Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('guest');
+Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset')->middleware('guest');
+Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update')->middleware('guest');
 
 Route::middleware('auth')->group(function () {
-    Route::get('verify-email', VerifyEmail::class)
-        ->name('verification.notice');
+    Route::get('verify-email', VerifyEmail::class)->name('verification.notice');
 
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
-    Route::get('confirm-password', ConfirmPassword::class)
-        ->name('password.confirm');
+    Route::get('confirm-password', ConfirmPassword::class)->name('password.confirm');
 });
 
-Route::post('logout', App\Livewire\Actions\Logout::class)
-    ->name('logout');
+// Make sure to use our new LoginController for logout
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-// Social Login Routes
 Route::group(['namespace' => 'Auth', 'middleware' => 'guest'], function () {
     Route::get('login/{provider}', [SocialLoginController::class, 'redirectToProvider'])->name('social.login');
     Route::get('login/{provider}/callback', [SocialLoginController::class, 'handleProviderCallback'])->name('social.login.callback');

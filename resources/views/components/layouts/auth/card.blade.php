@@ -21,6 +21,9 @@
                 </div>
             </div>
         </div>
+
         @fluxScripts
+        @livewireScriptConfig(['navigate' => true])
+        @livewireScripts
     </body>
 </html>
