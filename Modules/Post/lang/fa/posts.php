@@ -10,7 +10,7 @@ return [
     'image' => 'تصویر',
     'category_id' => 'دسته بندی',
     'type' => 'نوع',
-    'is_featured' => 'ویژه است',
+    'is_featured' => 'Show on Home',
     'tags' => 'برچسب ها',
     'status' => 'وضعیت',
     'published_at' => 'منتشر شده در',

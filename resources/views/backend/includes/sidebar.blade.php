@@ -81,10 +81,12 @@ $notifications_latest = optional($notifications)->take(5);
 
         <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
 
+        {{-- Categories menu intentionally disabled per request --}}
+
         @php
-            $module_name = "categories";
-            $text = __("Categories");
-            $icon = "fa-solid fa-diagram-project";
+            $module_name = "tags";
+            $text = __("Tags");
+            $icon = "fa-solid fa-tags";
             $permission = "view_" . $module_name;
             $url = route("backend." . $module_name . ".index");
         @endphp
@@ -92,10 +94,21 @@ $notifications_latest = optional($notifications)->take(5);
         <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
 
         @php
-            $module_name = "tags";
-            $text = __("Tags");
-            $icon = "fa-solid fa-tags";
-            $permission = "view_" . $module_name;
+            $module_name = "services";
+            $text = __("Services");
+            $icon = "fa-solid fa-briefcase";
+            // Use a broad permission so admins see it without extra setup
+            $permission = "view_backend";
+            $url = route("backend." . $module_name . ".index");
+        @endphp
+
+        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
+
+        @php
+            $module_name = "faq";
+            $text = __("FAQ");
+            $icon = "fa-regular fa-circle-question";
+            $permission = "view_backend";
             $url = route("backend." . $module_name . ".index");
         @endphp
 
@@ -146,3 +159,4 @@ $notifications_latest = optional($notifications)->take(5);
         <button class="sidebar-toggler" data-coreui-toggle="unfoldable" type="button"></button>
     </div>
 </div>
+

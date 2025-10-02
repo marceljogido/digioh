@@ -1,5 +1,6 @@
 import './bootstrap';
 import 'flowbite';
+import Alpine from 'alpinejs';
 
 // Re-initialize Flowbite components after Livewire updates
 document.addEventListener('livewire:navigated', () => {
@@ -48,6 +49,8 @@ function updateThemeToggleIcons() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    window.Alpine = Alpine;
+    Alpine.start();
     setInitialTheme();
     updateThemeToggleIcons();
 

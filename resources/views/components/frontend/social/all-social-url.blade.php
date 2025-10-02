@@ -1,4 +1,6 @@
-<div class="my-6 flex justify-center space-x-6">
+@props(['class' => 'my-6 flex justify-center space-x-6'])
+
+<div {{ $attributes->merge(['class' => $class]) }}>
     <x-frontend.social.website_url />
     <x-frontend.social.instagram_url />
     <x-frontend.social.facebook_url />

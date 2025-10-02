@@ -1,15 +1,15 @@
 {
-    "name": "nasirkhan/laravel-starter",
-    "description": "A CMS like modular Laravel starter project.",
+    "name": "digioh/digioh-website",
+    "description": "DigiOH Digital Studio Website - Built with Laravel.",
     "keywords": [
-        "framework",
-        "laravel",
-        "cms",
-        "starter",
-        "admin",
-        "admin dashboard",
-        "laravel blog",
-        "website"
+        "digital studio",
+        "web development",
+        "mobile app",
+        "ui/ux design",
+        "digital marketing",
+        "digioh",
+        "indonesia",
+        "jakarta"
     ],
     "license": "GPL-3.0-or-later",
     "type": "project",

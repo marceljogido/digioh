@@ -10,7 +10,7 @@ return [
     'image' => 'ছবি',
     'category_id' => 'ক্যাটাগরি',
     'type' => 'Type',
-    'is_featured' => 'Is Featured',
+    'is_featured' => 'Show on Home',
     'tags' => 'ট্যাগ',
     'status' => 'স্ট্যাটাস',
     'published_at' => 'প্রকাশের সময়',

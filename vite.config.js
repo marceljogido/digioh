@@ -32,4 +32,11 @@ export default defineConfig({
             '~coreui': path.resolve(__dirname, 'node_modules/@coreui/coreui'),
         }
     },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                quietDeps: true,
+            },
+        },
+    },
 });

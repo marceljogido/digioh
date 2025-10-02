@@ -10,7 +10,7 @@ return [
     'image' => 'Image',
     'category_id' => 'Category',
     'type' => 'Type',
-    'is_featured' => 'Is Featured',
+    'is_featured' => 'Show on Home',
     'tags' => 'Tags',
     'status' => 'Status',
     'published_at' => 'Published At',

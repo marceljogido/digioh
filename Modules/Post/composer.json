@@ -1,11 +1,11 @@
 {
-    "name": "nasirkhan/post",
-    "description": "",
+    "name": "digioh/post",
+    "description": "Post module for DigiOH website",
     "type": "laravel-module",
     "authors": [
         {
-            "name": "Nasir Khan",
-            "email": "nasir8891@gmail.com"
+            "name": "DigiOH Team",
+            "email": "hello@digioh.id"
         }
     ],
     "require": {

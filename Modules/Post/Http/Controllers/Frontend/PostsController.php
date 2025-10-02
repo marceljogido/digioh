@@ -80,6 +80,8 @@ class PostsController extends Controller
         $module_action = 'Show';
 
         $$module_name_singular = $module_model::findOrFail($id);
+        // Increment hits for popularity sorting
+        $$module_name_singular->increment('hits');
 
         return view(
             "$module_path.$module_name.show",

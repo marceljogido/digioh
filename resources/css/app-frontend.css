@@ -1,5 +1,75 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+[x-cloak] { display: none !important; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* @import '/node_modules/@fortawesome/fontawesome-free/css/all.min.css'; */
+
+.trusted-marquee {
+    display: flex;
+    align-items: center;
+    gap: 3.5rem;
+    width: max-content;
+    animation: trusted-marquee 28s linear infinite;
+}
+
+.trusted-marquee:hover {
+    animation-play-state: paused;
+}
+
+.trusted-marquee-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 30px -15px rgba(15, 23, 42, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.dark .trusted-marquee-item {
+    background: rgba(17, 24, 39, 0.7);
+    border-color: rgba(148, 163, 184, 0.15);
+    box-shadow: 0 10px 30px -20px rgba(15, 23, 42, 0.9);
+}
+
+.trusted-marquee-item img {
+    max-height: 48px;
+    width: auto;
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition: transform 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
+}
+
+.trusted-marquee-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px -18px rgba(30, 64, 175, 0.45);
+}
+
+.trusted-marquee-item:hover img {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scale(1.05);
+}
+
+@keyframes trusted-marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trusted-marquee {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+    }
+}

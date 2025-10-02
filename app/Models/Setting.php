@@ -216,6 +216,10 @@ class Setting extends BaseModel
      */
     private static function castValue($val, $castTo)
     {
+        if (is_string($castTo)) {
+            $castTo = trim($castTo);
+        }
+
         switch ($castTo) {
             case 'int':
             case 'integer':

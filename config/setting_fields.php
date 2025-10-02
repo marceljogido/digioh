@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 return [
     'app' => [
@@ -14,7 +14,7 @@ return [
                 'label' => 'App Name', // you know what label it is
                 'rules' => 'required|min:2|max:50', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'Laravel Starter', // default value if you want
+                'value' => 'DigiOH', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -23,7 +23,7 @@ return [
                 'label' => 'App Description', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'Laravel Starter is a CMS like modular starter application project built with Laravel. This starter project can be used as a foundation to build your own projects.', // default value if you want
+                'value' => 'DigiOH adalah studio digital yang membantu brand tumbuh melalui solusi kreatif dan teknologi modern.', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -32,7 +32,7 @@ return [
                 'label' => 'Footer Text', // you know what label it is
                 'rules' => 'required|min:2', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => '<a href="https://github.com/nasirkhan/laravel-starter/" class="text-muted">Built with ♥ from Bangladesh</a>', // default value if you want
+                'value' => '<a href="https://digioh.id" class="text-muted">Built with ♥ by DigiOH</a>', // default value if you want
             ],
             [
                 'type' => 'checkbox', // input fields type
@@ -76,7 +76,7 @@ return [
                 'label' => 'Website URL', // you know what label it is
                 'rules' => 'nullable|max:191', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'https://nasirkhn.com', // default value if you want
+                'value' => 'https://digioh.id', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -94,7 +94,7 @@ return [
                 'label' => 'Twitter Profile URL', // you know what label it is
                 'rules' => 'nullable|max:191', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'https://twitter.com/nasirkhansaikat', // default value if you want
+                'value' => 'https://twitter.com/digioh_id', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -103,7 +103,7 @@ return [
                 'label' => 'Instagram Account URL', // you know what label it is
                 'rules' => 'nullable|max:191', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'https://www.instagram.com/nasirkhansaikat', // default value if you want
+                'value' => 'https://www.instagram.com/digioh.id', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -112,7 +112,7 @@ return [
                 'label' => 'Youtube Channel URL', // you know what label it is
                 'rules' => 'nullable|max:191', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'https://www.youtube.com/@nasirkhan', // default value if you want
+                'value' => 'https://www.youtube.com/@digioh', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -168,6 +168,26 @@ return [
 				'value' => '<p>DigiOH adalah studio digital yang membantu brand tumbuh melalui solusi kreatif dan teknologi.</p><ul><li>Strategi & Konsultasi</li><li>Desain & Pengembangan</li><li>Pemasaran & Pertumbuhan</li></ul>',
 				'display' => 'raw',
 			],
+			// English variant (optional)
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_title_en',
+				'label' => 'Title (English)',
+				'rules' => 'nullable|max:150',
+				'class' => '',
+				'value' => 'About DigiOH',
+			],
+			[
+				'type' => 'textarea',
+				'data' => 'string',
+				'name' => 'about_body_en',
+				'label' => 'Content (English)',
+				'rules' => 'nullable',
+				'class' => '',
+				'value' => '<p>DigiOH is a digital studio helping brands grow through creative solutions and technology.</p><ul><li>Strategy & Consulting</li><li>Design & Development</li><li>Marketing & Growth</li></ul>',
+				'display' => 'raw',
+			],
 			[
 				'type' => 'text',
 				'data' => 'string',
@@ -176,6 +196,115 @@ return [
 				'rules' => 'nullable|max:191',
 				'class' => '',
 				'value' => 'img/default_banner.jpg',
+			],
+			// Founders (maks 3)
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_1_name',
+				'label' => 'Founder 1 - Nama',
+				'rules' => 'nullable|max:100',
+				'class' => '',
+				'value' => 'John Doe',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_1_title',
+				'label' => 'Founder 1 - Jabatan',
+				'rules' => 'nullable|max:100',
+				'class' => '',
+				'value' => 'Chief Executive Officer',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_1_photo',
+				'label' => 'Founder 1 - Foto (URL/Path)',
+				'rules' => 'nullable|max:191',
+				'class' => '',
+				'value' => 'img/avatar-1.png',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_1_linkedin',
+				'label' => 'Founder 1 - LinkedIn URL',
+				'rules' => 'nullable|max:191',
+				'class' => '',
+				'value' => '#',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_2_name',
+				'label' => 'Founder 2 - Nama',
+				'rules' => 'nullable|max:100',
+				'class' => '',
+				'value' => 'Jane Smith',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_2_title',
+				'label' => 'Founder 2 - Jabatan',
+				'rules' => 'nullable|max:100',
+				'class' => '',
+				'value' => 'Chief Operating Officer',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_2_photo',
+				'label' => 'Founder 2 - Foto (URL/Path)',
+				'rules' => 'nullable|max:191',
+				'class' => '',
+				'value' => 'img/avatar-2.png',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_2_linkedin',
+				'label' => 'Founder 2 - LinkedIn URL',
+				'rules' => 'nullable|max:191',
+				'class' => '',
+				'value' => '#',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_3_name',
+				'label' => 'Founder 3 - Nama',
+				'rules' => 'nullable|max:100',
+				'class' => '',
+				'value' => 'Alex Lee',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_3_title',
+				'label' => 'Founder 3 - Jabatan',
+				'rules' => 'nullable|max:100',
+				'class' => '',
+				'value' => 'Chief Technology Officer',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_3_photo',
+				'label' => 'Founder 3 - Foto (URL/Path)',
+				'rules' => 'nullable|max:191',
+				'class' => '',
+				'value' => 'img/avatar-3.png',
+			],
+			[
+				'type' => 'text',
+				'data' => 'string',
+				'name' => 'about_founder_3_linkedin',
+				'label' => 'Founder 3 - LinkedIn URL',
+				'rules' => 'nullable|max:191',
+				'class' => '',
+				'value' => '#',
 			],
 		],
 	],
@@ -192,7 +321,7 @@ return [
                 'label' => 'Meta Site Name', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'Laravel Starter | An Awesome Laravel Starter Project', // default value if you want
+                'value' => 'DigiOH | Digital Studio Indonesia', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -201,7 +330,7 @@ return [
                 'label' => 'Meta Description', // you know what label it is
                 'rules' => 'required', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'Laravel Starter is a CMS like modular starter application project built with latest Laravel. This starter project can be used as a foundation to build your own projects.', // default value if you want
+                'value' => 'DigiOH adalah studio digital yang membantu brand tumbuh melalui solusi kreatif dan teknologi. Kami menyediakan layanan desain, pengembangan, dan pemasaran digital.', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -210,7 +339,7 @@ return [
                 'label' => 'Meta Keyword', // you know what label it is
                 'rules' => 'nullable', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => 'Web Application, web app, Laravel, Laravel starter, Bootstrap, Admin, Template, Open Source, nasir khan saikat, nasirkhansaikat', // default value if you want
+                'value' => 'Digital Studio, Web Development, Mobile App, UI/UX Design, Digital Marketing, DigiOH, Indonesia, Jakarta', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -237,7 +366,7 @@ return [
                 'label' => 'Meta Twitter Site Account', // you know what label it is
                 'rules' => 'nullable', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => '@nasirkhansaikat', // default value if you want
+                'value' => '@digioh_id', // default value if you want
             ],
             [
                 'type' => 'text', // input fields type
@@ -246,7 +375,7 @@ return [
                 'label' => 'Meta Twitter Creator Account', // you know what label it is
                 'rules' => 'nullable', // validation rule of laravel
                 'class' => '', // any class for input
-                'value' => '@nasirkhansaikat', // default value if you want
+                'value' => '@digioh_id', // default value if you want
             ],
         ],
     ],
@@ -289,4 +418,230 @@ return [
         ],
 
     ],
+    'contact' => [
+        'title' => 'Contact',
+        'desc' => 'Contact info and map embed.',
+        'icon' => 'fas fa-address-card',
+
+        'elements' => [
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'contact_email',
+                'label' => 'Contact Email',
+                'rules' => 'nullable|email',
+                'class' => '',
+                'value' => '',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'whatsapp_number',
+                'label' => 'WhatsApp Number (Intl format, e.g., 6281234567890)',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '',
+                'help' => 'Masukkan nomor tanpa tanda + atau spasi. Contoh: 62812xxxxxxx'
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'whatsapp_prefill',
+                'label' => 'WhatsApp Prefill Message',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => 'Halo DigiOH, saya ingin berdiskusi tentang proyek/event.',
+                'help' => 'Pesan default yang akan terisi di WhatsApp.'
+            ],
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'contact_address',
+                'label' => 'Contact Address',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '',
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'contact_map_embed',
+                'label' => 'Map Embed (iframe HTML)',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '',
+                'help' => 'Paste your map iframe embed code here (e.g., Google Maps).',
+                'display' => 'raw',
+            ],
+        ],
+    ],
+    'homepage' => [
+        'title' => 'Homepage',
+        'desc' => 'Homepage display options.',
+        'icon' => 'fas fa-home',
+
+        'elements' => [
+            [
+                'type' => 'text',
+                'data' => 'text',
+                'name' => 'home_services_heading_en',
+                'label' => 'Services Section Heading (EN)',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => 'We help companies design, build, and grow end-to-end digital products.',
+                'help' => 'English heading shown when locale is EN'
+            ],
+            [
+                'type' => 'text',
+                'data' => 'text',
+                'name' => 'home_services_heading',
+                'label' => 'Services Section Heading',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => 'Kami membantu perusahaan merancang, membangun, dan mengembangkan produk digital end-to-end.',
+                'help' => 'Judul besar pada bagian "Layanan utama" di homepage.'
+            ],
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'home_show_portfolio',
+                'label' => 'Show Portfolio section',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '0',
+                'help' => 'Enable to display the Portfolio section on the homepage.',
+            ],
+            // Optional EN variants for static services (used when DB Services empty)
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_1_title_en', 'label' => 'Service 1 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_1_description_en', 'label' => 'Service 1 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_2_title_en', 'label' => 'Service 2 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_2_description_en', 'label' => 'Service 2 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_3_title_en', 'label' => 'Service 3 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_3_description_en', 'label' => 'Service 3 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_4_title_en', 'label' => 'Service 4 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_4_description_en', 'label' => 'Service 4 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+        ],
+    ],
+    'instagram' => [
+        'title' => 'Instagram Videos',
+        'desc' => 'Instagram video embed settings for homepage.',
+        'icon' => 'fab fa-instagram',
+
+        'elements' => [
+            [
+                'type' => 'checkbox',
+                'data' => 'boolean',
+                'name' => 'instagram_section_enabled',
+                'label' => 'Enable Instagram Video Section',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '1',
+                'help' => 'Show Instagram video section on homepage above FAQ.',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'instagram_section_title',
+                'label' => 'Section Title',
+                'rules' => 'nullable|max:100',
+                'class' => '',
+                'value' => 'Lihat Aktivitas Kami di Instagram',
+                'help' => 'Title for the Instagram video section.',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'instagram_section_title_en',
+                'label' => 'Section Title (English)',
+                'rules' => 'nullable|max:100',
+                'class' => '',
+                'value' => 'See Our Activities on Instagram',
+                'help' => 'English title for the Instagram video section.',
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'instagram_section_subtitle',
+                'label' => 'Section Subtitle',
+                'rules' => 'nullable|max:300',
+                'class' => '',
+                'value' => 'Ikuti perjalanan kreatif kami dan lihat behind-the-scenes dari berbagai proyek yang sedang kami kerjakan.',
+                'help' => 'Subtitle description for the Instagram video section.',
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'instagram_section_subtitle_en',
+                'label' => 'Section Subtitle (English)',
+                'rules' => 'nullable|max:300',
+                'class' => '',
+                'value' => 'Follow our creative journey and see behind-the-scenes from various projects we are working on.',
+                'help' => 'English subtitle description for the Instagram video section.',
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'instagram_embed_1',
+                'label' => 'Instagram Embed Code 1',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '',
+                'help' => 'Paste Instagram embed iframe code here. Get it from Instagram post -> ... -> Embed.',
+                'display' => 'raw',
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'instagram_embed_2',
+                'label' => 'Instagram Embed Code 2',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '',
+                'help' => 'Paste Instagram embed iframe code here. Get it from Instagram post -> ... -> Embed.',
+                'display' => 'raw',
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'instagram_embed_3',
+                'label' => 'Instagram Embed Code 3',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '',
+                'help' => 'Paste Instagram embed iframe code here. Get it from Instagram post -> ... -> Embed.',
+                'display' => 'raw',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'instagram_profile_url',
+                'label' => 'Instagram Profile URL',
+                'rules' => 'nullable|url|max:191',
+                'class' => '',
+                'value' => 'https://www.instagram.com/digioh.id',
+                'help' => 'Link to your Instagram profile page.',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'instagram_cta_text',
+                'label' => 'Call-to-Action Text',
+                'rules' => 'nullable|max:50',
+                'class' => '',
+                'value' => 'Ikuti kami di Instagram',
+                'help' => 'Text for the button linking to Instagram profile.',
+            ],
+            [
+                'type' => 'text',
+                'data' => 'string',
+                'name' => 'instagram_cta_text_en',
+                'label' => 'Call-to-Action Text (English)',
+                'rules' => 'nullable|max:50',
+                'class' => '',
+                'value' => 'Follow us on Instagram',
+                'help' => 'English text for the button linking to Instagram profile.',
+            ],
+        ],
+    ],
 ];
+

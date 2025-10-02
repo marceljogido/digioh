@@ -22,6 +22,14 @@ class Post extends BaseModel
 
     protected $table = 'posts';
 
+    protected function casts(): array
+    {
+        return array_merge(parent::casts(), [
+            'event_start_date' => 'datetime',
+            'event_end_date' => 'datetime',
+        ]);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -59,7 +67,7 @@ class Post extends BaseModel
 
     public function scopeFeatured($query)
     {
-        return $query->publishedAndScheduled()->where('is_featured', '=', 1);
+        return $query->publishedAndScheduled()->where('is_featured', '=', 1)->orderByDesc('published_at');
     }
 
     /**
@@ -76,6 +84,11 @@ class Post extends BaseModel
     public function scopeSorted($query)
     {
         return $query->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(\App\Models\Service::class);
     }
 
     /**

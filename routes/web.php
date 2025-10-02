@@ -60,6 +60,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Frontend', 'as' => 'frontend.
     });
 });
 
+// Frontend Services pages
+Route::group(['namespace' => 'App\\Http\\Controllers\\Frontend', 'as' => 'frontend.'], function () {
+    Route::get('services', 'ServiceController@index')->name('services.index');
+    Route::get('services/{service:slug}', 'ServiceController@show')->name('services.show');
+});
+
 /*
 *
 * Backend Routes
@@ -142,6 +148,26 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
     Route::patch("{$module_name}/{id}/block", ['as' => "{$module_name}.block", 'uses' => "{$controller_name}@block", 'middleware' => ['can:block_users']]);
     Route::patch("{$module_name}/{id}/unblock", ['as' => "{$module_name}.unblock", 'uses' => "{$controller_name}@unblock", 'middleware' => ['can:block_users']]);
     Route::resource("{$module_name}", "{$controller_name}");
+
+    /*
+    *
+    *  FAQ Routes
+    *
+    * ---------------------------------------------------------------------
+    */
+    $module_name = 'faq';
+    $controller_name = 'FaqController';
+    Route::resource("{$module_name}", "{$controller_name}");
+
+    /*
+    *
+    *  Services Routes
+    *
+    * ---------------------------------------------------------------------
+    */
+    $module_name = 'services';
+    $controller_name = 'ServiceController';
+    Route::resource("{$module_name}", "{$controller_name}");
 });
 
 /**
@@ -150,3 +176,4 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth', 'can:view_backend']], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
+

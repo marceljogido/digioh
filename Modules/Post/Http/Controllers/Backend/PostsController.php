@@ -10,7 +10,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Modules\Post\Enums\PostStatus;
-use Modules\Post\Enums\PostType;
 
 class PostsController extends BackendBaseController
 {
@@ -61,8 +60,11 @@ class PostsController extends BackendBaseController
             'content' => 'required',
             'image' => 'required|max:191',
             'category_id' => 'required|integer',
-            'type' => Rule::enum(PostType::class),
-            'is_featured' => 'required|integer',
+            'service_id' => 'nullable|integer',
+            'event_start_date' => 'nullable|date',
+            'event_end_date' => 'nullable|date|after_or_equal:event_start_date',
+            'event_location' => 'nullable|max:191',
+            'is_featured' => 'boolean',
             'tags_list' => 'nullable|array',
             'status' => Rule::enum(PostStatus::class),
             'published_at' => 'required|date',
@@ -75,6 +77,7 @@ class PostsController extends BackendBaseController
         ]);
 
         $data = Arr::except($validated_data, 'tags_list');
+        $data['is_featured'] = $request->boolean('is_featured');
         $data['created_by_name'] = auth()->user()->name;
 
         $$module_name_singular = $module_model::create($data);
@@ -117,8 +120,11 @@ class PostsController extends BackendBaseController
             'content' => 'required',
             'image' => 'required|max:191',
             'category_id' => 'required|integer',
-            'type' => Rule::enum(PostType::class),
-            'is_featured' => 'required|integer',
+            'service_id' => 'nullable|integer',
+            'event_start_date' => 'nullable|date',
+            'event_end_date' => 'nullable|date|after_or_equal:event_start_date',
+            'event_location' => 'nullable|max:191',
+            'is_featured' => 'boolean',
             'tags_list' => 'nullable|array',
             'status' => Rule::enum(PostStatus::class),
             'published_at' => 'required|date',
@@ -131,6 +137,7 @@ class PostsController extends BackendBaseController
         ]);
 
         $data = Arr::except($validated_data, 'tags_list');
+        $data['is_featured'] = $request->boolean('is_featured');
 
         $$module_name_singular = $module_model::findOrFail($id);
 

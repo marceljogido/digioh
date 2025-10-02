@@ -1,6 +1,10 @@
 @php
     $required = Str::contains($field["rules"], "required") ? "required" : "";
     $required_mark = $required != "" ? '<span class="text-danger"> <strong>*</strong> </span>' : "";
+    $trueValue = \Illuminate\Support\Arr::get($field, 'value', '1');
+    if (($field['data'] ?? null) === 'boolean') {
+        $trueValue = '1';
+    }
 @endphp
 
 <div class="form-group {{ $errors->has($field["name"]) ? " has-error" : "" }} mt-3">
@@ -15,9 +19,9 @@
         <label>
             <input class="form-label" name="{{ $field["name"] }}" type="hidden" value="0" />
             <input
-                name=" {{ $field["name"] }}"
+                name="{{ $field["name"] }}"
                 type="checkbox"
-                value="{{ \Illuminate\Support\Arr::get($field, "value", "1") }}"
+                value="{{ $trueValue }}"
                 @if (old($field['name'], setting($field['name']))) checked="checked" @endif
             />
             {{ $field["label"] }}
