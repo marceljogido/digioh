@@ -20,21 +20,37 @@
             ];
         });
 
-        $defaultStats = [
-            ['value' => '12+', 'label' => __('Tahun pengalaman')],
-            ['value' => '150+', 'label' => __('Proyek berhasil diselesaikan')],
-            ['value' => '98%', 'label' => __('Pelanggan yang kembali bekerja bersama')],
-        ];
+        @php
+            // Ambil statistik dari model Stat, urutkan berdasarkan sort_order
+            $statsFromModel = \App\Models\Stat::where('is_active', true)->sorted()->get();
+            
+            // Jika tidak ada data dari model, gunakan default
+            if($statsFromModel->count() > 0) {
+                $stats = $statsFromModel->map(function ($stat) {
+                    return [
+                        'value' => $stat->value,
+                        'label' => app()->getLocale() === 'en' ? ($stat->label_en ?: $stat->label) : $stat->label,
+                    ];
+                });
+            } else {
+                // Default stats jika model tidak memiliki data
+                $defaultStats = [
+                    ['value' => '12+', 'label' => __('Tahun pengalaman')],
+                    ['value' => '150+', 'label' => __('Proyek berhasil diselesaikan')],
+                    ['value' => '98%', 'label' => __('Pelanggan yang kembali bekerja bersama')],
+                ];
 
-        $stats = collect(range(1, 3))->map(function ($index) use ($defaultStats) {
-            $value = setting("home_stat_{$index}_value");
-            $label = setting("home_stat_{$index}_label");
+                $stats = collect(range(1, 3))->map(function ($index) use ($defaultStats) {
+                    $value = setting("home_stat_{$index}_value");
+                    $label = setting("home_stat_{$index}_label");
 
-            return [
-                'value' => $value ?: $defaultStats[$index - 1]['value'],
-                'label' => $label ?: $defaultStats[$index - 1]['label'],
-            ];
-        });
+                    return [
+                        'value' => $value ?: $defaultStats[$index - 1]['value'],
+                        'label' => $label ?: $defaultStats[$index - 1]['label'],
+                    ];
+                });
+            }
+        @endphp
 
         $defaultServices = [
             [
