@@ -12,6 +12,8 @@ class SliderSeeder extends Seeder
      */
     public function run(): void
     {
+        Slider::truncate();
+
         $sliders = [
             [
                 'title' => 'Solusi Digital Terbaik untuk Bisnis Anda',

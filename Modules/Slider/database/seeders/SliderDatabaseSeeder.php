@@ -28,7 +28,7 @@ class SliderDatabaseSeeder extends Seeder
         // DB::table('sliders')->truncate();
         // echo "Truncate: sliders \n";
 
-        Slider::factory()->count(20)->create();
+        // Slider::factory()->count(20)->create();
         $rows = Slider::all();
         echo " Insert: sliders \n\n";
 
