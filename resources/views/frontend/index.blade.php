@@ -20,37 +20,21 @@
             ];
         });
 
-        @php
-            // Ambil statistik dari model Stat, urutkan berdasarkan sort_order
-            $statsFromModel = \App\Models\Stat::where('is_active', true)->sorted()->get();
-            
-            // Jika tidak ada data dari model, gunakan default
-            if($statsFromModel->count() > 0) {
-                $stats = $statsFromModel->map(function ($stat) {
-                    return [
-                        'value' => $stat->value,
-                        'label' => app()->getLocale() === 'en' ? ($stat->label_en ?: $stat->label) : $stat->label,
-                    ];
-                });
-            } else {
-                // Default stats jika model tidak memiliki data
-                $defaultStats = [
-                    ['value' => '12+', 'label' => __('Tahun pengalaman')],
-                    ['value' => '150+', 'label' => __('Proyek berhasil diselesaikan')],
-                    ['value' => '98%', 'label' => __('Pelanggan yang kembali bekerja bersama')],
-                ];
+        $defaultStats = [
+            ['value' => '12+', 'label' => __('Tahun pengalaman')],
+            ['value' => '150+', 'label' => __('Proyek berhasil diselesaikan')],
+            ['value' => '98%', 'label' => __('Pelanggan yang kembali bekerja bersama')],
+        ];
 
-                $stats = collect(range(1, 3))->map(function ($index) use ($defaultStats) {
-                    $value = setting("home_stat_{$index}_value");
-                    $label = setting("home_stat_{$index}_label");
+        $stats = $stats ?? collect(range(1, 3))->map(function ($index) use ($defaultStats) {
+            $value = setting("home_stat_{$index}_value");
+            $label = setting("home_stat_{$index}_label");
 
-                    return [
-                        'value' => $value ?: $defaultStats[$index - 1]['value'],
-                        'label' => $label ?: $defaultStats[$index - 1]['label'],
-                    ];
-                });
-            }
-        @endphp
+            return [
+                'value' => $value ?: $defaultStats[$index - 1]['value'],
+                'label' => $label ?: $defaultStats[$index - 1]['label'],
+            ];
+        });
 
         $defaultServices = [
             [
@@ -61,7 +45,7 @@
             [
                 'title' => __('Desain Experience & Branding'),
                 'description' => __('Tim UI/UX kami membangun tampilan yang elegan dan mudah digunakan, lengkap dengan guideline merek yang konsisten di semua saluran.'),
-                'icon' => '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 017.5 15.75m11.85-5.603a60.436 60.436 0 01.491 6.347 48.623 48.623 0 00-3.572-2.804M7.5 15.75l2.25-1.5m6.75 0l-2.25-1.5m-2.25 1.5l.36-.24c.284-.19.426-.285.426-.41 0-.125-.142-.22-.426-.41L12 12.75m0 2.25l-.36.24c-.284.19-.426.285-.426.41 0 .125.142.22.426.41l.36.24m0-1.3l2.25-1.5m-2.25 1.5l-2.25-1.5M7.5 19.5l3.75-2.5m5.25 0l-3.75 2.5M3 9.75c2.347-1.718 5.16-2.75 9-2.75s6.653 1.032 9 2.75M3 9.75C4.89 11.737 8.247 12.75 12 12.75s7.11-1.013 9-3M3 9.75A49.087 49.087 0 0112 9c3.328 0 6.165.3 9 .75"/></svg>',
+                'icon' => '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.647A48.627 48.627 0 017.5 15.75m11.85-5.603a60.436 60.436 0 01.491 6.647 48.623 48.623 0 00-3.572-2.804M7.5 15.75l2.25-1.5m6.75 0l-2.25-1.5m-2.25 1.5l.36-.24c.284-.19.426-.285.426-.41 0-.125-.142-.22-.426-.41L12 12.75m0 2.25l-.36.24c-.284.19-.426.285-.426.41 0 .125.142.22.426.41l.36.24m0-1.3l2.25-1.5m-2.25 1.5l-2.25-1.5M7.5 19.5l3.75-2.5m5.25 0l-3.75 2.5M3 9.75c2.347-1.718 5.16-2.75 9-2.75s6.653 1.032 9 2.75M3 9.75C4.89 11.737 8.247 12.75 12 12.75s7.11-1.013 9-3M3 9.75A49.087 49.087 0 0112 9c3.328 0 6.165.3 9 .75"/></svg>',
             ],
             [
                 'title' => __('Pengembangan Produk End-to-End'),
@@ -360,7 +344,6 @@
     @endif
 
     
-
     @if(setting('home_show_portfolio', false) && $works->count())
         <section id="portfolio" class="bg-white dark:bg-gray-900">
             <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
@@ -510,7 +493,7 @@
                                     </a>
                                 @else
                                     <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" title="{{ $logo->client_name }}">
-                                @endif
+                                @endif>
                             </div>
                         @endforeach
                     </div>
@@ -524,11 +507,11 @@
                                     </a>
                                 @else
                                     <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" title="{{ $logo->client_name }}">
-                                @endif
+                                @endif>
                             </div>
                         @endforeach
                     </div>
-                @endif
+                @endif>
             </div>
         </div>
     </section>
@@ -616,7 +599,7 @@
                 <div class="mt-10 text-center">
                     <a href="{{ $instagramSection['profile_url'] }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.624 5.367 12.013 11.987 12.013s12.013-5.389 12.013-12.013C24.029 5.367 18.641.001 12.017.001zM8.449 12.017c0-1.971 1.597-3.568 3.568-3.568s3.568 1.597 3.568 3.568-1.597 3.568-3.568 3.568-3.568-1.597-3.568-3.568zm7.675-3.976a.83.83 0 11-1.66 0 .83.83 0 011.66 0zM12.017 4.422c2.278 0 2.548.009 3.448.05.832.038 1.284.177 1.585.294.398.155.683.34.982.639.299.299.484.584.639.982.117.301.256.753.294 1.585.041.9.05 1.17.05 3.448s-.009 2.548-.05 3.448c-.038.832-.177 1.284-.294 1.585-.155.398-.34.683-.639.982-.299.299-.584.484-.982.639-.301.117-.753.256-1.585.294-.9.041-1.17.05-3.448.05s-2.548-.009-3.448-.05c-.832-.038-1.284-.177-1.585-.294a2.64 2.64 0 01-.982-.639 2.64 2.64 0 01-.639-.982c-.117-.301-.256-.753-.294-1.585-.041-.9-.05-1.17-.05-3.448s.009-2.548.05-3.448c.038-.832.177-1.284.294-1.585.155-.398.34-.683.639-.982.299-.299.584-.484.982-.639.301-.117.753-.256 1.585-.294.9-.041 1.17-.05 3.448-.05zm0-1.622c-2.317 0-2.608.01-3.518.052-.91.042-1.532.187-2.077.4-.562.218-1.04.51-1.515.985-.475.475-.767.953-.985 1.515-.213.545-.358 1.167-.4 2.077-.042.91-.052 1.201-.052 3.518s.01 2.608.052 3.518c.042.91.187 1.532.4 2.077.218.562.51 1.04.985 1.515.475.475.953.767 1.515.985.545.213 1.167.358 2.077.4.91.042 1.201.052 3.518.052s2.608-.01 3.518-.052c.91-.042 1.532-.187 2.077-.4.562-.218 1.04-.51 1.515-.985.475-.475.767-.953.985-1.515.213-.545.358-1.167.4-2.077.042-.91.052-1.201.052-3.518s-.01-2.608-.052-3.518c-.042-.91-.187-1.532-.4-2.077a4.085 4.085 0 00-.985-1.515 4.085 4.085 0 00-1.515-.985c-.545-.213-1.167-.358-2.077-.4-.91-.042-1.201-.052-3.518-.052z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.624 5.367 12.013 11.987 12.013s12.013-5.389 12.013-12.013C24.029 5.367 18.641.001 12.017.001zM8.449 12.017c0-1.971 1.597-3.568 3.568-3.568s3.568 1.597 3.568 3.568-1.597 3.568-3.568 3.568-3.568-1.597-3.568-3.568zm7.675-3.976a.83.83 0 11-1.66 0 .83.83 0 011.66 0zM12.017 4.422c2.278 0 2.548.009 3.448.05.832.038 1.284.177 1.585.294.398.155.683.34.982.639.299.299.484.584.639.982.117.301.256.753.294 1.585.041.9.05 1.17.05 3.448s-.009 2.548-.05 3.448c-.038.832-.177 1.284-.294 1.585-.155.398-.34.683-.639.982-.299.299-.584.484-.982.639-.301.117-.753.256-1.585.294-.9.041-1.17.05-3.448.05s-2.548-.009-3.448-.05c-.832-.038-1.284-.177-1.585-.294a2.64 2.64 0 01-.982-.639 2.64 2.64 0 01-.639-.982c-.117-.301-.256-.753-.294-1.585-.041-.9-.05-1.17-.05-3.448s.009-2.548.05-3.448c.038-.832.177-1.284.294-1.585.155-.398.34-.683.639-.982.299-.299.584-.484.982-.639.301-.117.753-.256 1.585-.294.9-.041 1.17-.05 3.448-.05zm0-1.622c-2.317 0-2.608.01-3.518.052-.91.042-1.532.187-2.077.4-.562.218-1.04.51-1.515.985-.475.475-.767.953-.985 1.515-.213.545-.358 1.167-.4 2.077-.042.91-.052 1.201-.052 3.518s.009 2.608.052 3.518c.042.91.187 1.532.4 2.077.218.562.51 1.04.985 1.515.475.475.953.767 1.515.985.545.213 1.167.358 2.077.4.91.042 1.201.052 3.518.052s2.608-.01 3.518-.052c.91-.042 1.532-.187 2.077-.4.562-.218 1.04-.51 1.515-.985.475-.475.767-.953.985-1.515.213-.545.358-1.167.4-2.077.042-.91.052-1.201.052-3.518s-.01-2.608-.052-3.518c-.042-.91-.187-1.532-.4-2.077a4.085 4.085 0 00-.985-1.515 4.085 4.085 0 00-1.515-.985c-.545-.213-1.167-.358-2.077-.4-.91-.042-1.201-.052-3.518-.052z" clip-rule="evenodd"/>
                         </svg>
                         <span>{{ $instagramSection['cta_text'] }}</span>
                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
@@ -647,7 +630,7 @@
                             {!! nl2br(e($faq['answer'])) !!}
                         </div>
                     </div>
-                @endforeach
+                @endforeach>
             </div>
         </div>
     </section>
@@ -659,7 +642,7 @@
                 <div>
                     <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">{{ __('Mari mulai') }}</span>
                     <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl">{{ __('Cerita sukses Anda berikutnya bisa dimulai dari sini.') }}</h2>
-                    <p class="mt-4 max-w-xl text-sm text-slate-300">{{ __('Kirimkan detail kebutuhan dan tim kami akan merespons dalam 1�2 hari kerja. Kami juga dapat menjadwalkan discovery call singkat untuk memahami objektif Anda.') }}</p>
+                    <p class="mt-4 max-w-xl text-sm text-slate-300">{{ __('Kirimkan detail kebutuhan dan tim kami akan merespons dalam 12 hari kerja. Kami juga dapat menjadwalkan discovery call singkat untuk memahami objektif Anda.') }}</p>
                     <div class="mt-6 flex flex-wrap items-center gap-6 text-sm text-slate-300">
                         <div class="flex items-center gap-3">
                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300">
@@ -709,6 +692,57 @@
         </div>
     </section>
 @endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
