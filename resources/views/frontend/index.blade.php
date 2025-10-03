@@ -293,9 +293,9 @@
                 <div class="mb-10 max-w-xl">
                     <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">{{ __('Angka yang menunjukkan dampak DigiOH') }}</span>
                 </div>
-                <div class="grid gap-6 sm:grid-cols-3">
+                <div class="flex flex-wrap justify-center gap-6">
                     @foreach($stats as $stat)
-                        <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-black/10 backdrop-blur">
+                        <div class="flex-shrink-0 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-black/10 backdrop-blur min-w-[240px] max-w-xs">
                             <div class="text-3xl font-bold tracking-tight text-white">{{ $stat['value'] }}</div>
                             <p class="mt-2 text-sm text-slate-300">{{ $stat['label'] }}</p>
                         </div>
