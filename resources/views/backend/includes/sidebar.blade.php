@@ -53,7 +53,7 @@ $notifications_latest = optional($notifications)->take(5);
 
         @php
             $module_name = "posts";
-            $text = __("Posts");
+            $text = __("Our Work");
             $icon = "fa-regular fa-file-lines";
             $permission = "view_" . $module_name;
             $url = route("backend." . $module_name . ".index");

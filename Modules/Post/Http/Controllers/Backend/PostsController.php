@@ -55,33 +55,23 @@ class PostsController extends BackendBaseController
         $validated_data = $request->validate([
             'name' => 'required|max:191',
             'slug' => 'nullable|max:191',
-            'created_by_alias' => 'nullable|max:191',
             'intro' => 'required',
             'content' => 'required',
-            'image' => 'required|max:191',
-            'category_id' => 'required|integer',
+            'image' => 'nullable|max:191',
             'service_id' => 'nullable|integer',
             'event_start_date' => 'nullable|date',
             'event_end_date' => 'nullable|date|after_or_equal:event_start_date',
             'event_location' => 'nullable|max:191',
             'is_featured' => 'boolean',
-            'tags_list' => 'nullable|array',
             'status' => Rule::enum(PostStatus::class),
             'published_at' => 'required|date',
-            'meta_title' => 'nullable|max:191',
-            'meta_keywords' => 'nullable|max:191',
-            'order' => 'nullable|integer',
-            'sort_order' => ['nullable','integer','min:0'],
-            'meta_description' => 'nullable',
-            'meta_og_image' => 'nullable|max:191',
         ]);
 
-        $data = Arr::except($validated_data, 'tags_list');
+        $data = $validated_data;
         $data['is_featured'] = $request->boolean('is_featured');
         $data['created_by_name'] = auth()->user()->name;
 
         $$module_name_singular = $module_model::create($data);
-        $$module_name_singular->tags()->attach($request->input('tags_list'));
 
         flash("New '".Str::singular($module_title)."' Added")->success()->important();
 
@@ -115,40 +105,24 @@ class PostsController extends BackendBaseController
         $validated_data = $request->validate([
             'name' => 'required|max:191',
             'slug' => 'nullable|max:191',
-            'created_by_alias' => 'nullable|max:191',
             'intro' => 'required',
             'content' => 'required',
-            'image' => 'required|max:191',
-            'category_id' => 'required|integer',
+            'image' => 'nullable|max:191',
             'service_id' => 'nullable|integer',
             'event_start_date' => 'nullable|date',
             'event_end_date' => 'nullable|date|after_or_equal:event_start_date',
             'event_location' => 'nullable|max:191',
             'is_featured' => 'boolean',
-            'tags_list' => 'nullable|array',
             'status' => Rule::enum(PostStatus::class),
             'published_at' => 'required|date',
-            'meta_title' => 'nullable|max:191',
-            'meta_keywords' => 'nullable|max:191',
-            'order' => 'nullable|integer',
-            'sort_order' => ['nullable','integer','min:0'],
-            'meta_description' => 'nullable',
-            'meta_og_image' => 'nullable|max:191',
         ]);
 
-        $data = Arr::except($validated_data, 'tags_list');
+        $data = $validated_data;
         $data['is_featured'] = $request->boolean('is_featured');
 
         $$module_name_singular = $module_model::findOrFail($id);
 
         $$module_name_singular->update($data);
-
-        if ($request->input('tags_list') === null) {
-            $tags_list = [];
-        } else {
-            $tags_list = $request->input('tags_list');
-        }
-        $$module_name_singular->tags()->sync($tags_list);
 
         flash(Str::singular($module_title)."' Updated Successfully")->success()->important();
 
