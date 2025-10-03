@@ -295,7 +295,7 @@
                 </div>
                 <div class="flex flex-wrap justify-center gap-6">
                     @foreach($stats as $stat)
-                        <div class="flex-shrink-0 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-black/10 backdrop-blur min-w-[240px] max-w-xs">
+                        <div class="flex-shrink-0 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-black/10 backdrop-blur min-w-[240px] max-w-xs flex flex-col items-center text-center">
                             <div class="text-3xl font-bold tracking-tight text-white">{{ $stat['value'] }}</div>
                             <p class="mt-2 text-sm text-slate-300">{{ $stat['label'] }}</p>
                         </div>
