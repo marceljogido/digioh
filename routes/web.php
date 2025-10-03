@@ -168,6 +168,16 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
     $module_name = 'services';
     $controller_name = 'ServiceController';
     Route::resource("{$module_name}", "{$controller_name}");
+
+    /*
+    *
+    *  Stats Routes
+    *
+    * ---------------------------------------------------------------------
+    */
+    $module_name = 'stats';
+    $controller_name = 'StatController';
+    Route::resource("{$module_name}", "{$controller_name}");
 });
 
 /**
