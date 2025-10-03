@@ -1,4 +1,4 @@
-<nav class="border-b-2 border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-900">
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-colors duration-300 bg-transparent border-b border-transparent">
     <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
         <a class="flex items-center space-x-3 rtl:space-x-reverse" href="/">
             <img class="h-9" src="{{ asset("img/logo-with-text.jpg") }}" alt="{{ app_name() }} Logo" />
@@ -170,3 +170,41 @@
         </div>
     </div>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.getElementById('navbar');
+    
+    if (!navbar) return;
+    
+    // Cek apakah kita di halaman home
+    const isHomePage = window.location.pathname === '/' || window.location.pathname === '/home';
+    
+    function updateNavbarStyle() {
+        if (isHomePage) {
+            // Di halaman home, navbar transparan saat di atas hero, berubah saat scroll
+            if (window.scrollY > 100) {
+                // Navbar sudah melewati hero section, ubah tampilan
+                navbar.classList.remove('bg-transparent', 'border-transparent');
+                navbar.classList.add('bg-white/90', 'border-gray-200', 'shadow-md', 'dark:bg-gray-900/90', 'dark:border-gray-700', 'backdrop-blur-md');
+            } else {
+                // Navbar masih di area hero section, jaga transparan
+                navbar.classList.remove('bg-white/90', 'border-gray-200', 'shadow-md', 'dark:bg-gray-900/90', 'dark:border-gray-700', 'backdrop-blur-md');
+                navbar.classList.add('bg-transparent', 'border-transparent');
+            }
+        } else {
+            // Di halaman lain, navbar langsung berwarna
+            navbar.classList.remove('bg-transparent', 'border-transparent');
+            navbar.classList.add('bg-white/90', 'border-gray-200', 'shadow-md', 'dark:bg-gray-900/90', 'dark:border-gray-700', 'backdrop-blur-md');
+        }
+    }
+    
+    // Panggil fungsi awal
+    updateNavbarStyle();
+    
+    // Tambahkan event listener untuk scroll hanya di halaman home
+    if (isHomePage) {
+        window.addEventListener('scroll', updateNavbarStyle);
+    }
+});
+</script>

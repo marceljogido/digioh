@@ -192,7 +192,7 @@
                 </div>
             </template>
 
-            <div class="relative z-10 mx-auto flex h-[520px] max-w-screen-xl flex-col justify-center gap-6 px-4 py-20 sm:h-[600px] sm:px-12">
+            <div class="relative z-10 mx-auto flex min-h-screen max-w-screen-xl flex-col justify-center gap-6 px-4 py-20 sm:px-12">
                 <div class="max-w-2xl">
                     <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-indigo-200">{{ __('Konsultan Transformasi Digital') }}</span>
                     <template x-if="slides[current]?.title">
@@ -643,7 +643,7 @@
                 <div>
                     <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">{{ __('Mari mulai') }}</span>
                     <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl">{{ __('Cerita sukses Anda berikutnya bisa dimulai dari sini.') }}</h2>
-                    <p class="mt-4 max-w-xl text-sm text-slate-300">{{ __('Kirimkan detail kebutuhan dan tim kami akan merespons dalam 1–2 hari kerja. Kami juga dapat menjadwalkan discovery call singkat untuk memahami objektif Anda.') }}</p>
+                    <p class="mt-4 max-w-xl text-sm text-slate-300">{{ __('Kirimkan detail kebutuhan dan tim kami akan merespons dalam 1ï¿½2 hari kerja. Kami juga dapat menjadwalkan discovery call singkat untuk memahami objektif Anda.') }}</p>
                     <div class="mt-6 flex flex-wrap items-center gap-6 text-sm text-slate-300">
                         <div class="flex items-center gap-3">
                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300">

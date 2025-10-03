@@ -27,7 +27,7 @@
         <x-google-analytics />
     </head>
 
-    <body>
+    <body class="pt-16 bg-transparent">
         <x-selected-theme />
 
         @include("frontend.includes.header")
@@ -37,6 +37,25 @@
         </main>
 
         @include("frontend.includes.footer")
+
+        <style>
+            /* Reset margin dan padding default browser */
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            /* Khusus untuk halaman home (jika body memiliki navbar) */
+            body:has(#navbar) {
+                padding-top: 0 !important;
+            }
+            
+            /* Untuk hero section di halaman home, pastikan tidak tertutup navbar */
+            body:has(#navbar) main > section.relative.isolate.overflow-hidden {
+                margin-top: -4rem; /* Negatif margin sebesar tinggi navbar */
+                padding-top: 4rem; /* Kompensasi padding agar konten tetap terlihat */
+            }
+        </style>
 
         <!-- Scripts -->
         @livewireScripts
