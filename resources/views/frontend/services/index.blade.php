@@ -25,7 +25,11 @@
                                 <div>
                                     @if($service->icon)
                                         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                            {!! $service->icon !!}
+                                            @if(strpos($service->icon, '<') !== false && strpos($service->icon, '>') !== false)
+                                                {!! $service->icon !!}
+                                            @else
+                                                <img src="{{ asset($service->icon) }}" alt="{{ $service->name }}" class="h-7 w-7">
+                                            @endif
                                         </div>
                                     @endif
                                     <h3 class="mt-6 text-lg font-semibold text-slate-900 dark:text-white">{{ $service->name }}</h3>

@@ -83,15 +83,7 @@ $notifications_latest = optional($notifications)->take(5);
 
         {{-- Categories menu intentionally disabled per request --}}
 
-        @php
-            $module_name = "tags";
-            $text = __("Tags");
-            $icon = "fa-solid fa-tags";
-            $permission = "view_" . $module_name;
-            $url = route("backend." . $module_name . ".index");
-        @endphp
 
-        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
 
         @php
             $module_name = "services";

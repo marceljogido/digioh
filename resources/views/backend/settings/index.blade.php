@@ -27,8 +27,17 @@
                     {{ html()->form("POST", route("backend.$module_name.store"))->open() }}
 
                     @if (count(config("setting_fields", [])))
+                        <div class="mb-4">
+                            <label for="setting-section-select" class="form-label"><b>Select Setting Section</b></label>
+                            <select id="setting-section-select" class="form-select">
+                                @foreach (config("setting_fields") as $section => $fields)
+                                    <option value="{{ $section }}">{{ $fields['title'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         @foreach (config("setting_fields") as $section => $fields)
-                            <div class="card card-accent-primary mb-4">
+                            <div id="setting-section-{{ $section }}" class="setting-section-content card card-accent-primary mb-4">
                                 <div class="card-header">
                                     <i class="{{ Arr::get($fields, "icon", "glyphicon glyphicon-flash") }}"></i>
                                     &nbsp;{{ $fields["title"] }}
@@ -60,3 +69,29 @@
         </div>
     </div>
 @endsection
+
+@push('after-scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('setting-section-select');
+        const sections = document.querySelectorAll('.setting-section-content');
+
+        function toggleSections() {
+            const selectedValue = select.value;
+            sections.forEach(section => {
+                if (section.id === 'setting-section-' + selectedValue) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        // Initial toggle
+        toggleSections();
+
+        // Add event listener
+        select.addEventListener('change', toggleSections);
+    });
+</script>
+@endpush

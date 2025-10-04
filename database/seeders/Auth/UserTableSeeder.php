@@ -5,6 +5,7 @@ namespace Database\Seeders\Auth;
 use App\Events\Backend\UserCreated;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 /**

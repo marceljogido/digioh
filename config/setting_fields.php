@@ -196,6 +196,7 @@ return [
 				'rules' => 'nullable|max:191',
 				'class' => '',
 				'value' => 'img/default_banner.jpg',
+				'help' => 'Contoh: img/logo-with-text.jpg atau URL eksternal. Logo yang tersedia: digioh-logo.svg, logo.png, 1logo-with-text.jpg, logo-with-text.jpg, DIGIOH_Logomark.png, dll.',
 			],
 			// Founders (maks 3)
 			[
@@ -514,12 +515,16 @@ return [
             // Optional EN variants for static services (used when DB Services empty)
             [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_1_title_en', 'label' => 'Service 1 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
             [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_1_description_en', 'label' => 'Service 1 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_1_icon', 'label' => 'Service 1 Icon (URL/Path or SVG)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
             [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_2_title_en', 'label' => 'Service 2 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
             [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_2_description_en', 'label' => 'Service 2 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_2_icon', 'label' => 'Service 2 Icon (URL/Path or SVG)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
             [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_3_title_en', 'label' => 'Service 3 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
             [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_3_description_en', 'label' => 'Service 3 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_3_icon', 'label' => 'Service 3 Icon (URL/Path or SVG)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
             [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_4_title_en', 'label' => 'Service 4 Title (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
             [ 'type' => 'textarea', 'data' => 'string', 'name' => 'home_service_4_description_en', 'label' => 'Service 4 Description (EN)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
+            [ 'type' => 'text', 'data' => 'string', 'name' => 'home_service_4_icon', 'label' => 'Service 4 Icon (URL/Path or SVG)', 'rules' => 'nullable', 'class' => '', 'value' => '' ],
         ],
     ],
     'instagram' => [

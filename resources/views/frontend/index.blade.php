@@ -204,7 +204,7 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-4">
                     <template x-if="slides[current]?.button_text">
-                        <a :href="slides[current].button_link || '#contact'" class="inline-flex items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                        <a :href="slides[current].button_link || '#contact'" class="btn-animated inline-flex items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300">
                             <span x-text="slides[current].button_text"></span>
                         </a>
                     </template>
@@ -288,14 +288,14 @@
     @endif
     @include('frontend.pages.partials.about-snippet')
     @if($stats->count())
-        <section class="bg-slate-900 text-white">
+        <section class="fade-in bg-slate-900 text-white">
             <div class="mx-auto max-w-screen-xl px-4 py-12 sm:px-12">
                 <div class="mb-10 max-w-xl">
                     <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">{{ __('Angka yang menunjukkan dampak DigiOH') }}</span>
                 </div>
                 <div class="flex flex-wrap justify-center gap-6">
                     @foreach($stats as $stat)
-                        <div class="flex-shrink-0 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-black/10 backdrop-blur min-w-[240px] max-w-xs flex flex-col items-center text-center">
+                        <div class="stat-card flex-shrink-0 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-black/10 backdrop-blur min-w-[240px] max-w-xs flex flex-col items-center text-center">
                             <div class="text-3xl font-bold tracking-tight text-white">{{ $stat['value'] }}</div>
                             <p class="mt-2 text-sm text-slate-300">{{ $stat['label'] }}</p>
                         </div>
@@ -306,7 +306,7 @@
     @endif
 
     @if($services->count())
-    <section id="services" class="bg-slate-50 dark:bg-slate-950">
+    <section id="services" class="fade-in bg-slate-50 dark:bg-slate-950">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="max-w-3xl">
                 <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Layanan utama') }}</span>
@@ -317,10 +317,14 @@
 
             <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                 @foreach($services as $service)
-                    <div class="group flex h-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/50 dark:bg-slate-900 dark:shadow-black/30">
+                    <div class="service-card group flex h-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-xl dark:border-slate-800/50 dark:bg-slate-900 dark:shadow-black/30">
                         <div>
                             <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                {!! $service['icon'] !!}
+                                @if(strpos($service['icon'], '<') !== false && strpos($service['icon'], '>') !== false)
+                                    {!! $service['icon'] !!}
+                                @else
+                                    <img src="{{ asset($service['icon']) }}" alt="{{ $service['title'] }}" class="h-7 w-7">
+                                @endif
                             </div>
                             <h3 class="mt-6 text-lg font-semibold text-slate-900 dark:text-white">{{ $service['title'] }}</h3>
                             <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">{{ $service['description'] }}</p>
@@ -345,7 +349,7 @@
 
     
     @if(setting('home_show_portfolio', false) && $works->count())
-        <section id="portfolio" class="bg-white dark:bg-gray-900">
+        <section id="portfolio" class="fade-in bg-white dark:bg-gray-900">
             <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
                 <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div class="max-w-2xl">
@@ -361,7 +365,7 @@
 
                 <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     @foreach($works as $work)
-                        <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/30">
+                        <article class="portfolio-item group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/30">
                             @if($work->cover_image)
                                 <div class="relative overflow-hidden">
                                     <img src="{{ asset($work->cover_image) }}" alt="{{ $work->name }}" class="h-48 w-full object-cover transition duration-700 group-hover:scale-105">
@@ -393,7 +397,7 @@
     @endif
 
     @if($blogPosts->count())
-    <section id="insights" class="bg-slate-50 dark:bg-slate-950">
+    <section id="insights" class="fade-in bg-slate-50 dark:bg-slate-950">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div>
@@ -517,7 +521,7 @@
     </section>
     @endif
 
-    <section id="why-us" class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white">
+    <section id="why-us" class="fade-in relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="mx-auto max-w-3xl text-center">
                 <span class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Why Choose Us') }}</span>
@@ -573,7 +577,7 @@
     </section>
 
     @if($instagramSection['enabled'] && $instagramSection['embeds']->count())
-    <section id="instagram" class="bg-slate-50 dark:bg-slate-950">
+    <section id="instagram" class="fade-in bg-slate-50 dark:bg-slate-950">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="max-w-3xl text-center mx-auto">
                 <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Instagram') }}</span>
@@ -597,7 +601,7 @@
 
             @if($instagramSection['profile_url'] && $instagramSection['cta_text'])
                 <div class="mt-10 text-center">
-                    <a href="{{ $instagramSection['profile_url'] }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    <a href="{{ $instagramSection['profile_url'] }}" target="_blank" rel="noopener" class="btn-animated inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.624 5.367 12.013 11.987 12.013s12.013-5.389 12.013-12.013C24.029 5.367 18.641.001 12.017.001zM8.449 12.017c0-1.971 1.597-3.568 3.568-3.568s3.568 1.597 3.568 3.568-1.597 3.568-3.568 3.568-3.568-1.597-3.568-3.568zm7.675-3.976a.83.83 0 11-1.66 0 .83.83 0 011.66 0zM12.017 4.422c2.278 0 2.548.009 3.448.05.832.038 1.284.177 1.585.294.398.155.683.34.982.639.299.299.484.584.639.982.117.301.256.753.294 1.585.041.9.05 1.17.05 3.448s-.009 2.548-.05 3.448c-.038.832-.177 1.284-.294 1.585-.155.398-.34.683-.639.982-.299.299-.584.484-.982.639-.301.117-.753.256-1.585.294-.9.041-1.17.05-3.448.05s-2.548-.009-3.448-.05c-.832-.038-1.284-.177-1.585-.294a2.64 2.64 0 01-.982-.639 2.64 2.64 0 01-.639-.982c-.117-.301-.256-.753-.294-1.585-.041-.9-.05-1.17-.05-3.448s.009-2.548.05-3.448c.038-.832.177-1.284.294-1.585.155-.398.34-.683.639-.982.299-.299.584-.484.982-.639.301-.117.753-.256 1.585-.294.9-.041 1.17-.05 3.448-.05zm0-1.622c-2.317 0-2.608.01-3.518.052-.91.042-1.532.187-2.077.4-.562.218-1.04.51-1.515.985-.475.475-.767.953-.985 1.515-.213.545-.358 1.167-.4 2.077-.042.91-.052 1.201-.052 3.518s.009 2.608.052 3.518c.042.91.187 1.532.4 2.077.218.562.51 1.04.985 1.515.475.475.953.767 1.515.985.545.213 1.167.358 2.077.4.91.042 1.201.052 3.518.052s2.608-.01 3.518-.052c.91-.042 1.532-.187 2.077-.4.562-.218 1.04-.51 1.515-.985.475-.475.767-.953.985-1.515.213-.545.358-1.167.4-2.077.042-.91.052-1.201.052-3.518s-.01-2.608-.052-3.518c-.042-.91-.187-1.532-.4-2.077a4.085 4.085 0 00-.985-1.515 4.085 4.085 0 00-1.515-.985c-.545-.213-1.167-.358-2.077-.4-.91-.042-1.201-.052-3.518-.052z" clip-rule="evenodd"/>
                         </svg>
@@ -611,7 +615,7 @@
     @endif
 
     @if($faqs->count())
-    <section id="faq" class="bg-white dark:bg-gray-900">
+    <section id="faq" class="fade-in bg-white dark:bg-gray-900">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="max-w-3xl">
                 <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('FAQ') }}</span>
@@ -636,7 +640,7 @@
     </section>
     @endif
 
-    <section id="contact" class="bg-slate-900">
+    <section id="contact" class="fade-in bg-slate-900">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
                 <div>
@@ -685,7 +689,7 @@
                             <label class="text-xs font-semibold uppercase tracking-wide text-slate-400" for="contact-message">{{ __('Ringkasan kebutuhan') }}</label>
                             <textarea id="contact-message" rows="4" placeholder="{{ __('Jelaskan tujuan dan tantangan utama bisnis Anda...') }}" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none focus:ring-0"></textarea>
                         </div>
-                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400">{{ __('Kirim pesan') }}</button>
+                        <button type="submit" class="btn-animated inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400">{{ __('Kirim pesan') }}</button>
                     </form>
                 </div>
             </div>

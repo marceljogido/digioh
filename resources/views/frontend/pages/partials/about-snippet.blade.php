@@ -46,13 +46,9 @@
                     @if(setting('about_image'))
                         <img class="h-full w-full object-cover" src="{{ asset(setting('about_image')) }}" alt="{{ setting('about_title') }}">
                     @else
-                        <img class="h-full w-full object-cover" src="{{ asset('digioh-logo.svg') }}" alt="Digioh">
+                        <img class="h-full w-full object-cover" src="{{ asset('img/logo.png') }}" alt="Digioh">
                     @endif
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent"></div>
-                    <div class="absolute bottom-6 left-6 right-6 rounded-2xl border border-white/20 bg-white/20 p-4 shadow-lg backdrop-blur dark:border-white/10 dark:bg-white/10">
-                        <p class="text-xs uppercase tracking-[0.3em] text-white/70">How we work</p>
-                        <p class="mt-2 text-sm text-white/90">Discovery, iterative design, disciplined engineering, and continuous growth support delivered in partnership with your team.</p>
-                    </div>
                 </div>
             </div>
         </div>
