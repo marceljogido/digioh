@@ -6,8 +6,9 @@ use App\Authorizable;
 use App\Http\Controllers\Backend\BackendBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Modules\Post\Enums\PostStatus;
 
@@ -57,7 +58,7 @@ class PostsController extends BackendBaseController
             'slug' => 'nullable|max:191',
             'intro' => 'required',
             'content' => 'required',
-            'image' => 'nullable|max:191',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'service_id' => 'nullable|integer',
             'event_start_date' => 'nullable|date',
             'event_end_date' => 'nullable|date|after_or_equal:event_start_date',
@@ -67,9 +68,13 @@ class PostsController extends BackendBaseController
             'published_at' => 'required|date',
         ]);
 
-        $data = $validated_data;
+        $data = collect($validated_data)->except('image')->toArray();
         $data['is_featured'] = $request->boolean('is_featured');
         $data['created_by_name'] = auth()->user()->name;
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->storeFeaturedImage($request->file('image'));
+        }
 
         $$module_name_singular = $module_model::create($data);
 
@@ -107,7 +112,7 @@ class PostsController extends BackendBaseController
             'slug' => 'nullable|max:191',
             'intro' => 'required',
             'content' => 'required',
-            'image' => 'nullable|max:191',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'service_id' => 'nullable|integer',
             'event_start_date' => 'nullable|date',
             'event_end_date' => 'nullable|date|after_or_equal:event_start_date',
@@ -117,10 +122,15 @@ class PostsController extends BackendBaseController
             'published_at' => 'required|date',
         ]);
 
-        $data = $validated_data;
+        $data = collect($validated_data)->except('image')->toArray();
         $data['is_featured'] = $request->boolean('is_featured');
 
         $$module_name_singular = $module_model::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            $this->deleteFeaturedImage($$module_name_singular->image);
+            $data['image'] = $this->storeFeaturedImage($request->file('image'));
+        }
 
         $$module_name_singular->update($data);
 
@@ -129,5 +139,22 @@ class PostsController extends BackendBaseController
         logUserAccess($module_title.' '.$module_action.' | Id: '.$$module_name_singular->id);
 
         return redirect()->route("backend.{$module_name}.show", $$module_name_singular->id);
+    }
+
+    protected function storeFeaturedImage(UploadedFile $file): string
+    {
+        $path = $file->store('uploads/posts', 'public');
+
+        return Storage::url($path);
+    }
+
+    protected function deleteFeaturedImage(?string $path): void
+    {
+        if (empty($path) || ! Str::startsWith($path, '/storage/')) {
+            return;
+        }
+
+        $relative = ltrim(Str::after($path, '/storage/'), '/');
+        Storage::disk('public')->delete($relative);
     }
 }

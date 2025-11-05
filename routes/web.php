@@ -29,7 +29,15 @@ Route::get('home', [FrontendController::class, 'index'])->name('home');
 // Language Switch
 Route::get('language/{language}', [LanguageController::class, 'switch'])->name('language.switch');
 
-Route::get('dashboard', 'App\Http\Controllers\Frontend\FrontendController@index')->middleware('auth')->name('dashboard');
+Route::get('dashboard', function () {
+    $user = auth()->user();
+
+    if ($user && $user->can('view_backend')) {
+        return redirect()->route('backend.dashboard');
+    }
+
+    return redirect()->route('frontend.index');
+})->middleware('auth')->name('dashboard');
 
 // pages
 Route::get('terms', Terms::class)->name('terms');
@@ -167,6 +175,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
     */
     $module_name = 'services';
     $controller_name = 'ServiceController';
+    Route::get("{$module_name}/index_data", ['as' => "{$module_name}.index_data", 'uses' => "{$controller_name}@index_data"]);
     Route::resource("{$module_name}", "{$controller_name}");
 
     /*
@@ -186,4 +195,3 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth', 'can:view_backend']], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
-

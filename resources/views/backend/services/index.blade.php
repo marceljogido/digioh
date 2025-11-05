@@ -1,92 +1,114 @@
 @extends('backend.layouts.app')
+@php use Illuminate\Support\Str; @endphp
 
 @section('title') {{ __($module_action) }} {{ __($module_title) }} @endsection
 
 @section('breadcrumbs')
-    <x-backend.breadcrumbs>
-        <x-backend.breadcrumb-item type="active" icon="{{ $module_icon }}">
-            {{ __($module_title) }}
-        </x-backend.breadcrumb-item>
-    </x-backend.breadcrumbs>
+<x-backend.breadcrumbs>
+    <x-backend.breadcrumb-item type="active" icon='{{ $module_icon }}'>{{ __($module_title) }}</x-backend.breadcrumb-item>
+</x-backend.breadcrumbs>
 @endsection
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <x-backend.section-header>
-                <i class="{{ $module_icon }}"></i>
-                {{ __($module_title) }}
-                <small class="text-muted">{{ __($module_action) }}</small>
+<div class="card">
+    <div class="card-body">
 
-                <x-slot name="toolbar">
-                    <x-backend.buttons.create
-                        title="{{ __('Create') }} {{ ucwords(Str::singular($module_name)) }}"
-                        route='{{ route("backend.$module_name.create") }}'
-                        :small="true"
-                    />
-                </x-slot>
-            </x-backend.section-header>
+        <x-backend.section-header
+            :module_name="$module_name"
+            :module_title="$module_title"
+            :module_icon="$module_icon"
+            :module_action="$module_action"
+        >
+            <x-slot name="toolbar">
+                <x-backend.buttons.create
+                    title="{{ __('Create') }} {{ ucwords(Str::singular($module_name)) }}"
+                    route='{{ route("backend.$module_name.create") }}'
+                    :small="true"
+                />
+            </x-slot>
+        </x-backend.section-header>
 
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered">
+        <div class="row mt-4">
+            <div class="col">
+                <table id="datatable" class="table table-bordered table-hover table-responsive-sm">
                     <thead>
                         <tr>
-                            <th style="width: 56px;">#</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Active</th>
-                            <th>Sort</th>
-                            <th class="text-end">Actions</th>
+                            <th>#</th>
+                            <th>{{ __('Name') }}</th>
+                            <th>{{ __('Category') }}</th>
+                            <th>{{ __('Status') }}</th>
+                            <th>{{ __('Sort Order') }}</th>
+                            <th>{{ __('Updated At') }}</th>
+                            <th class="text-end">{{ __('Action') }}</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    @forelse($services as $item)
-                        <tr>
-                            <td>{{ $item->id }}</td>
-                            <td>{{ $item->name }}</td>
-                            <td>{{ \Str::limit(strip_tags($item->description), 90) }}</td>
-                            <td>
-                                @if($item->is_active)
-                                    <span class="badge bg-success">Active</span>
-                                @else
-                                    <span class="badge bg-secondary">Inactive</span>
-                                @endif
-                            </td>
-                            <td>{{ $item->sort_order }}</td>
-                            <td class="text-end">
-                                <x-backend.buttons.edit small="true" title="Edit Service" route='{{ route("backend.services.edit", $item) }}' />
-                                <a
-                                    href="{{ route('backend.services.destroy', $item) }}"
-                                    class="btn btn-danger btn-sm"
-                                    data-method="DELETE"
-                                    data-token="{{ csrf_token() }}"
-                                    data-toggle="tooltip"
-                                    title="{{ __('Delete') }}"
-                                >
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">No services yet</td>
-                        </tr>
-                    @endforelse
-                    </tbody>
                 </table>
             </div>
         </div>
-        <div class="card-footer">
-            <div class="row">
-                <div class="col-12 col-sm-7">
-                    <div class="float-left">{!! $services->total() !!} {{ __("labels.backend.total") }}</div>
-                </div>
-                <div class="col-12 col-sm-5">
-                    <div class="float-end">
-                        {{ $services->links('pagination::bootstrap-5') }}
-                    </div>
-                </div>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-7">
+                <div class="float-left"></div>
+            </div>
+            <div class="col-5">
+                <div class="float-end"></div>
             </div>
         </div>
     </div>
+</div>
 @endsection
+
+@push('after-styles')
+<link rel="stylesheet" href="{{ asset('vendor/datatable/datatables.min.css') }}">
+@endpush
+
+@push('after-scripts')
+<script type="module" src="{{ asset('vendor/datatable/datatables.min.js') }}"></script>
+<script type="module">
+    $('#datatable').DataTable({
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        ajax: '{{ route("backend.$module_name.index_data") }}',
+        order: [],
+        columns: [
+            {
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'name',
+                name: 'name'
+            },
+            {
+                data: 'category',
+                name: 'category'
+            },
+            {
+                data: 'status',
+                name: 'status',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'sort_order',
+                name: 'sort_order'
+            },
+            {
+                data: 'updated_at',
+                name: 'updated_at'
+            },
+            {
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false
+            }
+        ]
+    });
+</script>
+@endpush
+

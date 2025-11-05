@@ -11,6 +11,7 @@ class Service extends BaseModel
     protected $fillable = [
         'name',
         'name_en',
+        'category',
         'slug',
         'description',
         'description_en',

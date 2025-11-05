@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#0ea5e9"/>
+  <g fill="#f0f9ff">
+    <path d="M160 240h320v24H160z"/>
+    <path d="M208 280h224v16H208z" opacity="0.7"/>
+    <circle cx="220" cy="155" r="36"/>
+    <path d="M288 128h184v18H288z" opacity="0.8"/>
+    <path d="M288 166h156v18H288z" opacity="0.6"/>
+  </g>
+  <text x="50%" y="50%" fill="#0f172a" font-family="Arial, sans-serif" font-size="34" font-weight="700" text-anchor="middle" dominant-baseline="middle">
+    Digital Strategy
+  </text>
+</svg>

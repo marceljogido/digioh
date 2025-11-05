@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Service;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use App\Models\Service;
 
 class ServiceDemoSeeder extends Seeder
 {
@@ -44,8 +44,28 @@ class ServiceDemoSeeder extends Seeder
         ];
 
         foreach ($items as $data) {
+            $service = Service::where('slug', $data['slug'])->first();
+
+            $data['image'] = $this->resolveImagePath($service, $data['image']);
+
             Service::updateOrCreate(['slug' => $data['slug']], $data);
         }
     }
-}
 
+    protected function resolveImagePath(?Service $existing, ?string $seedPath): ?string
+    {
+        if ($existing && $existing->image && Str::startsWith($existing->image, '/storage/')) {
+            return $existing->image;
+        }
+
+        if ($seedPath) {
+            $fullPath = public_path($seedPath);
+
+            if (file_exists($fullPath)) {
+                return $seedPath;
+            }
+        }
+
+        return 'img/service-placeholder.svg';
+    }
+}

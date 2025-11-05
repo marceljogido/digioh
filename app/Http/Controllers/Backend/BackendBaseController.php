@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
@@ -23,6 +24,19 @@ class BackendBaseController extends Controller
     public $module_icon;
 
     public $module_model;
+
+    /**
+     * Validation rules for store & update actions.
+     *
+     * Example:
+     * [
+     *     'store' => [...],
+     *     'update' => [...],
+     * ]
+     *
+     * @var array<string,array>
+     */
+    protected array $module_validation_rules = [];
 
     public function __construct()
     {
@@ -194,7 +208,9 @@ class BackendBaseController extends Controller
 
         $module_action = 'Store';
 
-        $$module_name_singular = $module_model::create($request->all());
+        $validated = $this->validatedData($request, 'store');
+
+        $$module_name_singular = $module_model::create($validated);
 
         flash("New '".Str::singular($module_title)."' Added")->success()->important();
 
@@ -282,7 +298,9 @@ class BackendBaseController extends Controller
 
         $$module_name_singular = $module_model::findOrFail($id);
 
-        $$module_name_singular->update($request->all());
+        $validated = $this->validatedData($request, 'update', $$module_name_singular);
+
+        $$module_name_singular->update($validated);
 
         flash(Str::singular($module_title)."' Updated Successfully")->success()->important();
 
@@ -380,5 +398,58 @@ class BackendBaseController extends Controller
         logUserAccess($module_title.' '.$module_action.' | Id: '.$$module_name_singular->id);
 
         return redirect("admin/{$module_name}");
+    }
+
+    /**
+     * Resolve validated payload for the current module.
+     */
+    protected function validatedData(Request $request, string $context, $model = null): array
+    {
+        $rules = $this->resolveValidationRules($request, $context, $model);
+
+        if (! empty($rules)) {
+            return $request->validate($rules);
+        }
+
+        return $this->filterFillableInput($request);
+    }
+
+    /**
+     * Determine which validation rules should be applied.
+     */
+    protected function resolveValidationRules(Request $request, string $context, $model = null): array
+    {
+        return $this->module_validation_rules[$context] ?? [];
+    }
+
+    /**
+     * Limit the payload to attributes allowed by the underlying model.
+     */
+    protected function filterFillableInput(Request $request): array
+    {
+        $payload = $request->except(['_token', '_method']);
+        $modelClass = $this->module_model ?? null;
+
+        if (empty($modelClass) || ! class_exists($modelClass)) {
+            return $payload;
+        }
+
+        $model = app($modelClass);
+
+        if (method_exists($model, 'getFillable')) {
+            $fillable = $model->getFillable();
+            if (! empty($fillable)) {
+                return Arr::only($payload, $fillable);
+            }
+        }
+
+        if (method_exists($model, 'getGuarded')) {
+            $guarded = $model->getGuarded();
+            if (! empty($guarded) && ! in_array('*', $guarded, true)) {
+                return Arr::except($payload, $guarded);
+            }
+        }
+
+        return $payload;
     }
 }

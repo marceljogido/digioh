@@ -8,6 +8,7 @@
     <div class="col-12 col-md-6 mb-3">
         <label class="form-label" for="slug">Slug</label>
         <input type="text" name="slug" id="slug" value="{{ old('slug', $service->slug ?? '') }}" class="form-control">
+        <small class="text-muted">{{ __('Biarkan kosong untuk otomatis memakai nama.') }}</small>
     </div>
 </div>
 <div class="row">
@@ -16,7 +17,9 @@
         <input type="text" name="name_en" id="name_en" value="{{ old('name_en', $service->name_en ?? '') }}" class="form-control">
     </div>
     <div class="col-12 col-md-6 mb-3">
-        <!-- spacer / future field -->
+        <label class="form-label" for="category">{{ __('Category') }}</label>
+        <input type="text" name="category" id="category" value="{{ old('category', $service->category ?? '') }}" class="form-control" maxlength="120" placeholder="{{ __('Contoh: Strategi, Pengembangan, Branding') }}">
+        <small class="text-muted">{{ __('Digunakan untuk mengelompokkan layanan pada website.') }}</small>
     </div>
     <div class="col-12 mb-3">
         <label class="form-label" for="description_en">Description (EN)</label>
@@ -34,7 +37,7 @@
     <div class="col-12 col-md-6 mb-3">
         <label class="form-label" for="image">Image</label>
         <input class="form-control" type="file" name="image" id="image" accept=".jpg,.jpeg,.png,.gif,.webp">
-        <small class="text-muted d-block mt-1">Unggah gambar maksimal 2&nbsp;MB (JPG, JPEG, PNG, GIF, atau WEBP).</small>
+        <small class="text-muted d-block mt-1">Unggah gambar maksimal 2&nbsp;MB (JPG, JPEG, PNG, GIF, atau WEBP). {{ __("Disarankan ukuran 1200x800 piksel untuk tampilan optimal.") }}</small>
         @if($isEdit && !empty($service->image))
             <div class="mt-2">
                 <a href="{{ asset($service->image) }}" target="_blank" class="small">{{ __('Lihat gambar saat ini') }}</a>
@@ -63,3 +66,4 @@
         </div>
     </div>
 </div>
+

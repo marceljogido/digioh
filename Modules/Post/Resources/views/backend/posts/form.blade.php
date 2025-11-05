@@ -61,21 +61,35 @@
         <div class="form-group">
             <?php
             $field_name = "image";
-            $field_lable = __("Images");
+            $field_lable = __("Cover Image");
             $field_placeholder = $field_lable;
             $required = "";
+            $postEntity = $data ?? null;
             ?>
             {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
             {!! field_required($required) !!}
-            <div class="input-group mb-3">
-                {{ html()->text($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(["aria-label" => "Image", "aria-describedby" => "button-image"]) }}
-                <button class="btn btn-outline-info" id="button-image" data-input="{{ $field_name }}" type="button">
-                    <i class="fas fa-folder-open"></i>
-                    &nbsp;
-                    @lang("Browse")
-                </button>
-            </div>
-            <small class="text-muted">Untuk multiple upload, pisahkan dengan koma (,)</small>
+            <input
+                type="file"
+                name="{{ $field_name }}"
+                id="{{ $field_name }}"
+                class="form-control"
+                accept=".jpg,.jpeg,.png,.gif,.webp"
+            >
+            <small class="text-muted d-block mt-1">
+                {{ __('Unggah gambar JPG, PNG, GIF, atau WEBP maksimal 2 MB.') }}
+                @if(optional($postEntity)->image)
+                    <br>{{ __('Biarkan kosong jika tidak ingin mengganti gambar yang ada.') }}
+                @endif
+            </small>
+            @if(optional($postEntity)->image)
+                <div class="mt-3">
+                    <p class="text-muted mb-2">{{ __('Gambar saat ini') }}:</p>
+                    <img src="{{ asset($postEntity->image) }}"
+                         alt="{{ $postEntity->name }}"
+                         style="max-height: 160px"
+                         class="rounded border">
+                </div>
+            @endif
         </div>
     </div>
 </div>
@@ -187,10 +201,3 @@
         </div>
     </div>
 </div>
-
-@push("after-scripts")
-    <script type="module" src="{{ asset("vendor/laravel-filemanager/js/stand-alone-button.js") }}"></script>
-    <script type="module">
-        $('#button-image').filemanager('image');
-    </script>
-@endpush

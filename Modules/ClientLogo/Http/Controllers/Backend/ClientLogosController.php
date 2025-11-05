@@ -6,6 +6,7 @@ use App\Authorizable;
 use App\Http\Controllers\Backend\BackendBaseController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
@@ -36,28 +37,18 @@ class ClientLogosController extends BackendBaseController
     {
         $validated = $request->validate([
             'client_name' => ['nullable','string','max:150'],
-            'logo' => ['required'],
+            'logo' => ['required','file','mimes:jpg,jpeg,png,gif,webp,svg','max:2048'],
             'website_url' => ['nullable','url','max:255'],
             'is_active' => ['nullable','boolean'],
             'sort_order' => ['nullable','integer','min:0'],
         ]);
 
-        // Handle file upload or direct string path
-        $logoPath = null;
-        if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $logoPath = $file->store('clients', 'public');
-        } else {
-            // Fallback: user provided string path/URL
-            $logoPath = (string) $request->input('logo');
-        }
-
         $model = $this->module_model;
         $entity = $model::create([
             'client_name' => $validated['client_name'] ?? null,
-            'logo' => $logoPath,
+            'logo' => $this->storeLogo($request->file('logo')),
             'website_url' => $validated['website_url'] ?? null,
-            'is_active' => (bool)($validated['is_active'] ?? true),
+            'is_active' => $request->boolean('is_active', true),
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
 
@@ -69,7 +60,7 @@ class ClientLogosController extends BackendBaseController
     {
         $validated = $request->validate([
             'client_name' => ['nullable','string','max:150'],
-            'logo' => ['nullable'],
+            'logo' => ['nullable','file','mimes:jpg,jpeg,png,gif,webp,svg','max:2048'],
             'website_url' => ['nullable','url','max:255'],
             'is_active' => ['nullable','boolean'],
             'sort_order' => ['nullable','integer','min:0'],
@@ -81,15 +72,13 @@ class ClientLogosController extends BackendBaseController
         $updateData = [
             'client_name' => $validated['client_name'] ?? $entity->client_name,
             'website_url' => $validated['website_url'] ?? $entity->website_url,
-            'is_active' => (bool)($validated['is_active'] ?? $entity->is_active),
+            'is_active' => $request->boolean('is_active', $entity->is_active),
             'sort_order' => $validated['sort_order'] ?? $entity->sort_order,
         ];
 
         if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $updateData['logo'] = $file->store('clients', 'public');
-        } elseif ($request->filled('logo')) {
-            $updateData['logo'] = (string) $request->input('logo');
+            $this->deleteLogoIfStored($entity->logo);
+            $updateData['logo'] = $this->storeLogo($request->file('logo'));
         }
 
         $entity->update($updateData);
@@ -138,9 +127,12 @@ class ClientLogosController extends BackendBaseController
 
         $module_action = 'List';
 
-        $$module_name = $module_model::select('id', 'client_name as name', 'updated_at');
+        $$module_name = $module_model::select('id', 'client_name as name', 'sort_order', 'updated_at')
+            ->orderBy('sort_order')
+            ->orderBy('id');
 
         return DataTables::of($$module_name)
+            ->addIndexColumn()
             ->addColumn('action', function ($data) {
                 $module_name = $this->module_name;
                 return view('backend.includes.action_column', compact('module_name', 'data'));
@@ -154,7 +146,23 @@ class ClientLogosController extends BackendBaseController
                 return $data->updated_at->isoFormat('llll');
             })
             ->rawColumns(['name', 'action'])
-            ->orderColumns(['id'], '-:column $1')
             ->make(true);
+    }
+
+    protected function storeLogo(UploadedFile $file): string
+    {
+        $path = $file->store('uploads/client-logos', 'public');
+
+        return Storage::url($path);
+    }
+
+    protected function deleteLogoIfStored(?string $path): void
+    {
+        if (empty($path) || ! Str::startsWith($path, '/storage/')) {
+            return;
+        }
+
+        $relative = ltrim(Str::after($path, '/storage/'), '/');
+        Storage::disk('public')->delete($relative);
     }
 }

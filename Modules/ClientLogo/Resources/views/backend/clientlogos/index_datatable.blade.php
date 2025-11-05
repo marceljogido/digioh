@@ -69,9 +69,12 @@
         serverSide: true,
         responsive: true,
         ajax: '{{ route("backend.clientlogos.index_data") }}',
+        order: [],
         columns: [{
-                data: 'id',
-                name: 'id'
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
             },
             {
                 data: 'name',

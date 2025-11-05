@@ -7,18 +7,19 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Yajra\DataTables\DataTables;
 
 class ServiceController extends Controller
 {
     public function index()
     {
-        $services = Service::sorted()->paginate(20);
         $module_name = 'services';
         $module_title = 'Services';
         $module_icon = 'fa-solid fa-briefcase';
         $module_action = 'List';
 
-        return view('backend.services.index', compact('services', 'module_name', 'module_title', 'module_icon', 'module_action'));
+        return view('backend.services.index', compact('module_name', 'module_title', 'module_icon', 'module_action'));
     }
 
     public function create()
@@ -37,6 +38,7 @@ class ServiceController extends Controller
         $data = $request->validate([
             'name' => 'required|max:191',
             'name_en' => 'nullable|max:191',
+            'category' => 'nullable|string|max:120',
             'slug' => 'nullable|max:191',
             'description' => 'nullable',
             'description_en' => 'nullable',
@@ -74,11 +76,23 @@ class ServiceController extends Controller
         return view('backend.services.edit', compact('service', 'module_name', 'module_path', 'module_title', 'module_icon', 'module_action'));
     }
 
+    public function show(Service $service)
+    {
+        $module_name = 'services';
+        $module_path = 'backend';
+        $module_title = 'Services';
+        $module_icon = 'fa-solid fa-briefcase';
+        $module_action = 'Show';
+
+        return view('backend.services.show', compact('service', 'module_name', 'module_path', 'module_title', 'module_icon', 'module_action'));
+    }
+
     public function update(Request $request, Service $service)
     {
         $data = $request->validate([
             'name' => 'required|max:191',
             'name_en' => 'nullable|max:191',
+            'category' => 'nullable|string|max:120',
             'slug' => 'nullable|max:191',
             'description' => 'nullable',
             'description_en' => 'nullable',
@@ -115,7 +129,60 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
+        if (! empty($service->image)) {
+            $publicPrefix = '/storage/';
+
+            if (Str::startsWith($service->image, $publicPrefix)) {
+                $relativePath = ltrim(Str::after($service->image, $publicPrefix), '/');
+                Storage::disk('public')->delete($relativePath);
+            } elseif (Str::startsWith($service->image, 'storage/')) {
+                $relativePath = ltrim(Str::after($service->image, 'storage/'), '/');
+                Storage::disk('public')->delete($relativePath);
+            }
+        }
+
         $service->delete();
         return redirect()->route('backend.services.index')->with('status', 'Service deleted');
+    }
+
+    public function index_data()
+    {
+        $services = Service::select('id', 'name', 'category', 'is_active', 'sort_order', 'updated_at')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+
+        return DataTables::of($services)
+            ->addIndexColumn()
+            ->editColumn('name', function ($service) {
+                return '<strong>'.e($service->name).'</strong>';
+            })
+            ->addColumn('category', function ($service) {
+                return $service->category ? e($service->category) : '<span class="text-muted">-</span>';
+            })
+            ->addColumn('status', function ($service) {
+                return $service->is_active
+                    ? '<span class="badge bg-success">'.__('Active').'</span>'
+                    : '<span class="badge bg-secondary">'.__('Inactive').'</span>';
+            })
+            ->editColumn('sort_order', function ($service) {
+                return (int) $service->sort_order;
+            })
+            ->editColumn('updated_at', function ($service) {
+                $diff = Carbon::now()->diffInHours($service->updated_at);
+
+                return $diff < 25
+                    ? $service->updated_at->diffForHumans()
+                    : $service->updated_at->isoFormat('llll');
+            })
+            ->addColumn('action', function ($service) {
+                $module_name = 'services';
+
+                return view('backend.includes.action_column', [
+                    'module_name' => $module_name,
+                    'data' => $service,
+                ]);
+            })
+            ->rawColumns(['name', 'category', 'status', 'action'])
+            ->make(true);
     }
 }

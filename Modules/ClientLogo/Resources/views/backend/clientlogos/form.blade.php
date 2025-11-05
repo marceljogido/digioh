@@ -16,18 +16,25 @@
 		<div class="form-group">
 			<?php
 			$field_name = 'logo';
-			$field_lable = __('Logo Path / URL');
-			$field_placeholder = 'img/clients/acme.png';
-			$required = "required";
+			$field_lable = __('Logo Image');
+			$required = isset($clientlogo) ? "" : "required";
+			$entity = $clientlogo ?? $data ?? null;
 			?>
 			{{ html()->label($field_lable, $field_name)->class('form-label') }} {!! field_required($required) !!}
-			<div class="input-group mb-3">
-				{{ html()->text($field_name)->placeholder($field_placeholder)->class('form-control')->attributes(["$required", "aria-label" => "Logo", "aria-describedby" => "button-logo"]) }}
-				<button class="btn btn-outline-info" id="button-logo" data-input="{{ $field_name }}" type="button">
-					<i class="fas fa-folder-open"></i>
-					&nbsp;@lang('Browse')
-				</button>
-			</div>
+			<input
+				type="file"
+				name="{{ $field_name }}"
+				id="{{ $field_name }}"
+				class="form-control"
+				accept=".jpg,.jpeg,.png,.gif,.webp,.svg"
+				@if(empty($entity)) required @endif
+			>
+			<small class="text-muted d-block mt-1">
+				{{ __('Unggah logo (JPG, PNG, GIF, SVG, atau WEBP) maksimal 2 MB.') }}
+				@if(optional($entity)->logo)
+					<br>{{ __('Biarkan kosong jika tidak ingin mengganti logo.') }}
+				@endif
+			</small>
 		</div>
 	</div>
 
@@ -75,12 +82,12 @@
 	<div class="col-12 col-sm-4 mb-3">
 		<div class="form-group">
 			<?php
-			// Preview sederhana (opsional, saat edit)
+			$currentLogo = optional($entity)->logo;
 			?>
-			@if(old('logo', $clientlogo->logo ?? null))
+			@if($currentLogo)
 				<label class="form-label">{{ __('Preview') }}</label>
 				<div>
-					<img src="{{ asset(old('logo', $clientlogo->logo ?? '')) }}" alt="{{ old('client_name', $clientlogo->client_name ?? '') }}" style="max-height:48px">
+					<img src="{{ asset($currentLogo) }}" alt="{{ old('client_name', optional($entity)->client_name ?? '') }}" style="max-height:64px">
 				</div>
 			@endif
 		</div>
@@ -88,10 +95,3 @@
 </div>
 
 <x-library.select2 />
-
-@push('after-scripts')
-    <script type="module" src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
-    <script type="module">
-        $('#button-logo').filemanager('image');
-    </script>
-@endpush

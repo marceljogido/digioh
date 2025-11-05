@@ -13,6 +13,13 @@ class Portfolio extends BaseModel
 
     protected $table = 'portfolios';
 
+    protected $fillable = [
+        'name',
+        'slug',
+        'note',
+        'status',
+    ];
+
     /**
      * Create a new factory instance for the model.
      *

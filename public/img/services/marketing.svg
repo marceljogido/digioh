@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#ec4899"/>
+  <g fill="none" stroke="#fdf2f8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M160 220l80-80 70 56 110-110 60 48"/>
+    <circle cx="240" cy="140" r="14"/>
+    <circle cx="310" cy="196" r="14"/>
+    <circle cx="420" cy="86" r="14"/>
+    <path d="M470 90h40v40"/>
+    <path d="M190 260h260"/>
+  </g>
+  <text x="50%" y="84%" fill="#831843" font-family="Arial, sans-serif" font-size="34" font-weight="700" text-anchor="middle">
+    Growth Marketing
+  </text>
+</svg>

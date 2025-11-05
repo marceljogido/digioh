@@ -21,6 +21,16 @@
             @if(session('flash_success'))
                 <div class="mb-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800 dark:border-green-900/40 dark:bg-green-900/30 dark:text-green-200">{{ session('flash_success') }}</div>
             @endif
+            @if ($errors->any())
+                <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900/40 dark:bg-red-900/30 dark:text-red-200" role="alert">
+                    <p class="font-semibold">{{ __('Terjadi kesalahan. Mohon periksa isian berikut:') }}</p>
+                    <ul class="mt-2 list-disc pl-5">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <div class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
                 <div class="space-y-6">
@@ -61,30 +71,48 @@
                 <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Kirimkan pesan') }}</h3>
                     <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Ringkas saja — ceritakan tujuan dan kebutuhan utama Anda.') }}</p>
-                    <form action="{{ route('contact.store') }}" method="POST" class="mt-6 space-y-4">
+                    <form action="{{ route('contact.store') }}" method="POST" class="mt-6 space-y-4" novalidate>
                         @csrf
-                        <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+                        <input type="text" name="website" id="contact-website" class="sr-only" aria-hidden="true" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;" />
 
                         <div>
                             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="name">{{ __('Nama') }}</label>
-                            <input id="name" name="name" type="text" value="{{ old('name') }}" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <input id="name" name="name" type="text" value="{{ old('name') }}" maxlength="100" autocomplete="name" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('name') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="@error('name')true@enderror">
+                            @error('name')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="email">{{ __('Email') }}</label>
-                            <input id="email" name="email" type="email" value="{{ old('email') }}" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>
+                            <input id="email" name="email" type="email" value="{{ old('email') }}" maxlength="150" autocomplete="email" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('email') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="@error('email')true@enderror">
+                            @error('email')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="subject">{{ __('Subjek (opsional)') }}</label>
-                            <input id="subject" name="subject" type="text" value="{{ old('subject') }}" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                            <input id="subject" name="subject" type="text" value="{{ old('subject') }}" maxlength="150" autocomplete="organization-title" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('subject') border-red-400 focus:border-red-500 @enderror" aria-invalid="@error('subject')true@enderror">
+                            @error('subject')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="message">{{ __('Pesan') }}</label>
-                            <textarea id="message" name="message" rows="5" class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white" required>{{ old('message') }}</textarea>
+                            <textarea id="message" name="message" rows="5" minlength="10" class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('message') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="@error('message')true@enderror">{{ old('message') }}</textarea>
+                            @error('message')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
+                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900">
+                                {{ __('Kirim pesan') }}
+                            </button>
+                            <span class="text-center text-xs text-slate-500 sm:text-left">{{ __('atau') }}</span>
                         </div>
                         @php($__waNum = preg_replace('/[^0-9]/','', setting('whatsapp_number') ?? ''))
                         @php($__waMsg = rawurlencode(setting('whatsapp_prefill') ?? 'Halo DigiOH, saya ingin berdiskusi.'))
                         @php($__waLink = $__waNum ? "https://wa.me/$__waNum?text=$__waMsg" : null)
-                        <button type="button" id="send-wa" class="inline-flex w-full items-center justify-center rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/30 transition hover:bg-green-500">{{ __('Kirim via WhatsApp') }}</button>
+                        <button type="button" id="send-wa" class="inline-flex w-full items-center justify-center rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/30 transition hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900">{{ __('Kirim via WhatsApp') }}</button>
                         <script>
                             document.getElementById('send-wa').addEventListener('click', function(){
                                 const num = '{{ $__waNum }}';
@@ -100,7 +128,7 @@
                                 window.open(base + text, '_blank');
                             });
                         </script>
-                        <div class="text-xs text-slate-500 mt-2">{{ __('Atau') }} <a href="mailto:{{ setting('contact_email') ?? 'hello@digioh.id' }}" class="underline">{{ __('kirim via email') }}</a></div>
+                        <div class="text-xs text-slate-500 mt-2 text-center sm:text-left">{{ __('Atau') }} <a href="mailto:{{ setting('contact_email') ?? 'hello@digioh.id' }}" class="underline">{{ __('kirim via email') }}</a></div>
                     </form>
                 </div>
             </div>
