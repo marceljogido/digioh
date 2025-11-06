@@ -39,17 +39,26 @@ $notifications_latest = optional($notifications)->take(5);
                 @lang("Dashboard")
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route("backend.notifications.index") }}">
-                <i class="nav-icon fa-regular fa-bell"></i>
-                &nbsp;
-                @lang("Notifications")
-                @if ($notifications_count)
-                    &nbsp;
-                    <span class="badge badge-sm bg-info ms-auto">{{ $notifications_count }}</span>
-                @endif
-            </a>
-        </li>
+
+        @php
+            $module_name = "sliders";
+            $text = __("Sliders");
+            $icon = "fa-solid fa-images";
+            $permission = "view_" . $module_name;
+            $url = route("backend." . $module_name . ".index");
+        @endphp
+
+        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
+
+        @php
+            $module_name = "settings";
+            $text = __("About Us");
+            $icon = "fa-solid fa-address-card";
+            $permission = "edit_" . $module_name;
+            $url = route("backend." . $module_name . ".about");
+        @endphp
+
+        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
 
         @php
             $module_name = "posts";
@@ -62,44 +71,9 @@ $notifications_latest = optional($notifications)->take(5);
         <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
 
         @php
-            $module_name = "clientlogos";
-            $text = __("Client Logos");
-            $icon = "fa-regular fa-handshake";
-            $permission = "view_" . $module_name;
-            $url = route("backend." . $module_name . ".index");
-        @endphp
-
-        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
-
-        @php
-            $module_name = "sliders";
-            $text = __("Sliders");
-            $icon = "fa-solid fa-images";
-            $permission = "view_" . $module_name;
-            $url = route("backend." . $module_name . ".index");
-        @endphp
-
-        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
-
-        {{-- Categories menu intentionally disabled per request --}}
-
-
-
-        @php
             $module_name = "services";
             $text = __("Services");
             $icon = "fa-solid fa-briefcase";
-            // Use a broad permission so admins see it without extra setup
-            $permission = "view_backend";
-            $url = route("backend." . $module_name . ".index");
-        @endphp
-
-        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
-
-        @php
-            $module_name = "faq";
-            $text = __("FAQ");
-            $icon = "fa-regular fa-circle-question";
             $permission = "view_backend";
             $url = route("backend." . $module_name . ".index");
         @endphp
@@ -117,6 +91,26 @@ $notifications_latest = optional($notifications)->take(5);
         <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
 
         @php
+            $module_name = "clientlogos";
+            $text = __("Client Logos");
+            $icon = "fa-regular fa-handshake";
+            $permission = "view_" . $module_name;
+            $url = route("backend." . $module_name . ".index");
+        @endphp
+
+        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
+
+        @php
+            $module_name = "faq";
+            $text = __("FAQ");
+            $icon = "fa-regular fa-circle-question";
+            $permission = "view_backend";
+            $url = route("backend." . $module_name . ".index");
+        @endphp
+
+        <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
+
+        @php
             $module_name = "settings";
             $text = __("Settings");
             $icon = "fa-solid fa-gears";
@@ -125,6 +119,18 @@ $notifications_latest = optional($notifications)->take(5);
         @endphp
 
         <x-backend.sidebar-nav-item :permission="$permission" :url="$url" :icon="$icon" :text="$text" />
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route("backend.notifications.index") }}">
+                <i class="nav-icon fa-regular fa-bell"></i>
+                &nbsp;
+                @lang("Notifications")
+                @if ($notifications_count)
+                    &nbsp;
+                    <span class="badge badge-sm bg-info ms-auto">{{ $notifications_count }}</span>
+                @endif
+            </a>
+        </li>
 
         @php
             $module_name = "backups";
@@ -161,4 +167,3 @@ $notifications_latest = optional($notifications)->take(5);
         <button class="sidebar-toggler" data-coreui-toggle="unfoldable" type="button"></button>
     </div>
 </div>
-

@@ -18,17 +18,12 @@
             : '<p>DigiOH adalah studio digital yang membantu brand tumbuh melalui solusi kreatif dan teknologi.</p>'
     );
 
-    $founders = collect(range(1, 3))
-        ->map(function ($i) {
-            return [
-                'name' => setting("about_founder_{$i}_name"),
-                'title' => setting("about_founder_{$i}_title"),
-                'photo' => setting("about_founder_{$i}_photo"),
-                'linkedin' => setting("about_founder_{$i}_linkedin"),
-            ];
-        })
-        ->filter(fn ($f) => ! empty($f['name']))
-        ->values();
+$foundersSetting = setting('about_founders', []);
+$founders = collect(is_array($foundersSetting) ? $foundersSetting : [])
+    ->filter(function ($founder) {
+        return ! empty($founder['name']) || ! empty($founder['title']) || ! empty($founder['photo']);
+    })
+    ->values();
 @endphp
 
 @section('title', $aboutTitle)
@@ -62,9 +57,15 @@
 
                 <div class="grid gap-6 md:grid-cols-3">
                     @foreach ($founders as $f)
+                        @php
+                            $photoPath = $f['photo'] ?? null;
+                            $photoUrl = $photoPath
+                                ? (\Illuminate\Support\Str::startsWith($photoPath, ['http://', 'https://', '//']) ? $photoPath : asset($photoPath))
+                                : null;
+                        @endphp
                         <div class="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
-                            @if (! empty($f['photo']))
-                                <img src="{{ asset($f['photo']) }}" alt="{{ $f['name'] }}" class="h-28 w-28 rounded-2xl object-cover" />
+                            @if ($photoUrl)
+                                <img src="{{ $photoUrl }}" alt="{{ $f['name'] }}" class="h-28 w-28 rounded-2xl object-cover" />
                             @else
                                 <div class="flex h-28 w-28 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
                                     <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" /></svg>

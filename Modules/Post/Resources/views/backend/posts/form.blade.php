@@ -59,7 +59,7 @@
             ?>
             {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
             {!! field_required($required) !!}
-            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(["$required"]) }}
+            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class("form-control richtext")->attributes(["$required"]) }}
         </div>
     </div>
 </div>
@@ -74,7 +74,7 @@
             ?>
             {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
             {!! field_required($required) !!}
-            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(["$required"]) }}
+            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class("form-control richtext")->attributes(["$required"]) }}
         </div>
     </div>
 </div>
@@ -262,3 +262,52 @@
 </div>
 
 <x-library.select2 />
+
+@once
+    @push('after-scripts')
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (typeof ClassicEditor === 'undefined') {
+                    return;
+                }
+
+                document.querySelectorAll('textarea.richtext').forEach(function (textarea) {
+                    if (textarea.dataset.editorInitialized === 'true') {
+                        return;
+                    }
+
+                    ClassicEditor
+                        .create(textarea, {
+                            toolbar: [
+                                'heading', '|',
+                                'bold', 'italic', 'underline', '|',
+                                'bulletedList', 'numberedList', '|',
+                                'link', 'insertTable', '|',
+                                'undo', 'redo'
+                            ],
+                            heading: {
+                                options: [
+                                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                                ]
+                            },
+                            table: {
+                                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                            }
+                        })
+                        .then(function (editor) {
+                            textarea.dataset.editorInitialized = 'true';
+                            editor.model.document.on('change:data', function () {
+                                textarea.value = editor.getData();
+                            });
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                });
+            });
+        </script>
+    @endpush
+@endonce

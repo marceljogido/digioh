@@ -26,63 +26,46 @@
             ['value' => '98%', 'label' => __('Pelanggan yang kembali bekerja bersama')],
         ];
 
-        $stats = $stats ?? collect(range(1, 3))->map(function ($index) use ($defaultStats) {
-            $value = setting("home_stat_{$index}_value");
-            $label = setting("home_stat_{$index}_label");
+        $stats = $stats ?? collect($defaultStats);
 
-            return [
-                'value' => $value ?: $defaultStats[$index - 1]['value'],
-                'label' => $label ?: $defaultStats[$index - 1]['label'],
-            ];
-        });
-
+        $genericServiceIcon = '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5L6 12z"/></svg>';
         $defaultServices = [
             [
                 'title' => __('Strategi Digital & Discovery'),
                 'description' => __('Kami bekerja bersama Anda untuk memahami kebutuhan bisnis dan menyusun roadmap produk yang realistis serta terukur.'),
-                'icon' => '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 015.273-3.12c.37-.08.63-.391.63-.772V4.5a.75.75 0 01.75-.75A2.25 2.25 0 0118 6v2.25c0 .621.504 1.125 1.125 1.125h1.006c1.026 0 1.945.694 2.054 1.715a9.03 9.03 0 01-.972 5.186M6.633 10.5a2.25 2.25 0 10-3.633 2.769 8.966 8.966 0 00.614 5.093c.16.363.502.588.889.588H9.75A2.25 2.25 0 0012 16.5v-1.125c0-.621-.504-1.125-1.125-1.125h-.642c-.598 0-1.05-.533-.879-1.11a9.04 9.04 0 011.493-2.88M6.633 10.5a9.06 9.06 0 011.74 4.5"/></svg>',
+                'icon' => $genericServiceIcon,
             ],
             [
                 'title' => __('Desain Experience & Branding'),
                 'description' => __('Tim UI/UX kami membangun tampilan yang elegan dan mudah digunakan, lengkap dengan guideline merek yang konsisten di semua saluran.'),
-                'icon' => '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.647A48.627 48.627 0 017.5 15.75m11.85-5.603a60.436 60.436 0 01.491 6.647 48.623 48.623 0 00-3.572-2.804M7.5 15.75l2.25-1.5m6.75 0l-2.25-1.5m-2.25 1.5l.36-.24c.284-.19.426-.285.426-.41 0-.125-.142-.22-.426-.41L12 12.75m0 2.25l-.36.24c-.284.19-.426.285-.426.41 0 .125.142.22.426.41l.36.24m0-1.3l2.25-1.5m-2.25 1.5l-2.25-1.5M7.5 19.5l3.75-2.5m5.25 0l-3.75 2.5M3 9.75c2.347-1.718 5.16-2.75 9-2.75s6.653 1.032 9 2.75M3 9.75C4.89 11.737 8.247 12.75 12 12.75s7.11-1.013 9-3M3 9.75A49.087 49.087 0 0112 9c3.328 0 6.165.3 9 .75"/></svg>',
+                'icon' => $genericServiceIcon,
             ],
             [
                 'title' => __('Pengembangan Produk End-to-End'),
                 'description' => __('Kami membangun aplikasi web maupun mobile yang skalabel dengan praktik engineering modern, CI/CD, dan pengujian menyeluruh.'),
-                'icon' => '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 8.25V6zM13.5 6A2.25 2.25 0 0115.75 3.75H18a2.25 2.25 0 012.25 2.25v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0112.5 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 15.75A2.25 2.25 0 0115.75 13.5H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>',
+                'icon' => $genericServiceIcon,
             ],
             [
                 'title' => __('Optimalisasi & Growth Marketing'),
                 'description' => __('Kami mendukung peluncuran dan pengembangan produk melalui analitik, eksperimen, dan kampanye digital yang terukur.'),
-                'icon' => '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l7.5 7.5V13.5H3zM3 10.5h7.5V3L3 10.5zm10.5 0H21L13.5 3v7.5zm0 3H21l-7.5 7.5V13.5z"/></svg>',
+                'icon' => $genericServiceIcon,
             ],
         ];
 
         $locale = app()->getLocale();
-        $services = collect(range(1, 4))->map(function ($index) use ($defaultServices, $locale) {
-            $title = $locale === 'en' ? (setting("home_service_{$index}_title_en") ?: setting("home_service_{$index}_title")) : setting("home_service_{$index}_title");
-            $description = $locale === 'en' ? (setting("home_service_{$index}_description_en") ?: setting("home_service_{$index}_description")) : setting("home_service_{$index}_description");
-            $icon = setting("home_service_{$index}_icon");
-
-            return [
-                'title' => $title ?: $defaultServices[$index - 1]['title'],
-                'description' => $description ?: $defaultServices[$index - 1]['description'],
-                'icon' => $icon ?: $defaultServices[$index - 1]['icon'],
-            ];
-        })->filter(fn ($service) => !empty($service['title']));
-
         $dbServices = \App\Models\Service::active()->where('featured_on_home', true)->sorted()->get();
-        if ($dbServices->count()) {
-            $services = $dbServices->map(function ($s) use ($locale) {
+        $services = $dbServices->count()
+            ? $dbServices->map(function ($s) use ($locale, $genericServiceIcon) {
                 return [
                     'title' => $locale === 'en' ? ($s->name_en ?: $s->name) : $s->name,
                     'description' => $locale === 'en' ? ($s->description_en ?: $s->description) : $s->description,
-                    'icon' => $s->icon,
+                    'icon' => $s->icon ?: $genericServiceIcon,
                     'slug' => $s->slug,
                 ];
+            })
+            : collect($defaultServices)->map(function ($service) {
+                return array_merge($service, ['slug' => null]);
             });
-        }
 
         $defaultFaqs = [
             [
@@ -128,12 +111,12 @@
         $blogPosts = \Modules\Post\Models\Post::published()->featured()->take(3)->get();
 
         $cta = [
-            'title' => setting('home_cta_title') ?: __('Siap berkolaborasi?'),
-            'subtitle' => setting('home_cta_subtitle') ?: __('Mari ciptakan pengalaman digital yang berdampak bagi pelanggan Anda.'),
-            'primary_text' => setting('home_cta_primary_text') ?: __('Diskusikan proyek Anda'),
-            'primary_link' => setting('home_cta_primary_link') ?: route('contact'),
-            'secondary_text' => setting('home_cta_secondary_text') ?: __('Pelajari proses kerja kami'),
-            'secondary_link' => setting('home_cta_secondary_link') ?: route('about'),
+            'title' => __('Siap berkolaborasi?'),
+            'subtitle' => __('Mari ciptakan pengalaman digital yang berdampak bagi pelanggan Anda.'),
+            'primary_text' => __('Diskusikan proyek Anda'),
+            'primary_link' => route('contact'),
+            'secondary_text' => __('Pelajari proses kerja kami'),
+            'secondary_link' => route('about'),
         ];
 
         // Instagram video section data
@@ -310,8 +293,10 @@
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="max-w-3xl">
                 <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Layanan utama') }}</span>
-                @php($servicesHeading = app()->getLocale() === 'en' ? (setting('home_services_heading_en') ?: setting('home_services_heading')) : setting('home_services_heading'))
-                <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ $servicesHeading ?: __('Kami membantu perusahaan merancang, membangun, dan mengembangkan produk digital end-to-end.') }}</h2>
+                @php($servicesHeading = app()->getLocale() === 'en'
+                    ? __('We help companies design, build, and grow end-to-end digital products.')
+                    : __('Kami membantu perusahaan merancang, membangun, dan mengembangkan produk digital end-to-end.'))
+                <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ $servicesHeading }}</h2>
                 <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">{{ __('Dari fase discovery hingga pertumbuhan produk, tim multidisiplin kami siap mendampingi organisasi Anda mencapai objektif bisnis.') }}</p>
             </div>
 
@@ -348,7 +333,7 @@
     @endif
 
     
-    @if(setting('home_show_portfolio', false) && $works->count())
+    @if($works->count())
         <section id="portfolio" class="fade-in bg-white dark:bg-gray-900">
             <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
                 <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -696,11 +681,6 @@
         </div>
     </section>
 @endsection
-
-
-
-
-
 
 
 

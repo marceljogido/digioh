@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ServiceStatus;
 use App\Models\Service;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -19,6 +20,7 @@ class ServiceDemoSeeder extends Seeder
                 'image' => 'img/service-photobooth.svg',
                 'is_active' => true,
                 'featured_on_home' => true,
+                'status' => ServiceStatus::Published->value,
                 'sort_order' => 1,
             ],
             [
@@ -29,6 +31,7 @@ class ServiceDemoSeeder extends Seeder
                 'image' => 'img/service-digirental.svg',
                 'is_active' => true,
                 'featured_on_home' => true,
+                'status' => ServiceStatus::Published->value,
                 'sort_order' => 2,
             ],
             [
@@ -39,6 +42,7 @@ class ServiceDemoSeeder extends Seeder
                 'image' => 'img/service-event.svg',
                 'is_active' => true,
                 'featured_on_home' => false,
+                'status' => ServiceStatus::Published->value,
                 'sort_order' => 3,
             ],
         ];

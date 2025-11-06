@@ -18,15 +18,7 @@
             :module_title="$module_title"
             :module_icon="$module_icon"
             :module_action="$module_action"
-        >
-            <x-slot name="toolbar">
-                <x-backend.buttons.create
-                    title="{{ __('Create') }} {{ ucwords(Str::singular($module_name)) }}"
-                    route='{{ route("backend.$module_name.create") }}'
-                    :small="true"
-                />
-            </x-slot>
-        </x-backend.section-header>
+        />
 
         <div class="row mt-4">
             <div class="col">
@@ -35,8 +27,9 @@
                         <tr>
                             <th>#</th>
                             <th>{{ __('Name') }}</th>
-                            <th>{{ __('Category') }}</th>
+                            <th>{{ __('Our Works') }}</th>
                             <th>{{ __('Status') }}</th>
+                            <th>{{ __('Home') }}</th>
                             <th>{{ __('Sort Order') }}</th>
                             <th>{{ __('Updated At') }}</th>
                             <th class="text-end">{{ __('Action') }}</th>
@@ -84,12 +77,20 @@
                 name: 'name'
             },
             {
-                data: 'category',
-                name: 'category'
+                data: 'usage',
+                name: 'usage',
+                orderable: false,
+                searchable: false
             },
             {
                 data: 'status',
                 name: 'status',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'featured',
+                name: 'featured',
                 orderable: false,
                 searchable: false
             },

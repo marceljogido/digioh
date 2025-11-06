@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Enums\ServiceStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -12,6 +14,8 @@ use Yajra\DataTables\DataTables;
 
 class ServiceController extends Controller
 {
+    protected int $featuredHomeLimit = 4;
+
     public function index()
     {
         $module_name = 'services';
@@ -24,37 +28,60 @@ class ServiceController extends Controller
 
     public function create()
     {
-        $service = new Service();
+        $service = new Service([
+            'status' => ServiceStatus::Draft->value,
+            'featured_on_home' => false,
+        ]);
         $module_name = 'services';
         $module_path = 'backend';
         $module_title = 'Services';
         $module_icon = 'fa-solid fa-briefcase';
         $module_action = 'Create';
-        return view('backend.services.create', compact('service', 'module_name', 'module_path', 'module_title', 'module_icon', 'module_action'));
+        $featuredLimitReached = Service::where('featured_on_home', true)->count() >= $this->featuredHomeLimit;
+        $statusOptions = ServiceStatus::options();
+
+        return view('backend.services.create', compact(
+            'service',
+            'module_name',
+            'module_path',
+            'module_title',
+            'module_icon',
+            'module_action',
+            'featuredLimitReached',
+            'statusOptions'
+        ) + [
+            'featuredLimit' => $this->featuredHomeLimit,
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|max:191',
-            'name_en' => 'nullable|max:191',
-            'category' => 'nullable|string|max:120',
             'slug' => 'nullable|max:191',
             'description' => 'nullable',
-            'description_en' => 'nullable',
-            'icon' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
-            'is_active' => 'nullable|boolean',
-            'featured_on_home' => 'nullable|boolean',
+            'status' => ['required', Rule::enum(ServiceStatus::class)],
+            'featured_on_home' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
         $imageFile = $data['image'] ?? null;
         unset($data['image']);
 
-        $data['is_active'] = $request->boolean('is_active');
         $data['featured_on_home'] = $request->boolean('featured_on_home');
+        $data['status'] = $data['status'] ?? ServiceStatus::Draft->value;
+        $data['is_active'] = $data['status'] === ServiceStatus::Published->value;
         $data['slug'] = $data['slug'] ?? Str::slug($data['name']);
+
+        if ($data['featured_on_home']) {
+            $featuredCount = Service::where('featured_on_home', true)->count();
+            if ($featuredCount >= $this->featuredHomeLimit) {
+                return back()
+                    ->withErrors(['featured_on_home' => __('Maksimal :max layanan dapat tampil di home. Nonaktifkan salah satunya terlebih dahulu.', ['max' => $this->featuredHomeLimit])])
+                    ->withInput();
+            }
+        }
 
         if ($imageFile) {
             $path = $imageFile->store('uploads/services', 'public');
@@ -68,16 +95,34 @@ class ServiceController extends Controller
 
     public function edit(Service $service)
     {
+        $service->loadCount('posts');
         $module_name = 'services';
         $module_path = 'backend';
         $module_title = 'Services';
         $module_icon = 'fa-solid fa-briefcase';
         $module_action = 'Edit';
-        return view('backend.services.edit', compact('service', 'module_name', 'module_path', 'module_title', 'module_icon', 'module_action'));
+        $featuredLimitReached = Service::where('featured_on_home', true)
+            ->where('id', '!=', $service->id)
+            ->count() >= $this->featuredHomeLimit;
+        $statusOptions = ServiceStatus::options();
+
+        return view('backend.services.edit', compact(
+            'service',
+            'module_name',
+            'module_path',
+            'module_title',
+            'module_icon',
+            'module_action',
+            'featuredLimitReached',
+            'statusOptions'
+        ) + [
+            'featuredLimit' => $this->featuredHomeLimit,
+        ]);
     }
 
     public function show(Service $service)
     {
+        $service->loadCount('posts');
         $module_name = 'services';
         $module_path = 'backend';
         $module_title = 'Services';
@@ -91,25 +136,33 @@ class ServiceController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|max:191',
-            'name_en' => 'nullable|max:191',
-            'category' => 'nullable|string|max:120',
             'slug' => 'nullable|max:191',
             'description' => 'nullable',
-            'description_en' => 'nullable',
-            'icon' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
-            'is_active' => 'nullable|boolean',
-            'featured_on_home' => 'nullable|boolean',
+            'status' => ['required', Rule::enum(ServiceStatus::class)],
+            'featured_on_home' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
         $imageFile = $data['image'] ?? null;
         unset($data['image']);
 
-        $data['is_active'] = $request->boolean('is_active');
         $data['featured_on_home'] = $request->boolean('featured_on_home');
+        $data['status'] = $data['status'] ?? ServiceStatus::Draft->value;
+        $data['is_active'] = $data['status'] === ServiceStatus::Published->value;
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['name']);
+        }
+
+        if ($data['featured_on_home']) {
+            $featuredCount = Service::where('featured_on_home', true)
+                ->where('id', '!=', $service->id)
+                ->count();
+            if ($featuredCount >= $this->featuredHomeLimit) {
+                return back()
+                    ->withErrors(['featured_on_home' => __('Maksimal :max layanan dapat tampil di home. Nonaktifkan salah satunya terlebih dahulu.', ['max' => $this->featuredHomeLimit])])
+                    ->withInput();
+            }
         }
 
         if ($imageFile) {
@@ -129,6 +182,12 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
+        if ($service->posts()->exists()) {
+            return redirect()
+                ->route('backend.services.index')
+                ->withErrors(['service' => __('Layanan ini sedang dipakai pada Our Work dan tidak dapat dihapus.')]);
+        }
+
         if (! empty($service->image)) {
             $publicPrefix = '/storage/';
 
@@ -145,9 +204,56 @@ class ServiceController extends Controller
         return redirect()->route('backend.services.index')->with('status', 'Service deleted');
     }
 
+    public function trashed()
+    {
+        $module_name = 'services';
+        $module_path = 'backend';
+        $module_title = 'Services';
+        $module_icon = 'fa-solid fa-briefcase';
+        $module_action = 'Trash';
+
+        $services = Service::onlyTrashed()
+            ->orderByDesc('deleted_at')
+            ->paginate(15);
+
+        $$module_name = $services;
+
+        return view('backend.services.trashed', [
+            $module_name => $$module_name,
+            'module_name' => $module_name,
+            'module_path' => $module_path,
+            'module_title' => $module_title,
+            'module_icon' => $module_icon,
+            'module_action' => $module_action,
+        ]);
+    }
+
+    public function restore($id)
+    {
+        $service = Service::withTrashed()->findOrFail($id);
+        $service->restore();
+
+        if ($service->featured_on_home) {
+            $featuredCount = Service::where('featured_on_home', true)->count();
+            if ($featuredCount > $this->featuredHomeLimit) {
+                $service->featured_on_home = false;
+            }
+        }
+
+        // Ensure legacy is_active flag stays in sync with status.
+        $service->is_active = $service->status === ServiceStatus::Published->value;
+        $service->save();
+
+        return redirect()
+            ->route('backend.services.index')
+            ->with('status', __('Service restored'));
+    }
+
     public function index_data()
     {
-        $services = Service::select('id', 'name', 'category', 'is_active', 'sort_order', 'updated_at')
+        $services = Service::query()
+            ->withCount('posts')
+            ->select('id', 'name', 'slug', 'status', 'featured_on_home', 'sort_order', 'updated_at')
             ->orderBy('sort_order')
             ->orderBy('id');
 
@@ -156,13 +262,23 @@ class ServiceController extends Controller
             ->editColumn('name', function ($service) {
                 return '<strong>'.e($service->name).'</strong>';
             })
-            ->addColumn('category', function ($service) {
-                return $service->category ? e($service->category) : '<span class="text-muted">-</span>';
+            ->addColumn('usage', function ($service) {
+                $count = (int) $service->posts_count;
+                $label = $count === 1 ? __('Our Work') : __('Our Works');
+                return '<span class="badge bg-info">'.$count.'</span> <span class="text-muted small">'.$label.'</span>';
             })
             ->addColumn('status', function ($service) {
-                return $service->is_active
-                    ? '<span class="badge bg-success">'.__('Active').'</span>'
-                    : '<span class="badge bg-secondary">'.__('Inactive').'</span>';
+                $status = ServiceStatus::tryFrom($service->status ?? '') ?? ServiceStatus::Draft;
+                return match ($status) {
+                    ServiceStatus::Published => '<span class="badge bg-success">'.$status->label().'</span>',
+                    ServiceStatus::Draft => '<span class="badge bg-warning text-dark">'.$status->label().'</span>',
+                    ServiceStatus::Unpublished => '<span class="badge bg-secondary">'.$status->label().'</span>',
+                };
+            })
+            ->addColumn('featured', function ($service) {
+                return $service->featured_on_home
+                    ? '<span class="badge bg-primary">'.__('Ya').'</span>'
+                    : '<span class="badge bg-secondary">'.__('Tidak').'</span>';
             })
             ->editColumn('sort_order', function ($service) {
                 return (int) $service->sort_order;
@@ -182,7 +298,7 @@ class ServiceController extends Controller
                     'data' => $service,
                 ]);
             })
-            ->rawColumns(['name', 'category', 'status', 'action'])
+            ->rawColumns(['name', 'usage', 'status', 'featured', 'action'])
             ->make(true);
     }
 }

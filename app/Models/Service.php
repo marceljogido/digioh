@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Modules\Post\Models\Post;
+use App\Enums\ServiceStatus;
 
 class Service extends BaseModel
 {
@@ -18,15 +19,30 @@ class Service extends BaseModel
         'description',
         'description_en',
         'icon',
+        'status',
         'image',
         'is_active',
         'featured_on_home',
         'sort_order',
     ];
 
+    protected function casts(): array
+    {
+        return array_merge(parent::casts(), [
+            'featured_on_home' => 'boolean',
+            'is_active' => 'boolean',
+            'sort_order' => 'integer',
+        ]);
+    }
+
     public function scopeActive(Builder $q): void
     {
-        $q->where('is_active', true);
+        $q->where('status', ServiceStatus::Published->value);
+    }
+
+    public function scopePublished(Builder $q): void
+    {
+        $this->scopeActive($q);
     }
 
     public function scopeSorted(Builder $q): void

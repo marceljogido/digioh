@@ -15,7 +15,8 @@
         class="form-control {{ Arr::get($field, "class") }} {{ $errors->has($field["name"]) ? " is-invalid" : "" }}"
         id="{{ $field["name"] }}"
         placeholder="{{ $field["label"] }}"
-        rows="6"
+        rows="12"
+        style="min-height: 280px"
         {{ $required }}
     >
     @if (isset($field["display"]))

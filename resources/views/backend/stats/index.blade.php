@@ -1,67 +1,108 @@
 @extends('backend.layouts.app')
 
-@section('title', 'Statistik')
+@section('title') {{ __($module_action) }} {{ __($module_title) }} @endsection
+
+@section('breadcrumbs')
+    <x-backend.breadcrumbs>
+        <x-backend.breadcrumb-item type="active" icon='{{ $module_icon }}'>{{ __($module_title) }}</x-backend.breadcrumb-item>
+    </x-backend.breadcrumbs>
+@endsection
 
 @section('content')
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Statistik</h3>
-            <div class="card-tools">
-                <a href="{{ route('backend.stats.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Tambah Statistik
-                </a>
+        <div class="card-body">
+            <x-backend.section-header
+                :module_name="$module_name"
+                :module_title="$module_title"
+                :module_icon="$module_icon"
+                :module_action="$module_action"
+            />
+
+            <div class="row mt-4">
+                <div class="col">
+                    <table id="datatable" class="table table-bordered table-hover table-responsive-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>{{ __('Value') }}</th>
+                                <th>{{ __('Label (ID)') }}</th>
+                                <th>{{ __('Label (EN)') }}</th>
+                                <th>{{ __('Sort Order') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th>{{ __('Updated At') }}</th>
+                                <th class="text-end">{{ __('Action') }}</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Value</th>
-                            <th>Label (ID)</th>
-                            <th>Label (EN)</th>
-                            <th>Sort Order</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($stats as $index => $stat)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $stat->value }}</td>
-                                <td>{{ $stat->label }}</td>
-                                <td>{{ $stat->label_en ?? '-' }}</td>
-                                <td>{{ $stat->sort_order }}</td>
-                                <td>
-                                    @if($stat->is_active)
-                                        <span class="badge badge-success">Aktif</span>
-                                    @else
-                                        <span class="badge badge-secondary">Tidak Aktif</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('backend.stats.edit', $stat) }}" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <form action="{{ route('backend.stats.destroy', $stat) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus statistik ini?')">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center">Tidak ada statistik ditemukan</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-7">
+                    <div class="float-left"></div>
+                </div>
+                <div class="col-5">
+                    <div class="float-end"></div>
+                </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('after-styles')
+    <link rel="stylesheet" href="{{ asset('vendor/datatable/datatables.min.css') }}">
+@endpush
+
+@push('after-scripts')
+    <script type="module" src="{{ asset('vendor/datatable/datatables.min.js') }}"></script>
+    <script type="module">
+        $('#datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            ajax: '{{ route("backend.$module_name.index_data") }}',
+            order: [[4, 'asc']],
+            columns: [
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'value',
+                    name: 'value'
+                },
+                {
+                    data: 'label',
+                    name: 'label'
+                },
+                {
+                    data: 'label_en',
+                    name: 'label_en'
+                },
+                {
+                    data: 'sort_order',
+                    name: 'sort_order'
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'updated_at',
+                    name: 'updated_at'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
+    </script>
+@endpush

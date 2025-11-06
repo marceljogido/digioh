@@ -98,9 +98,9 @@ class Setting extends BaseModel
      *
      * @return array An array of validation rules, where the keys are the field names and the values are the rules.
      */
-    public static function getValidationRules()
+    public static function getValidationRules(array $sections = null)
     {
-        return self::getDefinedSettingFields()->pluck('rules', 'name')
+        return self::getDefinedSettingFields($sections)->pluck('rules', 'name')
             ->reject(function ($val) {
                 return is_null($val);
             })->toArray();
@@ -202,9 +202,15 @@ class Setting extends BaseModel
      *
      * @return Collection The collection of defined setting fields.
      */
-    private static function getDefinedSettingFields()
+    private static function getDefinedSettingFields(array $sections = null)
     {
-        return collect(config('setting_fields'))->pluck('elements')->flatten(1);
+        $config = collect(config('setting_fields'));
+
+        if (! is_null($sections)) {
+            $config = $config->only($sections);
+        }
+
+        return $config->pluck('elements')->flatten(1);
     }
 
     /**
@@ -229,6 +235,15 @@ class Setting extends BaseModel
             case 'bool':
             case 'boolean':
                 return boolval($val);
+                break;
+
+            case 'json':
+            case 'array':
+                if (is_array($val)) {
+                    return $val;
+                }
+                $decoded = json_decode($val, true);
+                return $decoded ?? [];
                 break;
 
             default:

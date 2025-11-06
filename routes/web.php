@@ -99,6 +99,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
         $controller_name = 'SettingController';
         Route::get("{$module_name}", "{$controller_name}@index")->name("{$module_name}.index");
         Route::post("{$module_name}", "{$controller_name}@store")->name("{$module_name}.store");
+        Route::get("about-us", "{$controller_name}@about")->name("{$module_name}.about");
     });
 
     /*
@@ -165,6 +166,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
     */
     $module_name = 'faq';
     $controller_name = 'FaqController';
+    Route::get("{$module_name}/index_data", ['as' => "{$module_name}.index_data", 'uses' => "{$controller_name}@index_data"]);
     Route::resource("{$module_name}", "{$controller_name}");
 
     /*
@@ -175,6 +177,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
     */
     $module_name = 'services';
     $controller_name = 'ServiceController';
+    Route::get("{$module_name}/trashed", ['as' => "{$module_name}.trashed", 'uses' => "{$controller_name}@trashed"]);
+    Route::patch("{$module_name}/{id}/restore", ['as' => "{$module_name}.restore", 'uses' => "{$controller_name}@restore"]);
     Route::get("{$module_name}/index_data", ['as' => "{$module_name}.index_data", 'uses' => "{$controller_name}@index_data"]);
     Route::resource("{$module_name}", "{$controller_name}");
 
@@ -186,6 +190,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
     */
     $module_name = 'stats';
     $controller_name = 'StatController';
+    Route::get("{$module_name}/index_data", ['as' => "{$module_name}.index_data", 'uses' => "{$controller_name}@index_data"]);
     Route::resource("{$module_name}", "{$controller_name}");
 });
 

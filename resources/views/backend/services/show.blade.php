@@ -62,39 +62,14 @@
 
                 <div class="col-lg-8">
                     <dl class="row mb-0">
-                        <dt class="col-sm-4">{{ __('Name (ID)') }}</dt>
+                        <dt class="col-sm-4">{{ __('Name') }}</dt>
                         <dd class="col-sm-8">{{ $service->name }}</dd>
-
-                        @if($service->name_en)
-                            <dt class="col-sm-4">{{ __('Name (EN)') }}</dt>
-                            <dd class="col-sm-8">{{ $service->name_en }}</dd>
-                        @endif
-
-                        <dt class="col-sm-4">{{ __('Category') }}</dt>
-                        <dd class="col-sm-8">{{ $service->category ?? __('(Uncategorized)') }}</dd>
 
                         <dt class="col-sm-4">{{ __('Slug') }}</dt>
                         <dd class="col-sm-8">{{ $service->slug }}</dd>
 
                         <dt class="col-sm-4">{{ __('Description') }}</dt>
                         <dd class="col-sm-8">{!! $service->description ?: '<span class="text-muted">-</span>' !!}</dd>
-
-                        @if($service->description_en)
-                            <dt class="col-sm-4">{{ __('Description (EN)') }}</dt>
-                            <dd class="col-sm-8">{!! $service->description_en !!}</dd>
-                        @endif
-
-                        <dt class="col-sm-4">{{ __('Icon') }}</dt>
-                        <dd class="col-sm-8">
-                            @if($service->icon)
-                                <span class="d-inline-flex align-items-center gap-2">
-                                    <span>{!! $service->icon !!}</span>
-                                    <code class="small text-muted">{{ Str::limit(strip_tags($service->icon), 80) }}</code>
-                                </span>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </dd>
 
                         <dt class="col-sm-4">{{ __('Featured on Home') }}</dt>
                         <dd class="col-sm-8">
@@ -105,9 +80,20 @@
 
                         <dt class="col-sm-4">{{ __('Status') }}</dt>
                         <dd class="col-sm-8">
-                            <span class="badge {{ $service->is_active ? 'bg-success' : 'bg-secondary' }}">
-                                {{ $service->is_active ? __('Active') : __('Inactive') }}
+                            @php($status = \App\Enums\ServiceStatus::tryFrom($service->status ?? '') ?? \App\Enums\ServiceStatus::Draft)
+                            <span class="badge @class([
+                                'bg-success' => $status === \App\Enums\ServiceStatus::Published,
+                                'bg-warning text-dark' => $status === \App\Enums\ServiceStatus::Draft,
+                                'bg-secondary' => $status === \App\Enums\ServiceStatus::Unpublished,
+                            ])">
+                                {{ $status->label() }}
                             </span>
+                        </dd>
+
+                        <dt class="col-sm-4">{{ __('Our Works') }}</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-info">{{ $service->posts_count }}</span>
+                            <span class="text-muted small">{{ __('proyek') }}</span>
                         </dd>
 
                         <dt class="col-sm-4">{{ __('Sort Order') }}</dt>

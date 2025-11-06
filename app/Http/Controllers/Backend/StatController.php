@@ -4,20 +4,36 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Stat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\DataTables;
 
 class StatController extends Controller
 {
+    protected string $module_title = 'Statistics';
+    protected string $module_name = 'stats';
+    protected string $module_path = 'stats';
+    protected string $module_icon = 'fa-solid fa-chart-simple';
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $stats = Stat::sorted()->get();
-        return view('backend.stats.index', compact('stats'));
+        $module_title = $this->module_title;
+        $module_name = $this->module_name;
+        $module_path = $this->module_path;
+        $module_icon = $this->module_icon;
+        $module_action = 'List';
+
+        return view('backend.stats.index', compact(
+            'module_title',
+            'module_name',
+            'module_path',
+            'module_icon',
+            'module_action'
+        ));
     }
 
     /**
@@ -25,11 +41,10 @@ class StatController extends Controller
      */
     public function create()
     {
-        // Pastikan user sudah login dan memiliki akses
-        if (!Auth::check() || !Auth::user()->can('view_backend')) {
+        if (! Auth::check() || ! Auth::user()->can('view_backend')) {
             abort(403);
         }
-        
+
         return view('backend.stats.create');
     }
 
@@ -38,26 +53,22 @@ class StatController extends Controller
      */
     public function store(Request $request)
     {
-        // Pastikan user sudah login dan memiliki akses
-        if (!Auth::check() || !Auth::user()->can('view_backend')) {
+        if (! Auth::check() || ! Auth::user()->can('view_backend')) {
             abort(403);
         }
-        
-        $request->validate([
+
+        $data = $request->validate([
             'value' => 'required|string|max:255',
             'label' => 'required|string|max:255',
             'label_en' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
 
-        Stat::create([
-            'value' => $request->value,
-            'label' => $request->label,
-            'label_en' => $request->label_en,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_active' => $request->is_active ?? false
-        ]);
+        $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['is_active'] = $request->boolean('is_active');
+
+        Stat::create($data);
 
         return redirect()->route('backend.stats.index')->with('message', 'Statistik berhasil ditambahkan.');
     }
@@ -67,11 +78,10 @@ class StatController extends Controller
      */
     public function edit(Stat $stat)
     {
-        // Pastikan user sudah login dan memiliki akses
-        if (!Auth::check() || !Auth::user()->can('view_backend')) {
+        if (! Auth::check() || ! Auth::user()->can('view_backend')) {
             abort(403);
         }
-        
+
         return view('backend.stats.edit', compact('stat'));
     }
 
@@ -80,26 +90,22 @@ class StatController extends Controller
      */
     public function update(Request $request, Stat $stat)
     {
-        // Pastikan user sudah login dan memiliki akses
-        if (!Auth::check() || !Auth::user()->can('view_backend')) {
+        if (! Auth::check() || ! Auth::user()->can('view_backend')) {
             abort(403);
         }
-        
-        $request->validate([
+
+        $data = $request->validate([
             'value' => 'required|string|max:255',
             'label' => 'required|string|max:255',
             'label_en' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
 
-        $stat->update([
-            'value' => $request->value,
-            'label' => $request->label,
-            'label_en' => $request->label_en,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_active' => $request->is_active ?? false
-        ]);
+        $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['is_active'] = $request->boolean('is_active');
+
+        $stat->update($data);
 
         return redirect()->route('backend.stats.index')->with('message', 'Statistik berhasil diperbarui.');
     }
@@ -109,13 +115,63 @@ class StatController extends Controller
      */
     public function destroy(Stat $stat)
     {
-        // Pastikan user sudah login dan memiliki akses
-        if (!Auth::check() || !Auth::user()->can('view_backend')) {
+        if (! Auth::check() || ! Auth::user()->can('view_backend')) {
             abort(403);
         }
-        
+
         $stat->delete();
 
         return redirect()->route('backend.stats.index')->with('message', 'Statistik berhasil dihapus.');
+    }
+
+    public function show(Stat $stat)
+    {
+        $module_title = $this->module_title;
+        $module_name = $this->module_name;
+        $module_path = $this->module_path;
+        $module_icon = $this->module_icon;
+        $module_action = 'Show';
+
+        return view('backend.stats.show', compact(
+            'stat',
+            'module_title',
+            'module_name',
+            'module_path',
+            'module_icon',
+            'module_action'
+        ));
+    }
+
+    public function index_data()
+    {
+        $stats = Stat::select('id', 'value', 'label', 'label_en', 'sort_order', 'is_active', 'updated_at')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+
+        return DataTables::of($stats)
+            ->addIndexColumn()
+            ->editColumn('label', fn ($stat) => e($stat->label))
+            ->editColumn('label_en', fn ($stat) => e($stat->label_en ?: 'N/A'))
+            ->addColumn('status', function ($stat) {
+                return $stat->is_active
+                    ? '<span class="badge bg-success">'.__('Active').'</span>'
+                    : '<span class="badge bg-secondary">'.__('Inactive').'</span>';
+            })
+            ->editColumn('updated_at', function ($stat) {
+                if (! $stat->updated_at) {
+                    return 'N/A';
+                }
+
+                $diff = Carbon::now()->diffInHours($stat->updated_at);
+
+                return $diff < 25
+                    ? $stat->updated_at->diffForHumans()
+                    : $stat->updated_at->isoFormat('llll');
+            })
+            ->addColumn('action', function ($stat) {
+                return view('backend.stats.partials.actions', compact('stat'))->render();
+            })
+            ->rawColumns(['status', 'action'])
+            ->make(true);
     }
 }
