@@ -5,6 +5,7 @@ namespace Modules\Post\Models;
 use App\Models\BaseModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Modules\Post\Enums\PostStatus;
@@ -27,6 +28,9 @@ class Post extends BaseModel
         return array_merge(parent::casts(), [
             'event_start_date' => 'datetime',
             'event_end_date' => 'datetime',
+            'is_our_work' => 'boolean',
+            'our_work_sort_order' => 'integer',
+            'gallery_images' => 'array',
         ]);
     }
 
@@ -89,6 +93,11 @@ class Post extends BaseModel
     public function service()
     {
         return $this->belongsTo(\App\Models\Service::class);
+    }
+
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Service::class, 'post_service')->withTimestamps();
     }
 
     /**

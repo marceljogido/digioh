@@ -33,7 +33,9 @@ class OurWorkIndex extends Component
 
     public function render()
     {
-        $query = Post::published()->with('service');
+        $query = Post::published()
+            ->where('is_our_work', true)
+            ->with('services');
 
         if ($this->q !== '') {
             $q = trim($this->q);
@@ -45,10 +47,10 @@ class OurWorkIndex extends Component
         }
 
         if ($this->service !== '') {
-            $service = Service::where('slug', $this->service)->first();
-            if ($service) {
-                $query->where('service_id', $service->id);
-            }
+            $serviceSlug = $this->service;
+            $query->whereHas('services', function ($sub) use ($serviceSlug) {
+                $sub->where('slug', $serviceSlug);
+            });
         }
 
         // Filter by year/month (use event_* if present, otherwise published_at)
@@ -91,7 +93,11 @@ class OurWorkIndex extends Component
         }
 
         $posts = $query->paginate($this->perPage);
-        $services = Service::active()->sorted()->get(['name','slug']);
+        $services = Service::whereHas('posts', function ($q) {
+                $q->where('is_our_work', true);
+            })
+            ->sorted()
+            ->get(['name','slug']);
         $years = range(now()->year, now()->year - 5);
         $months = [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
@@ -114,3 +120,4 @@ class OurWorkIndex extends Component
         $this->resetPage();
     }
 }
+

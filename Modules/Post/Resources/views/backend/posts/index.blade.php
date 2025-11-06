@@ -51,7 +51,7 @@
                                 @foreach ($$module_name as $module_name_singular)
                                     <tr>
                                         <td>
-                                            {{ $module_name_singular->id }}
+                                            {{ ($$module_name->currentPage() - 1) * $$module_name->perPage() + $loop->iteration }}
                                         </td>
                                         <td>
                                             <a href="{{ url("admin/$module_name", $module_name_singular->id) }}">

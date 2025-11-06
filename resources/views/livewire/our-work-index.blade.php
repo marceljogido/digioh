@@ -37,7 +37,7 @@
                 <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">{{ __('Urutkan') }}</label>
                 <div class="mt-2 flex flex-wrap gap-2">
                     <button type="button" wire:click="$set('sort','newest')" class="rounded-full border px-3 py-1 text-xs font-medium transition @if($sort==='newest') border-indigo-300 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 @else border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 @endif">{{ __('Terbaru') }}</button>
-                    <button type="button" wire:click="$set('sort','az')" class="rounded-full border px-3 py-1 text-xs font-medium transition @if($sort==='az') border-indigo-300 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 @else border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 @endif">A–Z</button>
+                    <button type="button" wire:click="$set('sort','az')" class="rounded-full border px-3 py-1 text-xs font-medium transition @if($sort==='az') border-indigo-300 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 @else border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 @endif">A - Z</button>
                     <button type="button" wire:click="$set('sort','oldest')" class="rounded-full border px-3 py-1 text-xs font-medium transition @if($sort==='oldest') border-indigo-300 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 @else border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 @endif">{{ __('Terlama') }}</button>
                 </div>
                 <div class="mt-4 grid grid-cols-2 gap-2">
@@ -71,7 +71,7 @@
                 <label class="mr-2">{{ __('Urutkan') }}</label>
                 <select wire:model="sort" class="rounded-lg border border-slate-200 bg-white/80 px-2 py-1 text-xs focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900">
                     <option value="newest">{{ __('Terbaru') }}</option>
-                    <option value="az">A–Z</option>
+                    <option value="az">A - Z</option>
                     <option value="oldest">{{ __('Terlama') }}</option>
                 </select>
                 <div class="mt-2 grid grid-cols-2 gap-2">
@@ -104,7 +104,7 @@
                             @php($end = $post->event_end_date)
                             @if($start)
                                 @if($end && !$start->isSameDay($end))
-                                    <span>{{ $start->isoFormat('D MMM') }}–{{ $end->isoFormat('D MMM YYYY') }}</span>
+                                    <span>{{ $start->isoFormat('D MMM') }} - {{ $end->isoFormat('D MMM YYYY') }}</span>
                                 @else
                                     <span>{{ $start->isoFormat('D MMM YYYY') }}</span>
                                 @endif
@@ -115,9 +115,11 @@
                                 <span class="h-1 w-1 rounded-full bg-indigo-200"></span>
                                 <span>{{ $post->event_location }}</span>
                             @endif
-                            @if($post->service)
+                            @if($post->services->count())
                                 <span class="h-1 w-1 rounded-full bg-indigo-200"></span>
-                                <span>{{ $post->service->name }}</span>
+                                <span>
+                                    {{ $post->services->sortBy('name')->pluck('name')->join(', ') }}
+                                </span>
                             @endif
                         </div>
                         <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ $post->name }}</h3>

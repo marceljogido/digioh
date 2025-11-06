@@ -16,8 +16,22 @@ class ServiceController extends Controller
 
     public function show(Service $service)
     {
-        $posts = Post::published()->where('service_id', $service->id)->recentlyPublished()->paginate(9);
-        return view('frontend.services.show', compact('service', 'posts'));
+        $posts = Post::published()
+            ->whereHas('services', function ($query) use ($service) {
+                $query->where('services.id', $service->id);
+            })
+            ->recentlyPublished()
+            ->paginate(9);
+
+        $relatedWorks = Post::published()
+            ->where('is_our_work', true)
+            ->whereHas('services', function ($query) use ($service) {
+                $query->where('services.id', $service->id);
+            })
+            ->orderByDesc('published_at')
+            ->limit(6)
+            ->get();
+
+        return view('frontend.services.show', compact('service', 'posts', 'relatedWorks'));
     }
 }
-

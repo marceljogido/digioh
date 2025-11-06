@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\Post\Models\Post;
 
 class Service extends BaseModel
 {
@@ -30,5 +32,10 @@ class Service extends BaseModel
     public function scopeSorted(Builder $q): void
     {
         $q->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_service')->withTimestamps();
     }
 }

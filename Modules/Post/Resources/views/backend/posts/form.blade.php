@@ -1,3 +1,25 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Str;
+
+    $postEntity = $data ?? null;
+    $serviceOptions = \App\Models\Service::sorted()->pluck('name','id');
+    $selectedServices = old('service_ids', $postEntity ? $postEntity->services->pluck('id')->toArray() : []);
+    $existingGallery = $postEntity && is_array($postEntity->gallery_images) ? $postEntity->gallery_images : [];
+    $removeGalleryOld = old('remove_gallery', []);
+    $featuredLimit = 3;
+    $currentIsFeatured = $postEntity ? (bool) $postEntity->is_featured : false;
+    $oldIsFeatured = (bool) old('is_featured', $currentIsFeatured);
+    $featuredCount = \Modules\Post\Models\Post::query()
+        ->where('is_featured', true)
+        ->when($postEntity, function ($query) use ($postEntity) {
+            $query->where('id', '!=', $postEntity->id);
+        })
+        ->count();
+    $featuredLimitReached = $featuredCount >= $featuredLimit;
+    $disableFeaturedToggle = $featuredLimitReached && ! $oldIsFeatured;
+@endphp
+
 <div class="row">
     <div class="col-12 col-sm-6 mb-3">
         <div class="form-group">
@@ -64,7 +86,6 @@
             $field_lable = __("Cover Image");
             $field_placeholder = $field_lable;
             $required = "";
-            $postEntity = $data ?? null;
             ?>
             {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
             {!! field_required($required) !!}
@@ -95,39 +116,42 @@
 </div>
 
 <div class="row">
-    <div class="col-12 col-sm-6 mb-3">
+    <div class="col-12 col-md-6 mb-3">
         <div class="form-group">
-            <?php
-            $field_name = "service_id";
-            $field_lable = "Service";
-            $field_options = \App\Models\Service::sorted()->pluck('name','id');
-            $selected = old('service_id', optional($data)->service_id);
-            $field_placeholder = __("Select an option");
-            $required = "";
-            ?>
-            {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
-            {!! field_required($required) !!}
-            {{ html()->select($field_name, $field_options, $selected)->placeholder($field_placeholder)->class("form-select") }}
+            <label class="form-label" for="service_ids">{{ __('Services') }}</label>
+            <select name="service_ids[]" id="service_ids" class="form-select select2" multiple>
+                @foreach($serviceOptions as $id => $name)
+                    <option value="{{ $id }}" @selected(in_array($id, $selectedServices))>{{ $name }}</option>
+                @endforeach
+            </select>
+            <small class="text-muted">{{ __('Pilih satu atau lebih layanan yang terlibat dalam proyek ini.') }}</small>
         </div>
     </div>
-    <div class="col-12 col-sm-6 mb-3">
+    <div class="col-12 col-md-3 mb-3">
         <div class="form-group">
-            <?php
-            $field_name = "is_featured";
-            $field_lable = __("Show on Home");
-            ?>
-            <input type="hidden" name="{{ $field_name }}" value="0">
-            <div class="form-check form-switch mt-4">
+            <label class="form-label d-block" for="is_featured">{{ __('Show on Home') }}</label>
+            <input type="hidden" name="is_featured" value="0">
+            <div class="form-check form-switch mt-2">
                 <input
                     class="form-check-input"
                     type="checkbox"
                     value="1"
-                    id="{{ $field_name }}"
-                    name="{{ $field_name }}"
-                    @checked(old('is_featured', optional($data)->is_featured))
+                    id="is_featured"
+                    name="is_featured"
+                    @checked($oldIsFeatured)
+                    @disabled($disableFeaturedToggle)
                 >
-                <label class="form-check-label" for="{{ $field_name }}">{{ $field_lable }}</label>
+                <label class="form-check-label" for="is_featured">{{ __('Tampilkan di home blog') }}</label>
             </div>
+            @if($disableFeaturedToggle)
+                <small class="text-danger d-block mt-2">
+                    {{ __('Batas :max konten di beranda sudah terpenuhi. Nonaktifkan salah satu konten lain terlebih dahulu.', ['max' => $featuredLimit]) }}
+                </small>
+            @else
+                <small class="text-muted d-block mt-2">
+                    {{ __('Tandai untuk menampilkan artikel di beranda (maksimal :max konten).', ['max' => $featuredLimit]) }}
+                </small>
+            @endif
         </div>
     </div>
 </div>
@@ -146,6 +170,9 @@
             {{ html()->select($field_name, $select_options)->placeholder($field_placeholder)->class("form-select")->attributes(["$required"]) }}
         </div>
     </div>
+</div>
+
+<div class="row">
     <div class="col-12 col-sm-6 mb-3">
         <div class="form-group">
             <?php
@@ -159,7 +186,39 @@
             {{ html()->datetime($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(["$required"]) }}
         </div>
     </div>
+    <div class="col-12 col-sm-6 mb-3">
+        <div class="form-group">
+            <label class="form-label" for="gallery_images">{{ __('Gallery Images') }}</label>
+            <input type="file" name="gallery_images[]" id="gallery_images" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp" multiple>
+            <small class="text-muted d-block mt-1">{{ __('Unggah beberapa gambar (maksimal 2 MB per file).') }}</small>
+        </div>
+    </div>
 </div>
+
+@if(count($existingGallery))
+    <div class="row mb-3">
+        <div class="col-12">
+            <label class="form-label d-block">{{ __('Galeri Saat Ini') }}</label>
+            <div class="d-flex flex-wrap gap-3">
+                @foreach($existingGallery as $galleryPath)
+                    @php
+                        $displayUrl = Str::startsWith($galleryPath, ['http://', 'https://'])
+                            ? $galleryPath
+                            : Storage::url($galleryPath);
+                    @endphp
+                    <div class="border rounded p-2 text-center" style="width: 140px;">
+                        <img src="{{ $displayUrl }}" alt="Gallery Image" class="img-fluid rounded mb-2" style="max-height: 100px;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="remove_gallery[]" value="{{ $galleryPath }}" id="remove_gallery_{{ md5($galleryPath) }}" @checked(in_array($galleryPath, (array)$removeGalleryOld))>
+                            <label class="form-check-label small" for="remove_gallery_{{ md5($galleryPath) }}">{{ __('Hapus') }}</label>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+@endif
+
 <div class="row">
     <div class="col-12 col-sm-4 mb-3">
         <div class="form-group">
@@ -201,3 +260,5 @@
         </div>
     </div>
 </div>
+
+<x-library.select2 />
