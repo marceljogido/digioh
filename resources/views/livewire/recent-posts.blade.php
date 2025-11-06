@@ -4,9 +4,11 @@
             class="mb-2 w-full rounded-md border bg-white px-4 py-5 shadow dark:bg-gray-600 dark:text-gray-300 sm:px-6"
         >
             <h3 class="text-lg font-medium leading-6 text-gray-800 dark:text-gray-200">
-                @lang("Recent Posts")
+                {{ __('Our Work Terbaru') }}
             </h3>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-200">Recently published articles!</p>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-200">
+                {{ __('Portofolio terbaru yang baru saja kami publikasikan.') }}
+            </p>
         </div>
         <ul class="flex w-full flex-col">
             @foreach ($recentPosts as $row)

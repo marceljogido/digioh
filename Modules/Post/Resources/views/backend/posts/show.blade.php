@@ -37,7 +37,7 @@
             <div class="col-12 col-sm-8">
                 <div class="card mb-4">
                     <div class="card-header">
-                        {{ __('Post Details') }}
+                        {{ __('Our Work Details') }}
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-striped mb-0">

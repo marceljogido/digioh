@@ -397,15 +397,15 @@
     @endif
 
     @if($blogPosts->count())
-    <section id="insights" class="fade-in bg-slate-50 dark:bg-slate-950">
+    <section id="our-works" class="fade-in bg-slate-50 dark:bg-slate-950">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Blog & insight terbaru') }}</span>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ __('Wawasan seputar produk digital, teknologi, dan pertumbuhan bisnis') }}</h2>
+                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Our Work terbaru') }}</span>
+                    <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ __('Portofolio proyek terbaru yang kami kerjakan bersama klien') }}</h2>
                 </div>
                 <a href="{{ route('frontend.ourwork.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-300">
-                    {{ __('Lihat semua') }}
+                    {{ __('Lihat semua Our Work') }}
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                 </a>
             </div>
@@ -416,7 +416,7 @@
                         <img src="{{ asset($post->image ?: 'img/default_post.svg') }}" alt="{{ $post->name }}" class="h-44 w-full object-cover">
                         <div class="flex flex-1 flex-col gap-4 p-6">
                             <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-indigo-500">
-                                <span>{{ __('Insight') }}</span>
+                                <span>{{ __('Our Work') }}</span>
                                 <span class="h-1 w-1 rounded-full bg-indigo-200"></span>
                                 <span>{{ $post->published_at ? $post->published_at->isoFormat('D MMM YYYY') : $post->created_at->isoFormat('D MMM YYYY') }}</span>
                             </div>
@@ -424,7 +424,7 @@
                             <p class="text-sm text-slate-600 dark:text-slate-300">{{ \Str::limit(strip_tags($post->intro ?: $post->content), 140) }}</p>
                             <div class="mt-auto">
                                 <a href="{{ route('frontend.posts.show', [encode_id($post->id), $post->slug]) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-300">
-                                    {{ __('Baca selengkapnya') }}
+                                    {{ __('Lihat detail proyek') }}
                                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                                 </a>
                             </div>
@@ -696,7 +696,6 @@
         </div>
     </section>
 @endsection
-
 
 
 

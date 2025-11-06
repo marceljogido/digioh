@@ -36,7 +36,7 @@
             </div>
             <div class="col-12 col-sm-4">
                 <h5>
-                    Posts
+                    Our Works
                     <small>({{ count($posts) }})</small>
                 </h5>
                 <ul>

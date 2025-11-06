@@ -7,10 +7,12 @@ use App\Http\Controllers\Backend\BackendBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Modules\Post\Enums\PostStatus;
+use Yajra\DataTables\Facades\DataTables;
 
 class PostsController extends BackendBaseController
 {
@@ -21,7 +23,7 @@ class PostsController extends BackendBaseController
     public function __construct()
     {
         // Page Title
-        $this->module_title = 'Posts';
+        $this->module_title = 'Our Works';
 
         // module name
         $this->module_name = 'posts';
@@ -123,6 +125,94 @@ class PostsController extends BackendBaseController
         logUserAccess($module_title.' '.$module_action.' | Id: '.$$module_name_singular->id);
 
         return redirect("admin/{$module_name}");
+    }
+
+    /**
+     * Return DataTable JSON for Our Works listing.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index_data()
+    {
+        $request = request();
+        $module_model = $this->module_model;
+
+        $posts = $module_model::select([
+            'id',
+            'name',
+            'slug',
+            'sort_order',
+            'event_start_date',
+            'event_end_date',
+            'published_at',
+            'updated_at',
+        ])
+            ->orderBy('sort_order')
+            ->orderBy('id');
+
+        if ($year = (int) $request->get('year')) {
+            $posts->where(function ($query) use ($year) {
+                $query->whereYear('event_start_date', $year)
+                    ->orWhere(function ($sub) use ($year) {
+                        $sub->whereNull('event_start_date')->whereYear('published_at', $year);
+                    });
+            });
+        }
+
+        if ($month = (int) $request->get('month')) {
+            $posts->where(function ($query) use ($month) {
+                $query->whereMonth('event_start_date', $month)
+                    ->orWhere(function ($sub) use ($month) {
+                        $sub->whereNull('event_start_date')->whereMonth('published_at', $month);
+                    });
+            });
+        }
+
+        return DataTables::of($posts)
+            ->addIndexColumn()
+            ->editColumn('name', function ($post) {
+                return '<strong>'.e($post->name).'</strong>';
+            })
+            ->addColumn('event_period', function ($post) {
+                $start = $post->event_start_date;
+                $end = $post->event_end_date;
+                $fallback = $post->published_at;
+
+                if ($start) {
+                    if ($end && !$start->isSameDay($end)) {
+                        return $start->isoFormat('D MMM YYYY').' - '.$end->isoFormat('D MMM YYYY');
+                    }
+
+                    return $start->isoFormat('D MMM YYYY');
+                }
+
+                if ($fallback) {
+                    return $fallback->isoFormat('D MMM YYYY');
+                }
+
+                return '-';
+            })
+            ->editColumn('updated_at', function ($post) {
+                $diff = Carbon::now()->diffInHours($post->updated_at);
+
+                return $diff < 25
+                    ? $post->updated_at->diffForHumans()
+                    : $post->updated_at->isoFormat('llll');
+            })
+            ->orderColumn('event_period', function ($query, $direction) {
+                $order = strtolower($direction) === 'asc' ? 'asc' : 'desc';
+                $query->orderByRaw('COALESCE(event_start_date, published_at) '.$order);
+            })
+            ->addColumn('action', function ($post) {
+                $module_name = $this->module_name;
+
+                return view('backend.includes.action_column', [
+                    'module_name' => $module_name,
+                    'data' => $post,
+                ]);
+            })
+            ->rawColumns(['name', 'action'])
+            ->make(true);
     }
 
     /**

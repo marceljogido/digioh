@@ -5,12 +5,9 @@
 @endsection
 
 @section("content")
-    <x-frontend.header-block :title="__('Articles')">
+    <x-frontend.header-block :title="__('Our Works')">
         <p class="mb-8 leading-relaxed">
-            We publish articles on a number of topics.
-            <br />
-            We encourage you to read our posts and let us know your feedback. It would be really help us to move
-            forward.
+            {{ __('Kumpulan proyek, studi kasus, dan pengalaman kolaborasi terbaru dari tim kami.') }}
         </p>
     </x-frontend.header-block>
 

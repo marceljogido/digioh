@@ -44,7 +44,7 @@
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">{{ __('Sumber daya') }}</p>
                     <ul class="mt-4 space-y-3 text-slate-400">
-                        <li><a href="{{ route('frontend.posts.index') }}" class="transition hover:text-white">{{ __('Blog & Insight') }}</a></li>
+                        <li><a href="{{ route('frontend.posts.index') }}" class="transition hover:text-white">{{ __('Our Work') }}</a></li>
                         <li><a href="{{ url('/#faq') }}" class="transition hover:text-white">{{ __('FAQ') }}</a></li>
                     </ul>
                 </div>

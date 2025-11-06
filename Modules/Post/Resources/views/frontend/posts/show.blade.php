@@ -45,11 +45,11 @@
                 <div class="py-5">
                     <div class="flex flex-col justify-between sm:flex-row">
                         <div class="pb-2">
-                            {{ __("Written by") }}:
+                            {{ __('Tim proyek') }}:
                             {{ isset($$module_name_singular->created_by_alias) ? $$module_name_singular->created_by_alias : $$module_name_singular->created_by_name }}
                         </div>
                         <div class="pb-2">
-                            {{ __("Published at") }}: {{ $$module_name_singular->published_at->isoFormat("llll") }}
+                            {{ __('Tanggal publikasi') }}: {{ $$module_name_singular->published_at->isoFormat("llll") }}
                         </div>
                     </div>
                 </div>
@@ -57,8 +57,7 @@
                 <div class="flex flex-row justify-between py-5">
                     <div>
                         <span class="font-weight-bold">
-                            @lang("Category")
-                            :
+                            {{ __('Kategori proyek') }}:
                         </span>
                         <x-frontend.badge
                             :url="route('frontend.categories.show', [
@@ -73,8 +72,7 @@
                 @if (count($$module_name_singular->tags))
                     <div class="py-5">
                         <span class="font-weight-bold">
-                            @lang("Tags")
-                            :
+                            {{ __('Tag proyek') }}:
                         </span>
 
                         @foreach ($$module_name_singular->tags as $tag)
@@ -88,7 +86,7 @@
 
                 <div class="py-5">
                     <div class="flex flex-row content-center items-center justify-around">
-                        <h6 class="">Share with others</h6>
+                        <h6 class="">{{ __('Bagikan proyek ini') }}</h6>
 
                         <div>
                             @php
