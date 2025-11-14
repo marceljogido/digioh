@@ -5,6 +5,12 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+body {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-variation-settings: "wdth" 100;
+}
+
 /* @import '/node_modules/@fortawesome/fontawesome-free/css/all.min.css'; */
 
 .trusted-marquee {

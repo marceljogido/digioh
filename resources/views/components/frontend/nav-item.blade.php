@@ -6,19 +6,32 @@
 ])
 
 <?php
-$active_classes = "border-transparent dark:border-transparent";
+$baseClasses =
+    'nav-link block rounded-full px-4 py-2 text-sm font-semibold tracking-tight transition duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 md:text-base';
+$lightClass = 'text-white/80 hover:bg-white/15 hover:text-white';
+$lightActiveClass = 'bg-white/20 text-white shadow shadow-slate-900/20 backdrop-blur';
+$darkClass = 'text-slate-700 hover:bg-slate-100 hover:text-slate-900';
+$darkActiveClass = 'bg-slate-900/10 text-slate-900 shadow shadow-slate-900/10';
 
-if ($active) {
-    $active_classes =
-        "rounded border-gray-700 bg-gray-200 hover:opacity-75 dark:border-gray-300 dark:bg-gray-700 sm:rounded-none sm:bg-transparent dark:sm:rounded-none dark:sm:bg-transparent";
-}
+$initialClass = implode(' ', [
+    $baseClasses,
+    $active ? $lightActiveClass : $lightClass,
+]);
 ?>
 
 <li>
     <a
-        class="{{ $active_classes }} block border-b-2 px-3 py-2 font-semibold text-gray-800 transition duration-200 ease-in hover:border-gray-700 hover:opacity-75 dark:text-white dark:hover:border-gray-300 dark:hover:opacity-75 sm:my-0 sm:py-1"
+        class="{{ $initialClass }}"
+        data-nav-link="true"
+        data-base-class="{{ $baseClasses }}"
+        data-light-class="{{ $lightClass }}"
+        data-light-active-class="{{ $lightActiveClass }}"
+        data-dark-class="{{ $darkClass }}"
+        data-dark-active-class="{{ $darkActiveClass }}"
+        data-active="{{ $active ? 'true' : 'false' }}"
         href="{{ $href }}"
         target="{{ $target }}"
+        @if($active) aria-current="page" @endif
     >
         {{ $slot }}
     </a>

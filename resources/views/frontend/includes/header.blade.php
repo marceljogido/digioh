@@ -1,9 +1,20 @@
+@php($currentLocale = app()->getLocale())
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-colors duration-300 bg-transparent border-b border-transparent">
     <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
         <a class="flex items-center space-x-3 rtl:space-x-reverse" href="/">
             <img class="h-9" src="{{ asset("img/logo-with-text.jpg") }}" alt="{{ app_name() }} Logo" />
         </a>
         <div class="flex items-center justify-end space-x-1 md:order-2 md:space-x-0 rtl:space-x-reverse">
+            <div class="hidden items-center gap-1 pe-2 md:flex">
+                @foreach(['id' => 'ID', 'en' => 'EN'] as $localeCode => $label)
+                    <a
+                        href="{{ route('language.switch', $localeCode) }}"
+                        class="rounded-full border px-3 py-1 text-xs font-semibold transition {{ $currentLocale === $localeCode ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/10 text-slate-600 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white border-white/30' }}"
+                    >
+                        {{ $label }}
+                    </a>
+                @endforeach
+            </div>
             <button
                 class="rounded-lg p-2.5 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
                 id="theme-toggle"
@@ -139,7 +150,7 @@
 
         <div class="hidden w-full items-center justify-between md:order-1 md:flex md:w-auto" id="navbar-language">
             <ul
-                class="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium dark:border-gray-700 dark:bg-gray-800 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:p-0 md:dark:bg-gray-900 rtl:space-x-reverse"
+                class="mt-4 flex flex-col gap-2 rounded-2xl border border-transparent bg-transparent p-4 text-sm font-semibold text-slate-800 shadow-none backdrop-blur-none md:mt-0 md:flex-row md:gap-0 md:border-transparent md:bg-transparent md:p-1 md:text-base dark:text-slate-200"
             >
                 <x-frontend.nav-item :active="request()->routeIs('home')">
                     {{ __("Home") }}
@@ -150,8 +161,8 @@
                 </x-frontend.nav-item>
 
                 <x-frontend.nav-item
-                    :href="route('frontend.ourwork.index')"
-                    :active="request()->routeIs('frontend.ourwork.*')"
+                    :href="route('frontend.posts.index')"
+                    :active="request()->routeIs('frontend.posts.*')"
                 >
                     {{ __("Our Work") }}
                 </x-frontend.nav-item>
@@ -165,6 +176,16 @@
                 <x-frontend.nav-item :href="route('contact')" :active="request()->routeIs('contact')">
                     {{ __("Contact") }}
                 </x-frontend.nav-item>
+                <li class="flex items-center gap-2 md:hidden">
+                    @foreach(['id' => 'Bahasa', 'en' => 'English'] as $localeCode => $label)
+                        <a
+                            href="{{ route('language.switch', $localeCode) }}"
+                            class="rounded-full border px-3 py-1 text-xs font-semibold transition {{ $currentLocale === $localeCode ? 'bg-indigo-600 text-white border-indigo-600' : 'text-slate-600 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white border-slate-200 dark:border-slate-700' }}"
+                        >
+                            {{ $label }}
+                        </a>
+                    @endforeach
+                </li>
 
             </ul>
         </div>
@@ -174,6 +195,17 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.getElementById('navbar');
+    const navLinks = document.querySelectorAll('[data-nav-link="true"]');
+    
+    function applyNavLinkStyles(isSolid) {
+        navLinks.forEach(link => {
+            const base = link.dataset.baseClass || '';
+            const isActive = link.dataset.active === 'true';
+            const lightClass = isActive ? link.dataset.lightActiveClass : link.dataset.lightClass;
+            const darkClass = isActive ? link.dataset.darkActiveClass : link.dataset.darkClass;
+            link.className = `${base} ${isSolid ? darkClass : lightClass}`.trim();
+        });
+    }
     
     if (!navbar) return;
     
@@ -187,15 +219,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Navbar sudah melewati hero section, ubah tampilan
                 navbar.classList.remove('bg-transparent', 'border-transparent');
                 navbar.classList.add('bg-white/90', 'border-gray-200', 'shadow-md', 'dark:bg-gray-900/90', 'dark:border-gray-700', 'backdrop-blur-md');
+                navbar.classList.add('navbar-solid');
+                applyNavLinkStyles(true);
             } else {
                 // Navbar masih di area hero section, jaga transparan
                 navbar.classList.remove('bg-white/90', 'border-gray-200', 'shadow-md', 'dark:bg-gray-900/90', 'dark:border-gray-700', 'backdrop-blur-md');
                 navbar.classList.add('bg-transparent', 'border-transparent');
+                navbar.classList.remove('navbar-solid');
+                applyNavLinkStyles(false);
             }
         } else {
             // Di halaman lain, navbar langsung berwarna
             navbar.classList.remove('bg-transparent', 'border-transparent');
             navbar.classList.add('bg-white/90', 'border-gray-200', 'shadow-md', 'dark:bg-gray-900/90', 'dark:border-gray-700', 'backdrop-blur-md');
+            navbar.classList.add('navbar-solid');
+            applyNavLinkStyles(true);
         }
     }
     

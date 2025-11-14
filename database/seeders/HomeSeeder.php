@@ -7,7 +7,6 @@ use Database\Seeders\Home\SliderSeeder;
 use Database\Seeders\Home\ClientLogoSeeder;
 use Database\Seeders\Home\ServiceSeeder;
 use Database\Seeders\Home\FaqSeeder;
-use Database\Seeders\Home\OurWorkSeeder;
 use Database\Seeders\Home\PostSeeder;
 
 class HomeSeeder extends Seeder
@@ -22,7 +21,6 @@ class HomeSeeder extends Seeder
             ClientLogoSeeder::class,
             ServiceSeeder::class,
             FaqSeeder::class,
-            OurWorkSeeder::class,
             PostSeeder::class,
         ]);
     }

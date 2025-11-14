@@ -26,7 +26,8 @@
             ['value' => '98%', 'label' => __('Pelanggan yang kembali bekerja bersama')],
         ];
 
-        $stats = $stats ?? collect($defaultStats);
+        $stats = collect($stats ?? $defaultStats);
+        $heroHighlights = $stats->take(3);
 
         $genericServiceIcon = '<svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5L6 12z"/></svg>';
         $defaultServices = [
@@ -107,7 +108,6 @@
             })
             : collect($defaultFaqs);
 
-        $works = \Modules\OurWork\Models\OurWork::active()->where('featured_on_home', true)->sorted()->take(6)->get();
         $blogPosts = \Modules\Post\Models\Post::published()->featured()->take(3)->get();
 
         $cta = [
@@ -140,6 +140,10 @@
                 slides: @json($heroSlides->values()),
                 current: 0,
                 interval: null,
+                titleFallbackText: @json(__('PT. Digital Open House - Transformasi Digital Tanpa Ribet')),
+                subtitleFallbackText: @json(__('Kami membantu brand tumbuh melalui strategi, desain, dan teknologi digital end-to-end.')),
+                ctaFallbackText: @json(__('Diskusikan proyek Anda')),
+                ctaFallbackLink: "#contact",
                 start() {
                     this.stop();
                     if (this.slides.length > 1) {
@@ -175,28 +179,38 @@
                 </div>
             </template>
 
-            <div class="relative z-10 mx-auto flex min-h-screen max-w-screen-xl flex-col justify-center gap-6 px-4 py-20 sm:px-12">
-                <div class="max-w-2xl">
-                    <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-indigo-200">{{ __('Konsultan Transformasi Digital') }}</span>
-                    <template x-if="slides[current]?.title">
-                        <h1 class="mt-6 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl" x-text="slides[current].title"></h1>
-                    </template>
-                    <template x-if="slides[current]?.subtitle">
-                        <p class="mt-4 text-base text-slate-200 sm:text-lg" x-text="slides[current].subtitle"></p>
-                    </template>
-                </div>
-                <div class="flex flex-wrap items-center gap-4">
-                    <template x-if="slides[current]?.button_text">
-                        <a :href="slides[current].button_link || '#contact'" class="btn-animated inline-flex items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300">
-                            <span x-text="slides[current].button_text"></span>
+            <div class="relative z-10 mx-auto flex min-h-screen max-w-screen-xl flex-col justify-center gap-8 px-4 py-24 sm:px-12">
+                <div class="max-w-3xl space-y-6">
+                    <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] text-indigo-200">
+                        {{ __('PT. Digital Open House') }}
+                    </span>
+                    <h1 class="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl" x-text="slides[current]?.title || titleFallbackText"></h1>
+                    <p class="text-base text-slate-200 sm:text-lg" x-text="slides[current]?.subtitle || subtitleFallbackText"></p>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a
+                            :href="slides[current]?.button_link || ctaFallbackLink"
+                            class="btn-animated inline-flex items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                        >
+                            <span x-text="slides[current]?.button_text || ctaFallbackText"></span>
                         </a>
-                    </template>
-                    <a href="#services" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-100 hover:text-white">
-                        <span>{{ __('Lihat layanan kami') }}</span>
-                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                    </a>
+                    </div>
                 </div>
+
+                @if($heroHighlights->filter(fn($item) => !empty($item['value']) || !empty($item['label']))->count())
+                    <div class="flex flex-wrap gap-3">
+                        @foreach($heroHighlights as $highlight)
+                            <div class="group flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 text-white backdrop-blur transition hover:bg-white/15">
+                                <span class="text-2xl font-semibold leading-none">{{ $highlight['value'] ?? '' }}</span>
+                                <span class="max-w-[10rem] text-xs font-medium uppercase tracking-wide text-slate-200 group-hover:text-white">
+                                    {{ $highlight['label'] ?? '' }}
+                                </span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
+
+            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-slate-950 via-slate-950/70 via-20% to-transparent"></div>
 
             <template x-if="slides.length > 1">
                 <div class="pointer-events-none absolute inset-x-0 bottom-8 z-10 flex justify-center gap-3">
@@ -227,9 +241,9 @@
             </template>
         </section>
     @else
-        <section class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white">
+        <section class="relative overflow-hidden bg-gradient-to-r from-[#11224e] via-[#5c83c4] to-[#ffa630] text-white">
             <div class="absolute -left-20 top-[-140px] h-80 w-80 rounded-full bg-white/10 blur-3xl"></div>
-            <div class="absolute -right-28 bottom-[-160px] h-96 w-96 rounded-full bg-purple-500/20 blur-3xl"></div>
+            <div class="absolute -right-28 bottom-[-160px] h-96 w-96 rounded-full bg-orange-400/30 blur-3xl"></div>
 
             <div class="mx-auto flex max-w-screen-xl flex-col gap-10 px-4 py-24 sm:flex-row sm:items-center sm:justify-between sm:px-12">
                 <div class="max-w-2xl">
@@ -237,26 +251,26 @@
                     <h1 class="mt-6 text-4xl font-bold leading-tight sm:text-5xl">{{ __('Hadirkan pengalaman brand yang berkesan di setiap touchpoint.') }}</h1>
                     <p class="mt-4 text-base text-blue-100 sm:text-lg">{{ __('Tim DigiOH membantu Anda dari ide, produksi konten, hingga strategi growth.') }}</p>
                     <div class="mt-6 flex flex-wrap items-center gap-4">
-                        <a href="#services" class="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-slate-900/10 hover:bg-slate-100">{{ __('Lihat layanan kami') }}</a>
+                        <a href="#services" class="inline-flex items-center justify-center rounded-full bg-[#ffa630] px-6 py-3 text-sm font-semibold text-[#11224e] shadow-lg shadow-[#11224e]/30 transition hover:bg-[#f17720]">{{ __('Lihat layanan kami') }}</a>
                         @php($__waNum = preg_replace('/[^0-9]/','', setting('whatsapp_number') ?? ''))
                         @php($__waMsg = rawurlencode(setting('whatsapp_prefill') ?? 'Halo DigiOH, saya ingin berdiskusi.'))
                         @php($__waLink = $__waNum ? "https://wa.me/$__waNum?text=$__waMsg" : route('contact'))
-                        <a href="{{ $__waLink }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-blue-50">
+                        <a href="{{ $__waLink }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white">
                             {{ __('Hubungi kami') }}
                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                         </a>
                     </div>
                     <div class="mt-6 flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-indigo-200 sm:flex-row sm:items-center sm:gap-6">
                         <div class="flex items-center gap-2">
-                            <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                            <span class="h-1.5 w-1.5 rounded-full bg-[#ffa630]"></span>
                             <span>{{ __('Produksi konten on-site & studio') }}</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                            <span class="h-1.5 w-1.5 rounded-full bg-[#ffa630]"></span>
                             <span>{{ __('Tim lapangan multidisiplin') }}</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                            <span class="h-1.5 w-1.5 rounded-full bg-[#ffa630]"></span>
                             <span>{{ __('Pelaporan performa yang terukur') }}</span>
                         </div>
                     </div>
@@ -271,16 +285,17 @@
     @endif
     @include('frontend.pages.partials.about-snippet')
     @if($stats->count())
-        <section class="fade-in bg-slate-900 text-white">
-            <div class="mx-auto max-w-screen-xl px-4 py-12 sm:px-12">
-                <div class="mb-10 max-w-xl">
-                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">{{ __('Angka yang menunjukkan dampak DigiOH') }}</span>
+        <section class="fade-in relative overflow-hidden bg-gradient-to-b from-[#5c83c4] via-[#4f6da9] to-[#11224e] text-white">
+            <div class="absolute inset-0 opacity-25" style="background-image: radial-gradient(circle at 20% 10%, rgba(255,166,48,.35), transparent 45%), radial-gradient(circle at 80% 0%, rgba(241,119,32,.25), transparent 35%), radial-gradient(circle at 50% 90%, rgba(92,131,196,.4), transparent 50%);"></div>
+            <div class="relative mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
+                <div class="mb-10 max-w-xl text-center mx-auto">
+                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-[#ffa630]">{{ __('Angka yang menunjukkan dampak DigiOH') }}</span>
                 </div>
                 <div class="flex flex-wrap justify-center gap-6">
                     @foreach($stats as $stat)
-                        <div class="stat-card flex-shrink-0 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-black/10 backdrop-blur min-w-[240px] max-w-xs flex flex-col items-center text-center">
-                            <div class="text-3xl font-bold tracking-tight text-white">{{ $stat['value'] }}</div>
-                            <p class="mt-2 text-sm text-slate-300">{{ $stat['label'] }}</p>
+                        <div class="stat-card flex-shrink-0 min-w-[220px] max-w-xs flex flex-col items-center rounded-3xl border border-white/25 bg-white/10 p-6 text-center shadow-[0_20px_70px_rgba(0,0,0,0.25)] backdrop-blur">
+                            <div class="text-3xl font-bold tracking-tight text-[#ffa630]">{{ $stat['value'] }}</div>
+                            <p class="mt-2 text-sm text-white/80">{{ $stat['label'] }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -289,130 +304,81 @@
     @endif
 
     @if($services->count())
-    <section id="services" class="fade-in bg-slate-50 dark:bg-slate-950">
-        <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-            <div class="max-w-3xl">
-                <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Layanan utama') }}</span>
-                @php($servicesHeading = app()->getLocale() === 'en'
-                    ? __('We help companies design, build, and grow end-to-end digital products.')
-                    : __('Kami membantu perusahaan merancang, membangun, dan mengembangkan produk digital end-to-end.'))
-                <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ $servicesHeading }}</h2>
-                <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">{{ __('Dari fase discovery hingga pertumbuhan produk, tim multidisiplin kami siap mendampingi organisasi Anda mencapai objektif bisnis.') }}</p>
-            </div>
+    <section id="services" class="bg-white dark:bg-slate-950">
+        <div class="mx-auto max-w-screen-xl px-4 py-16 text-center sm:px-12">
+            <span class="text-xs font-semibold uppercase tracking-[0.3em] text-[#f17720]">{{ __('Our Services') }}</span>
+            <h2 class="mt-3 text-3xl font-bold text-[#11224e] dark:text-white">{{ __('Layanan yang kami tawarkan') }}</h2>
+            <p class="mx-auto mt-4 max-w-3xl text-sm text-slate-600 dark:text-slate-100">{{ __('We help companies design, build, and grow end-to-end digital products.') }}</p>
 
-            <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                @foreach($services as $service)
-                    <div class="service-card group flex h-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-xl dark:border-slate-800/50 dark:bg-slate-900 dark:shadow-black/30">
-                        <div>
-                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                @if(strpos($service['icon'], '<') !== false && strpos($service['icon'], '>') !== false)
-                                    {!! $service['icon'] !!}
+            <div class="mt-12 grid gap-10 md:grid-cols-2 xl:grid-cols-4">
+                @foreach($services->take(8) as $service)
+                    <article class="flex h-full flex-col items-center text-center gap-4 rounded-3xl border border-[#e9e6df] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/40">
+                        @php($imagePath = $service['image'] ?? null)
+                        <div class="h-28 w-28 rounded-full border-4 border-[#ffa630] bg-white p-1 shadow-lg shadow-[#ffa630]/30">
+                            <div class="h-full w-full overflow-hidden rounded-full">
+                                @if($imagePath)
+                                    <img src="{{ asset($imagePath) }}" alt="{{ $service['title'] }}" class="h-full w-full object-cover">
+                                @elseif(!empty($service['icon']) && strpos($service['icon'], '<') === false)
+                                    <img src="{{ asset($service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-cover">
                                 @else
-                                    <img src="{{ asset($service['icon']) }}" alt="{{ $service['title'] }}" class="h-7 w-7">
+                                    <div class="flex h-full w-full items-center justify-center bg-[#f8f7f5] text-[#ffa630]">
+                                        <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/></svg>
+                                    </div>
                                 @endif
                             </div>
-                            <h3 class="mt-6 text-lg font-semibold text-slate-900 dark:text-white">{{ $service['title'] }}</h3>
-                            <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">{{ $service['description'] }}</p>
                         </div>
-                        <div class="mt-6 flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-300">
-                            @if(!empty($service['slug']))
-                                <a href="{{ route('frontend.services.show', $service['slug']) }}" class="inline-flex items-center gap-2">
-                                    {{ __('Pelajari layanan ini') }}
-                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                                </a>
-                            @else
+                        <h3 class="text-lg font-bold text-[#11224e] dark:text-white">{{ $service['title'] }}</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-100">{{ $service['description'] }}</p>
+                        @if(!empty($service['slug']))
+                            <a href="{{ route('frontend.services.show', $service['slug']) }}" class="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-[#f17720] dark:text-[#ffa630]">
                                 {{ __('Pelajari layanan ini') }}
                                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                            @endif
-                        </div>
-                    </div>
+                            </a>
+                        @endif
+                    </article>
                 @endforeach
             </div>
         </div>
     </section>
     @endif
 
-    
-    @if($works->count())
-        <section id="portfolio" class="fade-in bg-white dark:bg-gray-900">
-            <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-                <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                    <div class="max-w-2xl">
-                        <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Portofolio terbaru') }}</span>
-                        <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ __('Kisah sukses transformasi digital mitra kami') }}</h2>
-                        <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">{{ __('Kami membantu brand dari berbagai industri merancang pengalaman digital yang berdampak. Berikut beberapa highlight proyek yang baru saja kami selesaikan.') }}</p>
-                    </div>
-                    <a href="{{ route('frontend.ourwork.index') ?? '#' }}" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-300">
-                        {{ __('Lihat semua studi kasus') }}
-                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                    </a>
-                </div>
-
-                <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                    @foreach($works as $work)
-                        <article class="portfolio-item group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/30">
-                            @if($work->cover_image)
-                                <div class="relative overflow-hidden">
-                                    <img src="{{ asset($work->cover_image) }}" alt="{{ $work->name }}" class="h-48 w-full object-cover transition duration-700 group-hover:scale-105">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                                    <div class="absolute bottom-3 left-4 text-xs font-medium uppercase tracking-wider text-white/80">{{ __('Featured project') }}</div>
-                                </div>
-                            @endif
-                            <div class="flex flex-1 flex-col gap-4 p-6">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ $work->name }}</h3>
-                                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ \Str::limit(strip_tags($work->excerpt ?: $work->description), 120) }}</p>
-                                </div>
-                                <div class="mt-auto flex items-center justify-between text-sm font-semibold text-indigo-600 dark:text-indigo-300">
-                                    <a href="{{ route('frontend.ourwork.show', [encode_id($work->id), $work->slug]) }}" class="inline-flex items-center gap-2">
-                                        {{ __('Lihat studi kasus') }}
-                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                                    </a>
-                                    @if($work->industry)
-                                        <span class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ $work->industry }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-            </div>
-    </section>
-
-    @endif
-
     @if($blogPosts->count())
-    <section id="our-works" class="fade-in bg-slate-50 dark:bg-slate-950">
+    <section id="our-works" class="bg-gradient-to-b from-[#5c83c4] via-[#4f6da9] to-[#11224e] text-white">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Our Work terbaru') }}</span>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ __('Portofolio proyek terbaru yang kami kerjakan bersama klien') }}</h2>
+                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-[#ffa630]">{{ __('Beyond Expectations Stories') }}</span>
+                    <h2 class="mt-3 text-3xl font-bold text-white">{{ __('OUR RECENT PROJECT AND EVENTS') }}</h2>
                 </div>
-                <a href="{{ route('frontend.ourwork.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-300">
-                    {{ __('Lihat semua Our Work') }}
+                <a href="{{ route('frontend.posts.index') }}" class="inline-flex items-center gap-2 rounded-full border border-white px-4 py-2 text-sm font-semibold text-white transition hover:bg-white hover:text-[#11224e]">
+                    {{ __('Jelajahi Ourwork') }}
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                 </a>
             </div>
 
-            <div class="mt-10 grid gap-6 md:grid-cols-3">
-                @foreach($blogPosts as $post)
-                    <article class="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/30">
-                        <img src="{{ asset($post->image ?: 'img/default_post.svg') }}" alt="{{ $post->name }}" class="h-44 w-full object-cover">
-                        <div class="flex flex-1 flex-col gap-4 p-6">
-                            <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-indigo-500">
-                                <span>{{ __('Our Work') }}</span>
-                                <span class="h-1 w-1 rounded-full bg-indigo-200"></span>
+            <div class="mt-10 grid gap-10 md:grid-cols-3">
+                @foreach($blogPosts as $index => $post)
+                    @php($summary = \Str::limit(strip_tags($post->intro ?: $post->content), 140))
+                    <article class="group flex flex-col gap-4 rounded-[32px] border border-white/20 bg-white/5 p-6 shadow-[0_25px_80px_rgba(0,0,0,0.3)]">
+                        <div class="overflow-hidden rounded-[24px] bg-white/10">
+                            <img
+                                src="{{ asset($post->image ?: 'img/default_post.svg') }}"
+                                alt="{{ $post->name }}"
+                                class="h-64 w-full object-cover transition duration-700 group-hover:scale-105"
+                            >
+                        </div>
+                        <div class="space-y-3 text-white">
+                            <div class="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-widest text-white/70">
+                                <span>{{ __('Project Highlight') }}</span>
+                                <span class="mx-1 h-1 w-1 rounded-full bg-[#ffa630]"></span>
                                 <span>{{ $post->published_at ? $post->published_at->isoFormat('D MMM YYYY') : $post->created_at->isoFormat('D MMM YYYY') }}</span>
                             </div>
-                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ $post->name }}</h3>
-                            <p class="text-sm text-slate-600 dark:text-slate-300">{{ \Str::limit(strip_tags($post->intro ?: $post->content), 140) }}</p>
-                            <div class="mt-auto">
-                                <a href="{{ route('frontend.posts.show', [encode_id($post->id), $post->slug]) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-300">
-                                    {{ __('Lihat detail proyek') }}
-                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                                </a>
-                            </div>
+                            <h3 class="text-2xl font-semibold">{{ $post->name }}</h3>
+                            <p class="text-base text-white/80">{{ $summary }}</p>
+                            <a href="{{ route('frontend.posts.show', [encode_id($post->id), $post->slug]) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-[#ffa630] hover:text-white">
+                                {{ __('Lihat detail proyek') }}
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                            </a>
                         </div>
                     </article>
                 @endforeach
@@ -425,19 +391,33 @@
     <section class="relative overflow-hidden bg-white dark:bg-gray-900" id="partners">
         <style>
             /* Trusted by visual polish */
-            #partners .trusted-marquee,
-            #partners [role="list"] {
+            #partners .trusted-marquee {
                 display: flex;
                 align-items: center;
                 gap: 2rem;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                scroll-padding: 1rem;
+                padding-bottom: .5rem;
+                cursor: grab;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            #partners .trusted-marquee::-webkit-scrollbar {
+                display: none;
+            }
+            #partners .trusted-marquee:active {
+                cursor: grabbing;
             }
             #partners .trusted-marquee-item {
+                flex: 0 0 auto;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 padding: .5rem 1rem;
                 border-radius: .75rem;
                 background: transparent;
+                scroll-snap-align: center;
             }
             #partners .trusted-marquee-item img {
                 max-height: 44px;
@@ -456,16 +436,10 @@
             }
         </style>
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div class="flex flex-col gap-4">
                 <div>
-                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">{{ __('Trusted by') }}</h2>
+                    <h2 class="text-2xl font-semibold text-[#11224e] dark:text-white">{{ __('Trusted by') }}</h2>
                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Brand-brand ini telah bekerja bersama kami untuk menghadirkan solusi digital terbaik.') }}</p>
-                </div>
-                <div class="hidden sm:flex items-center gap-2 text-sm text-slate-400 dark:text-slate-500">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 4.5 19.5 12l-6.75 7.5M4.5 4.5 11.25 12 4.5 19.5"></path>
-                    </svg>
-                    <span>{{ __('Geser untuk melihat lainnya') }}</span>
                 </div>
             </div>
 
@@ -473,16 +447,71 @@
                 @if($useMarquee)
                     <div class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-gray-900 dark:via-gray-900/80"></div>
                     <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-gray-900 dark:via-gray-900/80"></div>
-                    <div class="trusted-marquee" role="list">
+                    <div
+                        class="trusted-marquee"
+                        role="list"
+                        x-data="{
+                            isDown: false,
+                            startX: 0,
+                            scrollStart: 0,
+                            moved: false,
+                            startDrag(event) {
+                                this.isDown = true;
+                                this.moved = false;
+                                this.startX = this.pageX(event);
+                                this.scrollStart = this.$refs.logoTrack.scrollLeft;
+                            },
+                            drag(event) {
+                                if (!this.isDown) return;
+                                event.preventDefault();
+                                this.moved = true;
+                                const x = this.pageX(event);
+                                const walk = x - this.startX;
+                                this.$refs.logoTrack.scrollLeft = this.scrollStart - walk;
+                            },
+                            endDrag() {
+                                this.isDown = false;
+                                setTimeout(() => (this.moved = false), 60);
+                            },
+                            pageX(event) {
+                                if (event.touches && event.touches.length) {
+                                    return event.touches[0].pageX;
+                                }
+                                return event.pageX;
+                            }
+                        }"
+                        x-ref="logoTrack"
+                        @mousedown.prevent="startDrag($event)"
+                        @touchstart.prevent="startDrag($event)"
+                        @mouseleave="endDrag()"
+                        @mouseup.window="endDrag()"
+                        @touchend.window="endDrag()"
+                        @mousemove="drag($event)"
+                        @touchmove="drag($event)"
+                    >
                         @foreach($marqueeLogos as $logo)
                             <div class="trusted-marquee-item" role="listitem">
                                 @if($logo->website_url)
-                                    <a href="{{ $logo->website_url }}" target="_blank" rel="nofollow noopener" title="{{ $logo->client_name }}">
-                                        <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}">
+                                    <a
+                                        href="{{ $logo->website_url }}"
+                                        target="_blank"
+                                        rel="nofollow noopener"
+                                        title="{{ $logo->client_name }}"
+                                        draggable="false"
+                                        @click="if(moved){ $event.preventDefault(); }"
+                                    >
+                                        <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" draggable="false">
                                     </a>
                                 @else
-                                    <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" title="{{ $logo->client_name }}">
-                                @endif>
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset($logo->logo) }}"
+                                        alt="{{ $logo->client_name }}"
+                                        title="{{ $logo->client_name }}"
+                                        draggable="false"
+                                        @click="if(moved){ $event.preventDefault(); }"
+                                    >
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -492,21 +521,21 @@
                             <div class="trusted-marquee-item" role="listitem">
                                 @if($logo->website_url)
                                     <a href="{{ $logo->website_url }}" target="_blank" rel="nofollow noopener" title="{{ $logo->client_name }}">
-                                        <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}">
+                                        <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" draggable="false">
                                     </a>
                                 @else
-                                    <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" title="{{ $logo->client_name }}">
-                                @endif>
+                                    <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" title="{{ $logo->client_name }}" draggable="false">
+                                @endif
                             </div>
                         @endforeach
                     </div>
-                @endif>
+                @endif
             </div>
         </div>
     </section>
     @endif
 
-    <section id="why-us" class="fade-in relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white">
+    {{-- <section id="why-us" class="fade-in relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="mx-auto max-w-3xl text-center">
                 <span class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Why Choose Us') }}</span>
@@ -559,26 +588,29 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     @if($instagramSection['enabled'] && $instagramSection['embeds']->count())
-    <section id="instagram" class="fade-in bg-slate-50 dark:bg-slate-950">
-        <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-            <div class="max-w-3xl text-center mx-auto">
-                <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Instagram') }}</span>
+    <section id="instagram" class="fade-in relative overflow-hidden bg-gradient-to-b from-[#5c83c4] via-[#4f6da9] to-[#11224e] text-white">
+        <div class="absolute inset-0 opacity-35" style="background-image: radial-gradient(circle at 10% 15%, rgba(255,166,48,.35), transparent 45%), radial-gradient(circle at 85% 0%, rgba(241,119,32,.25), transparent 40%), radial-gradient(circle at 50% 90%, rgba(92,131,196,.5), transparent 50%);"></div>
+        <div class="relative mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
+            <div class="mx-auto max-w-3xl text-center space-y-4">
+                <span class="inline-flex items-center justify-center rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#ffa630]">{{ __('Instagram') }}</span>
                 @if($instagramSection['title'])
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ $instagramSection['title'] }}</h2>
+                    <h2 class="text-3xl font-bold text-white sm:text-4xl">{{ $instagramSection['title'] }}</h2>
                 @endif
                 @if($instagramSection['subtitle'])
-                    <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">{{ $instagramSection['subtitle'] }}</p>
+                    <p class="text-sm text-slate-200">{{ $instagramSection['subtitle'] }}</p>
                 @endif
             </div>
 
             <div class="mt-12 grid gap-6 md:grid-cols-{{ min($instagramSection['embeds']->count(), 3) }}">
                 @foreach($instagramSection['embeds'] as $embed)
                     <div class="flex justify-center">
-                        <div class="w-full max-w-sm">
-                            {!! $embed !!}
+                        <div class="w-full max-w-sm rounded-[32px] border border-white/20 bg-white/10 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.25)] backdrop-blur">
+                            <div class="overflow-hidden rounded-2xl bg-black/10">
+                                {!! $embed !!}
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -586,12 +618,12 @@
 
             @if($instagramSection['profile_url'] && $instagramSection['cta_text'])
                 <div class="mt-10 text-center">
-                    <a href="{{ $instagramSection['profile_url'] }}" target="_blank" rel="noopener" class="btn-animated inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <a href="{{ $instagramSection['profile_url'] }}" target="_blank" rel="noopener" class="btn-animated inline-flex items-center gap-3 rounded-full bg-[#ffa630] px-8 py-3 text-sm font-semibold text-[#11224e] shadow-lg shadow-[#11224e]/40 transition hover:-translate-y-0.5 hover:bg-[#f17720]">
+                        <svg class="h-5 w-5 text-[#11224e]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.624 5.367 12.013 11.987 12.013s12.013-5.389 12.013-12.013C24.029 5.367 18.641.001 12.017.001zM8.449 12.017c0-1.971 1.597-3.568 3.568-3.568s3.568 1.597 3.568 3.568-1.597 3.568-3.568 3.568-3.568-1.597-3.568-3.568zm7.675-3.976a.83.83 0 11-1.66 0 .83.83 0 011.66 0zM12.017 4.422c2.278 0 2.548.009 3.448.05.832.038 1.284.177 1.585.294.398.155.683.34.982.639.299.299.484.584.639.982.117.301.256.753.294 1.585.041.9.05 1.17.05 3.448s-.009 2.548-.05 3.448c-.038.832-.177 1.284-.294 1.585-.155.398-.34.683-.639.982-.299.299-.584.484-.982.639-.301.117-.753.256-1.585.294-.9.041-1.17.05-3.448.05s-2.548-.009-3.448-.05c-.832-.038-1.284-.177-1.585-.294a2.64 2.64 0 01-.982-.639 2.64 2.64 0 01-.639-.982c-.117-.301-.256-.753-.294-1.585-.041-.9-.05-1.17-.05-3.448s.009-2.548.05-3.448c.038-.832.177-1.284.294-1.585.155-.398.34-.683.639-.982.299-.299.584-.484.982-.639.301-.117.753-.256 1.585-.294.9-.041 1.17-.05 3.448-.05zm0-1.622c-2.317 0-2.608.01-3.518.052-.91.042-1.532.187-2.077.4-.562.218-1.04.51-1.515.985-.475.475-.767.953-.985 1.515-.213.545-.358 1.167-.4 2.077-.042.91-.052 1.201-.052 3.518s.009 2.608.052 3.518c.042.91.187 1.532.4 2.077.218.562.51 1.04.985 1.515.475.475.953.767 1.515.985.545.213 1.167.358 2.077.4.91.042 1.201.052 3.518.052s2.608-.01 3.518-.052c.91-.042 1.532-.187 2.077-.4.562-.218 1.04-.51 1.515-.985.475-.475.767-.953.985-1.515.213-.545.358-1.167.4-2.077.042-.91.052-1.201.052-3.518s-.01-2.608-.052-3.518c-.042-.91-.187-1.532-.4-2.077a4.085 4.085 0 00-.985-1.515 4.085 4.085 0 00-1.515-.985c-.545-.213-1.167-.358-2.077-.4-.91-.042-1.201-.052-3.518-.052z" clip-rule="evenodd"/>
                         </svg>
                         <span>{{ $instagramSection['cta_text'] }}</span>
-                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                        <svg class="h-4 w-4 text-[#11224e]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                     </a>
                 </div>
             @endif
@@ -603,125 +635,37 @@
     <section id="faq" class="fade-in bg-white dark:bg-gray-900">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="max-w-3xl">
-                <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('FAQ') }}</span>
-                <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ __('Pertanyaan yang sering kami terima') }}</h2>
-                <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">{{ __('Masih punya pertanyaan lain? Hubungi kami, tim kami akan dengan senang hati membantu.') }}</p>
+                <span class="text-xs font-semibold uppercase tracking-[0.3em] text-[#f17720]">{{ __('FAQ') }}</span>
+                <h2 class="mt-3 text-3xl font-bold text-[#11224e] dark:text-white">{{ __('Pertanyaan yang sering kami terima') }}</h2>
+                <p class="mt-4 text-sm text-slate-600 dark:text-slate-100">{{ __('Masih punya pertanyaan lain? Hubungi kami, tim kami akan dengan senang hati membantu.') }}</p>
             </div>
 
             <div class="mt-10 grid gap-6 lg:grid-cols-2" x-data="{ open: 0 }">
                 @foreach($faqs as $index => $faq)
-                    <div class="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/30">
+                    <div class="rounded-3xl border border-[#e9e6df] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/30">
                         <button type="button" class="flex w-full items-center justify-between gap-3 text-left" @click="open === {{ $index }} ? open = null : open = {{ $index }}">
-                            <span class="text-base font-semibold text-slate-900 dark:text-white">{{ $faq['question'] }}</span>
-                            <svg class="h-5 w-5 text-indigo-500 transition" :class="{ 'rotate-45': open === {{ $index }} }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                            <span class="text-base font-semibold text-[#11224e] dark:text-white">{{ $faq['question'] }}</span>
+                            <svg class="h-5 w-5 text-[#f17720] transition" :class="{ 'rotate-45': open === {{ $index }} }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                         </button>
-                        <div x-cloak x-show="open === {{ $index }}" x-transition class="mt-4 text-sm text-slate-600 dark:text-slate-300">
+                        <div x-cloak x-show="open === {{ $index }}" x-transition class="mt-4 text-sm text-slate-600 dark:text-slate-100">
                             {!! nl2br(e($faq['answer'])) !!}
                         </div>
                     </div>
-                @endforeach>
+                @endforeach
             </div>
         </div>
     </section>
     @endif
 
-    <section id="contact" class="fade-in bg-slate-900">
-        <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
+    {{-- <section id="contact" class="fade-in relative overflow-hidden bg-gradient-to-b from-[#5c83c4] via-[#4f6da9] to-[#11224e] text-white">
+        <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 10% 0%, rgba(255,166,48,.35), transparent 45%), radial-gradient(circle at 85% 5%, rgba(241,119,32,.25), transparent 35%), radial-gradient(circle at 55% 100%, rgba(92,131,196,.45), transparent 45%);"></div>
+        <div class="relative mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-                <div>
-                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-400">{{ __('Mari mulai') }}</span>
-                    <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl">{{ __('Cerita sukses Anda berikutnya bisa dimulai dari sini.') }}</h2>
-                    <p class="mt-4 max-w-xl text-sm text-slate-300">{{ __('Kirimkan detail kebutuhan dan tim kami akan merespons dalam 12 hari kerja. Kami juga dapat menjadwalkan discovery call singkat untuk memahami objektif Anda.') }}</p>
-                    <div class="mt-6 flex flex-wrap items-center gap-6 text-sm text-slate-300">
-                        <div class="flex items-center gap-3">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300">
-                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.128c0 .387-.19.75-.508.967l-8.25 5.5a1.125 1.125 0 01-1.234 0l-8.25-5.5a1.125 1.125 0 01-.508-.967V6.75z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 8.91l7.36 4.906c.53.353 1.25.353 1.78 0l7.36-4.906"/><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5h15"/></svg>
-                            </div>
-                            <div>
-                                <div class="text-xs uppercase tracking-wide text-slate-400">{{ __('Email kami') }}</div>
-                                <a href="mailto:{{ setting('contact_email') ?? 'hello@digioh.id' }}" class="font-semibold text-slate-200 hover:text-white">{{ setting('contact_email') ?? 'hello@digioh.id' }}</a>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-300">
-                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                            </div>
-                            <div>
-                                <div class="text-xs uppercase tracking-wide text-slate-400">{{ __('Kunjungi studio kami') }}</div>
-                                <p class="font-semibold text-slate-200">{{ setting('contact_address') ?? 'Jakarta & Yogyakarta' }}</p>
-                            </div>
-                        </div>
-                        @if(setting('contact_map_embed'))
-                            <div class="mt-6 overflow-hidden rounded-2xl">
-                                {!! setting('contact_map_embed') !!}
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                <div class="rounded-3xl border border-slate-800 bg-slate-950/60 p-8 shadow-2xl shadow-black/20">
-                    <h3 class="text-lg font-semibold text-white">{{ __('Ceritakan rencana Anda') }}</h3>
-                    <p class="mt-2 text-sm text-slate-300">{{ __('Isi formulir singkat di bawah ini dan kami akan segera menghubungi Anda kembali.') }}</p>
-                    <form class="mt-6 space-y-4" action="{{ route('contact') }}" method="GET">
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-wide text-slate-400" for="contact-name">{{ __('Nama') }}</label>
-                            <input id="contact-name" type="text" placeholder="{{ __('Nama lengkap') }}" class="mt-2 w-full rounded-full border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none focus:ring-0" required>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-wide text-slate-400" for="contact-email">{{ __('Email') }}</label>
-                            <input id="contact-email" type="email" placeholder="you@company.com" class="mt-2 w-full rounded-full border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none focus:ring-0" required>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-wide text-slate-400" for="contact-message">{{ __('Ringkasan kebutuhan') }}</label>
-                            <textarea id="contact-message" rows="4" placeholder="{{ __('Jelaskan tujuan dan tantangan utama bisnis Anda...') }}" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none focus:ring-0"></textarea>
-                        </div>
-                        <button type="submit" class="btn-animated inline-flex w-full items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400">{{ __('Kirim pesan') }}</button>
-                    </form>
-                </div>
+                ...
             </div>
         </div>
-    </section>
+    </section> --}}
 @endsection
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

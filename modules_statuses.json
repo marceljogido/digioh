@@ -2,7 +2,7 @@
     "Post": true,
     "Category": true,
     "Tag": true,
-    "OurWork": true,
+    "OurWork": false,
     "Slider": true,
     "Portfolio": true,
     "ClientLogo": true
