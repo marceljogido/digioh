@@ -2,8 +2,8 @@
 @php($aboutTitle = $locale === 'en' ? (setting('about_title_en') ?: setting('about_title')) : setting('about_title'))
 @php($aboutBody = $locale === 'en' ? (setting('about_body_en') ?: setting('about_body')) : setting('about_body'))
 @php($aboutTagline = $locale === 'en' ? (setting('about_tagline_en') ?: setting('about_tagline')) : setting('about_tagline'))
-@php($aboutTagline = $aboutTagline ?: 'Beyond Expectations, Beyond Events')
-@php($aboutExcerpt = $aboutBody ? \Illuminate\Support\Str::limit(strip_tags($aboutBody), 700, '...') : null)
+@php($aboutTagline = $aboutTagline ?: ($locale === 'en' ? 'Beyond Expectations, Beyond Experiences' : 'Melampaui ekspektasi, menciptakan pengalaman'))
+@php($aboutExcerpt = $aboutBody ? \Illuminate\Support\Str::limit(strip_tags($aboutBody), 1500, '...') : null)
 
 <section class="relative overflow-hidden bg-white dark:bg-slate-900/40">
     <div class="absolute inset-x-0 -top-32 h-56 bg-gradient-to-r from-indigo-100 via-purple-100 to-transparent opacity-60 blur-3xl dark:from-indigo-500/20 dark:via-blue-500/10"></div>
@@ -12,20 +12,21 @@
             <div>
                 <div class="flex items-center gap-3">
                     <span class="h-2 w-12 rounded-full bg-orange-500"></span>
-                    <span class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">{{ $locale === 'en' ? 'Who we are' : 'Siapa kami' }}</span>
+                    <span class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">{{ $locale === 'en' ? 'About us' : 'Tentang kami' }}</span>
                 </div>
                 <h2 class="mt-4 text-4xl font-black uppercase text-slate-900 dark:text-white">
-                    <span class="text-orange-500">{{ $locale === 'en' ? 'Who' : 'Siapa' }}</span>
-                    {{ $locale === 'en' ? 'we are?' : 'kami?' }}
+                    {{ $aboutTitle ?: ($locale === 'en' ? 'About DigiOH' : 'Tentang DigiOH') }}
                 </h2>
-                <p class="mt-4 text-sm font-semibold uppercase tracking-wide text-orange-500">
-                    {{ $aboutTagline }}
-                </p>
+                @if($aboutTagline)
+                    <p class="mt-4 text-sm font-semibold uppercase tracking-wide text-orange-500">
+                        {{ $aboutTagline }}
+                    </p>
+                @endif
                 <div class="mt-5 space-y-4 text-base leading-relaxed text-slate-700 dark:text-slate-300">
                     @if($aboutExcerpt)
                         {!! nl2br(e($aboutExcerpt)) !!}
                     @else
-                        <p>{{ $aboutTitle ?: ($locale === 'en' ? 'Digital transformation with a human touch.' : 'Transformasi digital yang manusiawi.') }}</p>
+                        <p>{{ $locale === 'en' ? 'Digital transformation with a human touch.' : 'Transformasi digital yang manusiawi.' }}</p>
                     @endif
                 </div>
                 <div class="mt-8 flex flex-wrap items-center gap-4">
@@ -42,7 +43,7 @@
                 <div class="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-orange-200 via-yellow-100 to-transparent opacity-70 blur-3xl dark:from-indigo-500/30 dark:via-blue-600/20"></div>
                 <div class="relative overflow-hidden rounded-[2.5rem] border border-slate-100 shadow-xl dark:border-slate-800/60">
                     @if(setting('about_image'))
-                        <img class="h-full w-full object-cover" src="{{ asset(setting('about_image')) }}" alt="{{ setting('about_title') }}">
+                        <img class="h-full w-full object-cover" src="{{ asset(setting('about_image')) }}" alt="{{ $aboutTitle ?: 'Digioh' }}">
                     @else
                         <img class="h-full w-full object-cover" src="{{ asset('img/about-placeholder.jpg') }}" alt="Digioh">
                     @endif

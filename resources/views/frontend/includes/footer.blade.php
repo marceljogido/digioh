@@ -7,24 +7,23 @@
         <div class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
             <div class="space-y-4">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 text-xl font-semibold">
-                    <img src="{{ asset('/public/img/logo.svg') }}" alt="{{ app_name() }}" class="h-10 w-auto" />
-                    <span class="hidden text-sm font-medium uppercase tracking-[0.3em] text-indigo-200 sm:block">{{ __('Digital Experience Studio') }}</span>
+                    <img src="{{ asset('/img/DIGIOH_Main Logo_Flat Color White.svg') }}" alt="{{app_name() }}" class="h-10 w-auto" />
                 </a>
                 <p class="text-xs leading-relaxed text-white/70">
                     {!! setting('meta_description') !!}
                 </p>
                 <div class="space-y-2 text-sm text-white/85">
                     <div class="flex items-center gap-4">
-                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-[#ffa630]">
-                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.128c0 .387-.19.75-.508.967l-8.25 5.5a1.125 1.125 0 01-1.234 0l-8.25-5.5a1.125 1.125 0 01-.508-.967V6.75z"/></svg>
+                        <span class="inline-flex h-10 w-10 shrink-0 aspect-square items-center justify-center rounded-full border border-white/20 bg-white/5 text-[#ffa630]">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.128c0 .387-.19.75-.508.967l-8.25 5.5a1.125 1.125 0 01-1.234 0l-8.25-5.5a1.125 1.125 0 01-.508-.967V6.75z"/></svg>
                         </span>
                         <a href="mailto:{{ setting('contact_email') ?? 'hello@digioh.id' }}" class="hover:text-white">{{ setting('contact_email') ?? 'hello@digioh.id' }}</a>
                     </div>
                     <div class="flex items-start gap-4">
-                        <span class="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-[#ffa630]">
+                        <span class="mt-1 inline-flex h-10 w-10 shrink-0 aspect-square items-center justify-center rounded-full border border-white/20 bg-white/5 text-[#ffa630]">
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                         </span>
-                        <span class="leading-relaxed">{!! nl2br(e(setting('contact_address') ?? 'Jakarta & Yogyakarta')) !!}</span>
+                        <span class="leading-relaxed">{!! nl2br(e(setting('contact_address') ?? 'Jakarta')) !!}</span>
                     </div>
                 </div>
                 <div class="pt-1">
@@ -50,13 +49,13 @@
             </div>
 
             <div class="space-y-3 text-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Kunjungi studio kami') }}</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Kunjungi lokasi kami') }}</p>
                 @if(setting('contact_map_embed'))
                     <div class="footer-map overflow-hidden rounded-2xl border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
                         {!! setting('contact_map_embed') !!}
                     </div>
                 @else
-                    <p class="text-white/70">{{ setting('contact_address') ?? 'Jakarta & Yogyakarta' }}</p>
+                    <p class="text-white/70">{{ setting('contact_address') ?? 'Jakarta' }}</p>
                 @endif
             </div>
         </div>
