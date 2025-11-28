@@ -62,14 +62,21 @@
 
                 <div class="col-lg-8">
                     <dl class="row mb-0">
-                        <dt class="col-sm-4">{{ __('Name') }}</dt>
-                        <dd class="col-sm-8">{{ $service->name }}</dd>
+                        @foreach(available_locales() as $locale)
+                            <dt class="col-sm-4">{{ __('Name') }} ({{ strtoupper($locale) }})</dt>
+                            <dd class="col-sm-8">{{ $service->getTranslation('name', $locale, false) ?: '-' }}</dd>
+                        @endforeach
 
                         <dt class="col-sm-4">{{ __('Slug') }}</dt>
                         <dd class="col-sm-8">{{ $service->slug }}</dd>
 
-                        <dt class="col-sm-4">{{ __('Description') }}</dt>
-                        <dd class="col-sm-8">{!! $service->description ?: '<span class="text-muted">-</span>' !!}</dd>
+                        @foreach(available_locales() as $locale)
+                            <dt class="col-sm-4">{{ __('Description') }} ({{ strtoupper($locale) }})</dt>
+                            <dd class="col-sm-8">
+                                {!! $service->getTranslation('description', $locale, false)
+                                    ?: '<span class="text-muted">-</span>' !!}
+                            </dd>
+                        @endforeach
 
                         <dt class="col-sm-4">{{ __('Featured on Home') }}</dt>
                         <dd class="col-sm-8">

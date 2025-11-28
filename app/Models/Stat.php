@@ -2,25 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class Stat extends Model
 {
+    use HasTranslations;
+
     protected $fillable = [
         'value',
         'label',
-        'label_en',
         'sort_order',
-        'is_active'
+        'is_active',
+    ];
+
+    public array $translatable = [
+        'label',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'sort_order' => 'integer',
         'value' => 'string',
-        'label' => 'string',
-        'label_en' => 'string'
     ];
 
     public function scopeActive(Builder $q): void

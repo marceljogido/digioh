@@ -261,6 +261,23 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="form-group">
+            <?php
+            $field_name = "scope_of_work";
+            $field_lable = __("Scope of Work");
+            $field_placeholder = __("Contoh: Stage design, Broadcast control, Talent handling");
+            $required = "";
+            ?>
+            {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
+            {!! field_required($required) !!}
+            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(['rows' => 2, "$required"]) }}
+            <small class="text-muted d-block mt-1">{{ __('Pisahkan beberapa scope dengan koma (,) agar mudah difilter.') }}</small>
+        </div>
+    </div>
+</div>
+
 <x-library.select2 />
 
 @once

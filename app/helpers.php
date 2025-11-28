@@ -30,6 +30,55 @@ if (! function_exists('app_url')) {
     }
 }
 
+if (! function_exists('available_locales')) {
+    /**
+     * Return the configured locale codes in display order.
+     */
+    function available_locales(): array
+    {
+        $locales = config('app.available_locales', []);
+
+        return array_keys(is_array($locales) ? $locales : []);
+    }
+}
+
+if (! function_exists('normalize_translations')) {
+    /**
+     * Normalize incoming translation payloads by trimming empty values and
+     * restricting them to configured locales.
+     */
+    function normalize_translations(?array $values, bool $allowEmpty = false, bool $preserveWhitespace = false): array
+    {
+        if (! is_array($values)) {
+            return [];
+        }
+
+        $translations = [];
+
+        foreach (available_locales() as $locale) {
+            if (! array_key_exists($locale, $values)) {
+                continue;
+            }
+
+            $rawValue = $values[$locale];
+
+            if (! is_string($rawValue)) {
+                continue;
+            }
+
+            $value = $preserveWhitespace ? $rawValue : trim($rawValue);
+
+            if ($value === '') {
+                continue;
+            }
+
+            $translations[$locale] = $value;
+        }
+
+        return $translations;
+    }
+}
+
 /*
  * Global helpers file with misc functions.
  */
@@ -210,9 +259,13 @@ if (! function_exists('encode_id')) {
      */
     function encode_id($id)
     {
+        if (is_null($id)) {
+            return null;
+        }
+
         $sqids = new Sqids\Sqids(alphabet: 'abcdefghijklmnopqrstuvwxyz123456789');
 
-        return $sqids->encode([$id]);
+        return $sqids->encode([(int) $id]);
     }
 }
 

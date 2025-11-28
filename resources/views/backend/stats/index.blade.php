@@ -25,8 +25,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>{{ __('Value') }}</th>
-                                <th>{{ __('Label (ID)') }}</th>
-                                <th>{{ __('Label (EN)') }}</th>
+                                <th>{{ __('Label') }}</th>
                                 <th>{{ __('Sort Order') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 <th>{{ __('Updated At') }}</th>
@@ -62,7 +61,7 @@
             serverSide: true,
             responsive: true,
             ajax: '{{ route("backend.$module_name.index_data") }}',
-            order: [[4, 'asc']],
+            order: [[3, 'asc']],
             columns: [
                 {
                     data: 'DT_RowIndex',
@@ -77,10 +76,6 @@
                 {
                     data: 'label',
                     name: 'label'
-                },
-                {
-                    data: 'label_en',
-                    name: 'label_en'
                 },
                 {
                     data: 'sort_order',

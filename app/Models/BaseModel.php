@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\HasMedia;
@@ -146,7 +147,13 @@ class BaseModel extends Model implements HasMedia
      */
     public function setNameAttribute($value)
     {
-        $this->attributes['name'] = trim($value);
+        if (is_array($value)) {
+            $this->attributes['name'] = $value;
+
+            return;
+        }
+
+        $this->attributes['name'] = is_string($value) ? trim($value) : $value;
     }
 
     /**
@@ -156,11 +163,45 @@ class BaseModel extends Model implements HasMedia
      */
     public function setSlugAttribute($value)
     {
-        $this->attributes['slug'] = slug_format(trim($value));
+        $value = slug_format(trim((string) $value));
 
-        if (empty($value)) {
-            $this->attributes['slug'] = slug_format(trim($this->attributes['name']));
+        if ($value === '') {
+            $value = slug_format($this->resolveTranslatableAttributeValue('name'));
         }
+
+        $this->attributes['slug'] = $value;
+    }
+
+    protected function resolveTranslatableAttributeValue(string $attribute): string
+    {
+        $raw = $this->attributes[$attribute] ?? '';
+
+        if (is_array($raw)) {
+            return $this->pickTranslation($raw);
+        }
+
+        if (is_string($raw)) {
+            $decoded = json_decode($raw, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $this->pickTranslation($decoded);
+            }
+
+            return $raw;
+        }
+
+        return '';
+    }
+
+    protected function pickTranslation(array $translations): string
+    {
+        $locale = app()->getLocale();
+        $fallback = config('app.fallback_locale');
+
+        return $translations[$locale]
+            ?? ($fallback ? ($translations[$fallback] ?? null) : null)
+            ?? Arr::first(array_filter($translations, fn ($value) => filled($value))) // first non-empty translation
+            ?? '';
     }
 
     /**

@@ -98,83 +98,114 @@
 
 @section('title', $aboutTitle)
 
+@push('after-styles')
+    <style>
+        .about-theme footer {
+            background-image: linear-gradient(125deg, #fff2e7 0%, #f7f2ff 55%, #e6f3ff 100%) !important;
+            color: #111827;
+            font-family: 'Open Sans', 'Inter', sans-serif;
+        }
+        .about-theme footer .text-white\/80,
+        .about-theme footer .text-white\/70,
+        .about-theme footer .text-white\/60,
+        .about-theme footer .text-white\/85 {
+            color: rgba(17, 24, 39, 0.75) !important;
+        }
+        .about-theme footer .border-white\/10,
+        .about-theme footer .border-white\/15,
+        .about-theme footer .border-white\/20 {
+            border-color: rgba(17, 24, 39, 0.15) !important;
+        }
+        .about-theme footer .bg-white\/5 {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            color: #e56700 !important;
+        }
+        .about-theme footer span.rounded-full {
+            border-color: rgba(17, 24, 39, 0.12) !important;
+            background-image: linear-gradient(120deg, rgba(255, 166, 48, 0.25), rgba(92, 131, 196, 0.15)) !important;
+            color: #c75600 !important;
+        }
+        .about-theme footer a {
+            color: #0f172a;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .about-theme footer a:hover {
+            color: #e56700;
+            transform: translateY(-1px);
+        }
+        .about-theme footer .absolute {
+            opacity: 0.12 !important;
+            mix-blend-mode: multiply;
+        }
+        .about-theme footer .grid .space-y-4 > p.text-xs {
+            letter-spacing: 0.3em;
+            color: #5c83c4 !important;
+        }
+        .about-theme footer .space-y-4 h2,
+        .about-theme footer h2 {
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+        .about-theme footer img.about-footer-logo {
+            filter: drop-shadow(0 8px 25px rgba(17, 24, 39, 0.15));
+            height: 2.75rem;
+            width: auto;
+        }
+    </style>
+@endpush
+
+@push('after-scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.classList.add('about-theme');
+
+            const footerLogo = document.querySelector('footer img');
+            if (footerLogo) {
+                footerLogo.dataset.originalSrc = footerLogo.src;
+                footerLogo.src = "{{ asset('img/DIGIOH_Main Logo_Flat Color Blue.svg') }}";
+                footerLogo.classList.add('about-footer-logo');
+            }
+        });
+        window.addEventListener('beforeunload', function () {
+            const footerLogo = document.querySelector('footer img.about-footer-logo');
+            if (footerLogo && footerLogo.dataset.originalSrc) {
+                footerLogo.src = footerLogo.dataset.originalSrc;
+            }
+            document.body.classList.remove('about-theme');
+        });
+    </script>
+@endpush
+
 @section('content')
+    <div class="pt-4 lg:pt-6"></div>
     @include('frontend.pages.partials.about-snippet')
 
-    <section class="bg-[#FFF7F1] py-16">
-        <div class="max-w-6xl mx-auto px-6 lg:px-0 flex flex-col lg:flex-row gap-12 items-center">
-            <div class="relative">
-                <div class="w-64 h-64 rounded-full bg-gradient-to-b from-[#FF9A3C] to-[#FF6A00] flex flex-col items-center justify-center text-white text-center shadow-xl">
-                    <p class="text-xs tracking-[0.25em] uppercase">DIGIOH</p>
-                    <p class="text-4xl font-extrabold leading-tight mt-1">{{ $locale === 'en' ? 'Our Story' : 'Kisah Kami' }}</p>
-                    <p class="text-[11px] mt-1 tracking-wide">PT DIGITAL OPEN HOUSE</p>
-                    <p class="text-[11px] mt-3 px-6 leading-relaxed opacity-90">
-                        {{ $locale === 'en' ? 'Delivering meaningful experiences through technology, creativity, and human-centered execution.' : 'Menghadirkan pengalaman berkesan melalui teknologi, kreativitas, dan eksekusi yang berpusat pada manusia.' }}
-                    </p>
-                </div>
-            </div>
-            @php
-                $timelinePalette = [
-                    ['dot' => 'bg-[#d96a1c]', 'pill' => 'border-[#d96a1c] text-[#d96a1c]'],
-                    ['dot' => 'bg-[#d9501c]', 'pill' => 'border-[#d9501c] text-[#d9501c]'],
-                    ['dot' => 'bg-[#ff7f32]', 'pill' => 'border-[#ff7f32] text-[#ff7f32]'],
-                    ['dot' => 'bg-[#d04a6f]', 'pill' => 'border-[#d04a6f] text-[#d04a6f]'],
-                    ['dot' => 'bg-[#a65ad8]', 'pill' => 'border-[#a65ad8] text-[#a65ad8]'],
-                    ['dot' => 'bg-[#f08acb]', 'pill' => 'border-[#f08acb] text-[#f08acb]'],
-                ];
-                $timelineItems = $timelineItems->values();
-            @endphp
-            <div class="flex-1 relative">
-                <div class="absolute left-5 top-3 bottom-3 border-l-2 border-dashed border-orange-200/80"></div>
-                <p class="text-xs uppercase tracking-[0.3em] text-orange-500 mb-2">{{ $locale === 'en' ? 'Journey' : 'Perjalanan' }}</p>
-                <h2 class="text-3xl font-bold mb-2">{{ $locale === 'en' ? 'Our Journey Through the Years' : 'Perjalanan Kami dari Tahun ke Tahun' }}</h2>
-                <p class="text-sm text-gray-600 mb-6 max-w-xl">{{ $locale === 'en' ? 'A decade of innovation, growth, and experience excellence in event technology.' : 'Satu dekade inovasi, pertumbuhan, dan pengalaman unggul dalam teknologi acara.' }}</p>
-                <div class="space-y-6">
-                    @foreach($timelineItems as $index => $timeline)
-                        @php($palette = $timelinePalette[$index % count($timelinePalette)])
-                        <div class="flex gap-6 pl-10">
-                            <div class="flex flex-col items-center">
-                                <span class="w-4 h-4 rounded-full shadow {{ $palette['dot'] }}"></span>
-                            </div>
-                            <div class="flex-1 space-y-2">
-                                <div class="inline-flex min-w-[190px] items-center justify-center rounded-full border-2 bg-white px-6 py-2 text-lg font-semibold uppercase tracking-wide shadow-sm {{ $palette['pill'] }}">
-                                    {{ $timeline['year'] }}
-                                </div>
-                                <div class="text-sm">
-                                    <p class="font-semibold text-slate-900">{{ $timeline['title'] }}</p>
-                                    <p class="text-slate-600">{{ $timeline['description'] }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="bg-gradient-to-b from-slate-50 via-white to-white py-16 dark:from-slate-900/70">
+    <section class="relative overflow-hidden bg-gradient-to-r from-[#11224e] via-[#5c83c4] to-[#ffa630] py-16 text-white">
         <div class="mx-auto max-w-screen-xl px-4 sm:px-12">
-            <div class="rounded-[32px] border border-slate-200 bg-white p-10 shadow-lg dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-3xl font-black uppercase text-[#2c55a2]">{{ $locale === 'en' ? 'Vision' : 'Visi' }}</p>
-                <div class="mt-6 h-1 w-16 bg-gradient-to-r from-[#2c55a2] to-[#6fa3ff]"></div>
+            <div class="rounded-[32px] border border-white/25 bg-white/10 p-10 shadow-lg backdrop-blur">
+                <p class="text-3xl font-black uppercase">{{ $locale === 'en' ? 'Vision' : 'Visi' }}</p>
+                <div class="mt-6 h-1 w-16 bg-white/70"></div>
                 @if($visionText)
-                    <p class="mt-6 text-lg leading-relaxed text-slate-700 dark:text-slate-200">{{ $visionText }}</p>
+                    <p class="mt-6 text-lg leading-relaxed text-white/85">{{ $visionText }}</p>
                 @endif
             </div>
-            <div class="mt-10 rounded-[32px] bg-[#ffa630] p-10 text-white shadow-2xl">
+            <div class="mt-10 rounded-[32px] border border-white/20 bg-white/10 p-10 text-white shadow-2xl backdrop-blur">
                 <p class="text-3xl font-black uppercase tracking-wide">{{ $locale === 'en' ? 'Mission' : 'Misi' }}</p>
                 <div class="mt-4 h-1 w-20 bg-white/70"></div>
                 @if($missionLetters)
-                    <p class="mt-6 text-4xl font-black tracking-[0.4em]">{{ $missionLetters }}</p>
+                    <p class="mt-6 text-4xl font-black tracking-[0.4em] text-white">{{ $missionLetters }}</p>
                 @endif
                 @if($missionIntro)
                     <p class="mt-4 text-sm text-white/85">{{ $missionIntro }}</p>
                 @endif
-                <div class="mt-8 grid gap-6 text-center text-sm font-semibold uppercase text-white/85 sm:grid-cols-3 lg:grid-cols-6">
+                <div class="mt-8 grid gap-6 text-center text-sm font-semibold uppercase text-white sm:grid-cols-3 lg:grid-cols-6">
                     @foreach($missionKeywords as $mission)
                         <div class="flex flex-col items-center gap-1">
-                            <p class="text-xl font-black tracking-wide">{{ strtoupper($mission['letter']) }}</p>
-                            <p>{{ $mission['title'] }}</p>
+                            <p class="text-xl font-black tracking-wide text-white">{{ strtoupper($mission['letter']) }}</p>
+                            <p class="text-white/90">{{ $mission['title'] }}</p>
                             <p class="text-xs font-normal text-white/80">{{ $mission['description'] }}</p>
                         </div>
                     @endforeach
@@ -184,62 +215,81 @@
     </section>
 
     <?php if ($founders->isNotEmpty()): ?>
-        <section class="bg-slate-50 dark:bg-slate-950">
-            <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-                <div class="mb-8">
-                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-500">{{ __('Founding Team') }}</span>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ __('Orang di balik Digioh') }}</h2>
+        <section class="relative overflow-hidden bg-gradient-to-br from-[#fff2e7] via-[#f8f5ff] to-[#e6f3ff] py-16 dark:bg-slate-900">
+            <div class="pointer-events-none absolute -left-32 top-8 h-72 w-72 rounded-full bg-gradient-to-br from-[#ffa630]/40 via-[#ffe0b2]/50 to-transparent blur-3xl"></div>
+            <div class="pointer-events-none absolute -right-10 bottom-4 h-80 w-80 rounded-full bg-gradient-to-tl from-[#5c83c4]/40 via-[#a1c0ff]/40 to-transparent blur-3xl"></div>
+            <div class="relative mx-auto max-w-screen-xl px-4 py-4 sm:px-12">
+                <div class="mb-10 flex flex-col gap-3 text-center lg:text-left">
+                    <span class="inline-flex items-center justify-center gap-2 self-center rounded-full bg-white/80 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[#5c83c4] shadow-sm lg:self-start">
+                        {{ __('Founding Team') }}
+                    </span>
+                    <h2 class="text-3xl font-black text-slate-900 dark:text-white">{{ __('Orang di balik Digioh') }}</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-300">{{ __('Tim inti yang memastikan setiap pengalaman berjalan mulus dan penuh makna.') }}</p>
                 </div>
 
-                <div class="grid gap-6 md:grid-cols-3">
-                    <?php foreach ($founders as $f): ?>
-                        <?php
+                @php
+                    $founderGradients = [
+                        ['from' => '#ffa630', 'via' => '#ffd4a3', 'to' => '#ffecc7'],
+                        ['from' => '#5c83c4', 'via' => '#9fb7ff', 'to' => '#e1e9ff'],
+                        ['from' => '#f08acb', 'via' => '#f6c0e3', 'to' => '#ffe3f6'],
+                        ['from' => '#4dd0e1', 'via' => '#a5f2f9', 'to' => '#e0fcff'],
+                    ];
+                @endphp
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach($founders as $index => $f)
+                        @php
                             $photoPath = $f['photo'] ?? null;
                             $photoUrl = $photoPath
                                 ? (\Illuminate\Support\Str::startsWith($photoPath, ['http://', 'https://', '//']) ? $photoPath : asset($photoPath))
                                 : null;
-                        ?>
-                        <div class="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
-                            @if ($photoUrl)
-                                <img src="{{ $photoUrl }}" alt="{{ $f['name'] }}" class="h-28 w-28 rounded-2xl object-cover" />
-                            @else
-                                <div class="flex h-28 w-28 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                    <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" /></svg>
+                            $gradient = $founderGradients[$index % count($founderGradients)];
+                        @endphp
+                        <div class="group rounded-[30px] border border-white/50 bg-white/85 p-6 shadow-xl shadow-[#d9dbe6]/60 transition hover:-translate-y-1.5 hover:shadow-2xl dark:border-slate-800/60 dark:bg-slate-900/80">
+                            <div class="relative inline-block">
+                                <div class="pointer-events-none absolute -inset-4 rounded-[32px] opacity-80 blur-3xl" style="background-image: linear-gradient(120deg, {{ $gradient['from'] }}, {{ $gradient['via'] }}, {{ $gradient['to'] }});"></div>
+                                <div class="relative overflow-hidden rounded-[24px] border border-white/60 shadow-lg dark:border-slate-700">
+                                    @if ($photoUrl)
+                                        <img src="{{ $photoUrl }}" alt="{{ $f['name'] }}" class="h-28 w-28 object-cover" />
+                                    @else
+                                        <div class="flex h-28 w-28 items-center justify-center bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
+                                            <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" /></svg>
+                                        </div>
+                                    @endif
                                 </div>
-                            @endif
-                            <h3 class="mt-6 text-lg font-semibold text-slate-900 dark:text-white">{{ $f['name'] }}</h3>
+                            </div>
+                            <h3 class="mt-5 text-lg font-semibold text-slate-900 dark:text-white">{{ $f['name'] }}</h3>
                             <p class="text-sm text-slate-600 dark:text-slate-300">{{ $f['title'] }}</p>
                             <div class="mt-4 flex items-center gap-3">
                                 @if (! empty($f['linkedin']))
-                                    <a href="{{ $f['linkedin'] }}" target="_blank" rel="noopener" class="inline-flex items-center rounded-full border border-slate-200 px-3 py-1 text-xs fontu?i font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                    <a href="{{ $f['linkedin'] }}" target="_blank" rel="noopener" class="inline-flex items-center rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                                         <svg class="mr-2 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.22 8.5H4.78V24H.22V8.5zM8.54 8.5H13v2.11h.07c.62-1.17 2.14-2.4 4.41-2.4 4.72 0 5.59 3.11 5.59 7.15V24h-4.56v-6.63c0-1.58-.03-3.62-2.2-3.62-2.2 0-2.53 1.72-2.53 3.5V24H8.54V8.5z" /></svg>
                                         LinkedIn
                                     </a>
                                 @endif
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    @endforeach
                 </div>
             </div>
         </section>
     <?php endif; ?>
 
-    <section class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white">
+    <section class="relative overflow-hidden bg-gradient-to-r from-[#11224e] via-[#5c83c4] to-[#ffa630] text-white">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
                 <div>
                     <span class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Mari berkolaborasi') }}</span>
-                    <h2 class="mt-4 text-3xl font-bold sm:text-4xl">{{ __('Tertarik membangun pengalaman yang berkesan?') }}</h2>
+                    <h2 class="mt-4 text-3xl font-bold sm:text-4xl text-white">{{ __('Tertarik membangun pengalaman yang berkesan?') }}</h2>
                     <p class="mt-4 max-w-2xl text-sm text-white/80">{{ __('Hubungi kami untuk mendiskusikan rencana Anda. Tim kami siap membantu menyiapkan solusi dan timeline yang realistis.') }}</p>
                     <div class="mt-6 flex flex-wrap items-center gap-4">
-                        <a href="{{ route('contact') }}" class="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-indigo-600 shadow-lg shadow-black/10 hover:bg-indigo-50">{{ __('Hubungi kami') }}</a>
-                        <a href="{{ route('frontend.services.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-white/90">{{ __('Lihat layanan') }}
+                        <a href="{{ route('contact') }}" class="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#11224e] shadow-lg shadow-black/20 hover:bg-slate-100">{{ __('Hubungi kami') }}</a>
+                        <a href="{{ route('frontend.services.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-white/80">{{ __('Lihat layanan') }}
                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </a>
                     </div>
                 </div>
-                <div class="hidden h-full w-full rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl shadow-indigo-900/30 backdrop-blur lg:flex">
-                    <div class="flex flex-1 flex-col justify-between gap-6 text-sm text-white/80">
+                <div class="hidden h-full w-full rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl shadow-[#11224e]/40 backdrop-blur lg:flex">
+                    <div class="flex flex-1 flex-col justify-between gap-6 text-sm text-white/85">
                         <div>
                             <h3 class="text-lg font-semibold text-white">{{ __('Nilai inti kami') }}</h3>
                             <ul class="mt-3 space-y-2">

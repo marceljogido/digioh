@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Backend;
 use App\Enums\ServiceStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 
 class ServiceController extends Controller
@@ -56,10 +57,13 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|max:191',
-            'slug' => 'nullable|max:191',
-            'description' => 'nullable',
+        $translationRules = array_merge(
+            $this->translatableRules('name', true, 191),
+            $this->translatableRules('description', false)
+        );
+
+        $data = $request->validate($translationRules + [
+            'slug' => 'nullable|string|max:191',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'status' => ['required', Rule::enum(ServiceStatus::class)],
             'featured_on_home' => 'boolean',
@@ -69,10 +73,14 @@ class ServiceController extends Controller
         $imageFile = $data['image'] ?? null;
         unset($data['image']);
 
+        $data['name'] = normalize_translations($request->input('name', []));
+        $data['description'] = normalize_translations($request->input('description', []), allowEmpty: true);
         $data['featured_on_home'] = $request->boolean('featured_on_home');
         $data['status'] = $data['status'] ?? ServiceStatus::Draft->value;
         $data['is_active'] = $data['status'] === ServiceStatus::Published->value;
-        $data['slug'] = $data['slug'] ?? Str::slug($data['name']);
+        $data['slug'] = filled($data['slug'])
+            ? $data['slug']
+            : Str::slug($this->primaryTranslation($data['name']));
 
         if ($data['featured_on_home']) {
             $featuredCount = Service::where('featured_on_home', true)->count();
@@ -134,10 +142,13 @@ class ServiceController extends Controller
 
     public function update(Request $request, Service $service)
     {
-        $data = $request->validate([
-            'name' => 'required|max:191',
-            'slug' => 'nullable|max:191',
-            'description' => 'nullable',
+        $translationRules = array_merge(
+            $this->translatableRules('name', true, 191),
+            $this->translatableRules('description', false)
+        );
+
+        $data = $request->validate($translationRules + [
+            'slug' => 'nullable|string|max:191',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'status' => ['required', Rule::enum(ServiceStatus::class)],
             'featured_on_home' => 'boolean',
@@ -147,12 +158,14 @@ class ServiceController extends Controller
         $imageFile = $data['image'] ?? null;
         unset($data['image']);
 
+        $data['name'] = normalize_translations($request->input('name', []));
+        $data['description'] = normalize_translations($request->input('description', []), allowEmpty: true);
         $data['featured_on_home'] = $request->boolean('featured_on_home');
         $data['status'] = $data['status'] ?? ServiceStatus::Draft->value;
         $data['is_active'] = $data['status'] === ServiceStatus::Published->value;
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        $data['slug'] = filled($data['slug'])
+            ? $data['slug']
+            : Str::slug($this->primaryTranslation($data['name']));
 
         if ($data['featured_on_home']) {
             $featuredCount = Service::where('featured_on_home', true)
@@ -260,7 +273,20 @@ class ServiceController extends Controller
         return DataTables::of($services)
             ->addIndexColumn()
             ->editColumn('name', function ($service) {
-                return '<strong>'.e($service->name).'</strong>';
+                $sourceLocale = config('translatable.source_locale', 'id');
+                $secondaryLocale = $this->secondaryLocale();
+
+                $primary = e($service->getTranslation('name', $sourceLocale));
+                $html = '<strong>'.$primary.'</strong>';
+
+                if ($secondaryLocale !== $sourceLocale) {
+                    $secondary = $service->getTranslation('name', $secondaryLocale, false);
+                    if ($secondary && $secondary !== $service->getTranslation('name', $sourceLocale, false)) {
+                        $html .= '<div class="text-muted small">'.strtoupper($secondaryLocale).': '.e($secondary).'</div>';
+                    }
+                }
+
+                return $html;
             })
             ->addColumn('usage', function ($service) {
                 $count = (int) $service->posts_count;
@@ -300,5 +326,49 @@ class ServiceController extends Controller
             })
             ->rawColumns(['name', 'usage', 'status', 'featured', 'action'])
             ->make(true);
+    }
+
+    private function translatableRules(string $field, bool $fieldRequired = true, ?int $maxLength = null): array
+    {
+        $rules = [
+            $field => [$fieldRequired ? 'required' : 'nullable', 'array'],
+        ];
+
+        $sourceLocale = config('translatable.source_locale', 'id');
+
+        foreach (available_locales() as $locale) {
+            $localeRules = [
+                ($fieldRequired && $locale === $sourceLocale) ? 'required' : 'nullable',
+                'string',
+            ];
+
+            if ($maxLength) {
+                $localeRules[] = 'max:'.$maxLength;
+            }
+
+            $rules["{$field}.{$locale}"] = $localeRules;
+        }
+
+        return $rules;
+    }
+
+    private function primaryTranslation(array $translations): string
+    {
+        $sourceLocale = config('translatable.source_locale', 'id');
+
+        return $translations[$sourceLocale] ?? Arr::first($translations) ?? '';
+    }
+
+    private function secondaryLocale(): string
+    {
+        $sourceLocale = config('translatable.source_locale', 'id');
+
+        foreach (available_locales() as $locale) {
+            if ($locale !== $sourceLocale) {
+                return $locale;
+            }
+        }
+
+        return $sourceLocale;
     }
 }

@@ -30,11 +30,10 @@
                         <dt class="col-sm-4">{{ __('Value') }}</dt>
                         <dd class="col-sm-8">{{ $stat->value }}</dd>
 
-                        <dt class="col-sm-4">{{ __('Label (ID)') }}</dt>
-                        <dd class="col-sm-8">{{ $stat->label }}</dd>
-
-                        <dt class="col-sm-4">{{ __('Label (EN)') }}</dt>
-                        <dd class="col-sm-8">{{ $stat->label_en ?: 'N/A' }}</dd>
+                        @foreach(available_locales() as $locale)
+                            <dt class="col-sm-4">{{ __('Label') }} ({{ strtoupper($locale) }})</dt>
+                            <dd class="col-sm-8">{{ $stat->getTranslation('label', $locale, false) ?: 'N/A' }}</dd>
+                        @endforeach
 
                         <dt class="col-sm-4">{{ __('Sort Order') }}</dt>
                         <dd class="col-sm-8">{{ $stat->sort_order }}</dd>

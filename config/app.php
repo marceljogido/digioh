@@ -89,6 +89,14 @@ return [
         'id' => 'Bahasa Indonesia (ID)',
     ],
 
+    /**
+     * Native locale identifiers used by PHP's setlocale function.
+     */
+    'locale_aliases' => [
+        'en' => 'en_US.UTF-8',
+        'id' => 'id_ID.UTF-8',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | User Registration

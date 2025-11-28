@@ -3,11 +3,12 @@
 namespace Modules\OurWork\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Modules\Post\Models\Post;
-use App\Models\Service;
 
 class OurWorksController extends Controller
 {
@@ -56,7 +57,11 @@ class OurWorksController extends Controller
         $module_action = 'List';
 
         // Our Work page lists Posts (case studies/portfolio)
-        $query = Post::published()->recentlyPublished()->with('service');
+        $query = Post::query()
+            ->where('is_our_work', true)
+            ->with(['services'])
+            ->orderByDesc('event_start_date')
+            ->orderByDesc('published_at');
 
         // Filter: search text
         if ($request->filled('q')) {
@@ -77,14 +82,34 @@ class OurWorksController extends Controller
             }
         }
 
-        $posts = $query->paginate(9)->withQueryString();
+        if ($request->filled('year')) {
+            $year = (int) $request->get('year');
+            if ($year >= 2000 && $year <= (int) date('Y') + 1) {
+                $query->where(function ($sub) use ($year) {
+                    $sub->whereYear('event_start_date', $year)
+                        ->orWhere(function ($inner) use ($year) {
+                            $inner->whereNull('event_start_date')
+                                ->whereYear('published_at', $year);
+                        });
+                });
+            }
+        }
+
+        $perPageOptions = [6, 9, 12, 15];
+        $perPage = (int) $request->input('per_page', 9);
+        if (! in_array($perPage, $perPageOptions, true)) {
+            $perPage = 9;
+        }
+
+        $posts = $query->paginate($perPage)->withQueryString();
 
         // For filter dropdown
         $services = Service::active()->sorted()->get(['id','name','slug']);
+        $years = collect(range(Carbon::now()->year, Carbon::now()->year - 6, -1))->values();
 
         return view(
             "$module_path.$module_name.index",
-            compact('module_title', 'module_name', 'module_icon', 'module_action', 'module_name_singular', 'posts', 'services', 'activeService')
+            compact('module_title', 'module_name', 'module_icon', 'module_action', 'module_name_singular', 'posts', 'services', 'activeService', 'years', 'perPage', 'perPageOptions')
         );
     }
 

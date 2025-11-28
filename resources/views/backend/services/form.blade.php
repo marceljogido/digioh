@@ -10,22 +10,48 @@
     $canFeature = $currentFeatured || ! $featuredLimitReached;
 @endphp
 
+@php($locales = available_locales())
+@php($sourceLocale = config('translatable.source_locale', 'id'))
 <div class="row g-3">
-    <div class="col-12 col-md-6">
-        <label class="form-label" for="name">{{ __('Name') }}</label>
-        {!! field_required('required') !!}
-        <input type="text" name="name" id="name" value="{{ old('name', $service->name ?? '') }}" class="form-control" required>
-    </div>
+    @foreach($locales as $locale)
+        @php($label = strtoupper($locale))
+        <div class="col-12 col-md-6">
+            <label class="form-label" for="name_{{ $locale }}">
+                {{ __('Name') }} ({{ $label }})
+            </label>
+            @if($locale === $sourceLocale)
+                {!! field_required('required') !!}
+            @endif
+            <input
+                type="text"
+                name="name[{{ $locale }}]"
+                id="name_{{ $locale }}"
+                value="{{ old("name.$locale", $service?->getTranslation('name', $locale, false)) }}"
+                class="form-control"
+                @if($locale === $sourceLocale) required @endif
+            >
+        </div>
+    @endforeach
     <div class="col-12 col-md-6">
         <label class="form-label" for="slug">{{ __('Slug') }}</label>
         <input type="text" name="slug" id="slug" value="{{ old('slug', $service->slug ?? '') }}" class="form-control">
         <small class="text-muted">{{ __('Biarkan kosong untuk otomatis memakai nama.') }}</small>
     </div>
 
-    <div class="col-12">
-        <label class="form-label" for="description">{{ __('Description') }}</label>
-        <textarea class="form-control" name="description" id="description" rows="4">{{ old('description', $service->description ?? '') }}</textarea>
-    </div>
+    @foreach($locales as $locale)
+        @php($label = strtoupper($locale))
+        <div class="col-12">
+            <label class="form-label" for="description_{{ $locale }}">
+                {{ __('Description') }} ({{ $label }})
+            </label>
+            <textarea
+                class="form-control"
+                name="description[{{ $locale }}]"
+                id="description_{{ $locale }}"
+                rows="4"
+            >{{ old("description.$locale", $service?->getTranslation('description', $locale, false)) }}</textarea>
+        </div>
+    @endforeach
 
     <div class="col-12 col-lg-6">
         <label class="form-label" for="image">{{ __('Image') }}</label>

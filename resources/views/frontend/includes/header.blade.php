@@ -161,8 +161,8 @@
                 </x-frontend.nav-item>
 
                 <x-frontend.nav-item
-                    :href="route('frontend.posts.index')"
-                    :active="request()->routeIs('frontend.posts.*')"
+                    :href="route('frontend.ourwork.index')"
+                    :active="request()->routeIs('frontend.ourwork.*')"
                 >
                     {{ __("Our Work") }}
                 </x-frontend.nav-item>

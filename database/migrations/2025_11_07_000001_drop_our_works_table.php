@@ -8,6 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::dropIfExists('our_work_service');
+
         Schema::dropIfExists('our_works');
     }
 
@@ -28,6 +30,16 @@ return new class extends Migration
             $table->integer('created_by')->unsigned()->nullable();
             $table->integer('updated_by')->unsigned()->nullable();
             $table->integer('deleted_by')->unsigned()->nullable();
+        });
+
+        Schema::create('our_work_service', function (Blueprint $table) {
+            $table->unsignedBigInteger('our_work_id');
+            $table->unsignedBigInteger('service_id');
+            $table->timestamps();
+
+            $table->primary(['our_work_id', 'service_id']);
+            $table->foreign('our_work_id')->references('id')->on('our_works')->onDelete('cascade');
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
         });
     }
 };

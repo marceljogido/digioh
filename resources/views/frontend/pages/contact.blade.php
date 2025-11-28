@@ -1,139 +1,190 @@
 @extends('frontend.layouts.app')
 
-@section('title')
-	{{ __('Contact') }}
-@endsection
+@section('title', __('Contact'))
 
 @section('content')
-    <section class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white">
-        <div class="absolute inset-x-0 -top-32 h-48 bg-gradient-to-b from-white/10 to-transparent opacity-40"></div>
-        <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-            <div class="max-w-3xl">
-                <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wider">{{ __('Mari mulai') }}</span>
-                <h1 class="mt-4 text-3xl font-bold sm:text-4xl">{{ __('Ceritakan rencana Anda') }}</h1>
-                <p class="mt-3 text-sm text-white/80">{{ __('Isi formulir atau hubungi kami — tim kami akan merespons dalam 1-2 hari kerja.') }}</p>
-            </div>
+@php
+    $defaultContactEmail = 'dukunganteknis@digioh.com';
+    $defaultContactAddress = 'Fatmawati Festival Blok A-7, Jalan RS Fatmawati no. 50 Seberang Rumah Duka Fatmawati, Jl. RS. Fatmawati Raya No.50, RT.4/RW.4, West Cilandak, Cilandak, South Jakarta City, Jakarta 12430';
+@endphp
+<section class="relative overflow-hidden bg-[#11224e] text-white">
+    <div class="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#5c83c4]/30 to-transparent"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[#ffa630]/40 to-transparent"></div>
+    <div class="mx-auto flex max-w-screen-xl flex-col gap-8 px-4 py-12 sm:px-12 lg:flex-row lg:items-center">
+        <div class="flex-1 space-y-6">
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
+                {{ __('Let us collaborate') }}
+            </span>
+            <h1 class="text-3xl font-bold leading-tight sm:text-5xl">
+                {{ __('Cerita dan kebutuhan Anda adalah titik awal ide kami') }}
+            </h1>
+            <p class="max-w-2xl text-sm text-white/80">
+                {{ __('Hubungi tim Digioh untuk mendiskusikan event, experiential marketing, atau proyek business development berikutnya.') }}
+            </p>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="bg-white dark:bg-gray-900">
-        <div class="mx-auto max-w-screen-xl px-4 py-12 sm:px-12">
-            @if(session('flash_success'))
-                <div class="mb-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800 dark:border-green-900/40 dark:bg-green-900/30 dark:text-green-200">{{ session('flash_success') }}</div>
-            @endif
-            @if ($errors->any())
-                <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900/40 dark:bg-red-900/30 dark:text-red-200" role="alert">
-                    <p class="font-semibold">{{ __('Terjadi kesalahan. Mohon periksa isian berikut:') }}</p>
-                    <ul class="mt-2 list-disc pl-5">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+<section class="bg-[#f4f6fb]">
+    <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
+        @if(session('flash_success'))
+            <div class="mb-6 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-green-800">
+                {{ session('flash_success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-800" role="alert">
+                <p class="font-semibold">{{ __('Terjadi kesalahan. Mohon periksa isian berikut:') }}</p>
+                <ul class="mt-2 list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div class="rounded-[40px] border border-[#d5def3] bg-gradient-to-br from-white via-[#f8faff] to-[#eef2ff] px-6 py-8 shadow-2xl shadow-[#11224e]/10 space-y-6">
+                <p class="text-xs font-semibold uppercase tracking-[0.4em] text-[#5c83c4]">{{ __('Kunjungi') }}</p>
+                @php
+                    $mapAddress = setting('contact_address') ?? $defaultContactAddress;
+                    $mapLink = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($mapAddress);
+                    $mapEmbed = 'https://maps.google.com/maps?q=' . urlencode($mapAddress) . '&z=16&output=embed';
+                @endphp
+                <div class="overflow-hidden rounded-3xl border border-[#d5def3] bg-white shadow-lg shadow-[#11224e]/5">
+                    <iframe
+                        src="{{ $mapEmbed }}"
+                        width="100%"
+                        height="320"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
-            @endif
 
-            <div class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-                <div class="space-y-6">
-                    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Kontak langsung') }}</h2>
-                        <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                            <div class="flex items-center gap-3">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.128c0 .387-.19.75-.508.967l-8.25 5.5a1.125 1.125 0 01-1.234 0l-8.25-5.5a1.125 1.125 0 01-.508-.967V6.75z"/></svg>
-                                </div>
-                                <div>
-                                    <div class="text-xs uppercase tracking-wide text-slate-500">{{ __('Email') }}</div>
-                                    <a href="mailto:{{ setting('contact_email') ?? 'hello@digioh.id' }}" class="font-semibold text-slate-900 hover:text-indigo-600 dark:text-white">{{ setting('contact_email') ?? 'hello@digioh.id' }}</a>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                                </div>
-                                <div>
-                                    <div class="text-xs uppercase tracking-wide text-slate-500">{{ __('Alamat') }}</div>
-                                    <div class="font-semibold text-slate-900 dark:text-white">{{ setting('contact_address') ?? 'Jakarta & Yogyakarta' }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-5">
-                            <x-frontend.social.all-social-url class="flex flex-wrap gap-3" />
+                <div class="relative overflow-hidden rounded-3xl border border-[#e2e9fb] bg-gradient-to-br from-[#eef3ff] to-white px-6 py-5 shadow-[0_25px_45px_rgba(17,34,78,0.07)]">
+                    <div class="flex items-start gap-4">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e9efff] text-[#5c83c4] shadow-inner shadow-white/60">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21c4.243 0 7.5-3.134 7.5-7.5S16.243 6 12 6 4.5 9.134 4.5 13.5 7.757 21 12 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 11.25a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z"/></svg>
+                        </span>
+                        <div class="space-y-1">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-[#11224e]/60">{{ __('Lokasi studio') }}</p>
+                            <p class="text-sm font-semibold leading-relaxed text-[#11224e]">
+                                {{ $mapAddress }}
+                            </p>
                         </div>
                     </div>
-
-                    @if(setting('contact_map_embed'))
-                        <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-sm dark:border-slate-800">
-                            {!! setting('contact_map_embed') !!}
-                        </div>
-                    @endif
+                    <div class="mt-4">
+                        <a href="{{ $mapLink }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#5c83c4] transition hover:text-[#324a7d]">
+                            {{ __('Buka di Google Maps') }}
+                            <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75v6.5a3 3 0 01-3 3h-6.5M17.25 6.75h-6.5a3 3 0 00-3 3v6.5M17.25 6.75L6.75 17.25"/></svg>
+                        </a>
+                    </div>
                 </div>
 
-                <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ __('Kirimkan pesan') }}</h3>
-                    <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Ringkas saja — ceritakan tujuan dan kebutuhan utama Anda.') }}</p>
-                    <form action="{{ route('contact.store') }}" method="POST" class="mt-6 space-y-4" novalidate>
-                        @csrf
-                        <input type="text" name="website" id="contact-website" class="sr-only" aria-hidden="true" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;" />
-
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="name">{{ __('Nama') }}</label>
-                            <input id="name" name="name" type="text" value="{{ old('name') }}" maxlength="100" autocomplete="name" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('name') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="@error('name')true@enderror">
-                            @error('name')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                            @enderror
+                <div class="rounded-3xl border border-[#dee6fb] bg-white/70 px-5 py-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-[#11224e]/60">{{ __('Terhubung di sosial media') }}</p>
+                        <div class="flex flex-wrap gap-2 text-[#11224e] [&>a]:inline-flex [&>a]:h-10 [&>a]:w-10 [&>a]:items-center [&>a]:justify-center [&>a]:rounded-full [&>a]:border [&>a]:border-[#e4e9fb] [&>a]:bg-[#f6f8ff] [&>a]:transition [&>a]:hover:-translate-y-0.5 [&>a]:hover:bg-white">
+                            <x-frontend.social.website_url />
+                            <x-frontend.social.instagram_url />
+                            <x-frontend.social.facebook_url />
+                            <x-frontend.social.twitter_url />
+                            <x-frontend.social.youtube_url />
+                            <x-frontend.social.whatsapp_url />
                         </div>
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="email">{{ __('Email') }}</label>
-                            <input id="email" name="email" type="email" value="{{ old('email') }}" maxlength="150" autocomplete="email" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('email') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="@error('email')true@enderror">
-                            @error('email')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="subject">{{ __('Subjek (opsional)') }}</label>
-                            <input id="subject" name="subject" type="text" value="{{ old('subject') }}" maxlength="150" autocomplete="organization-title" class="mt-2 w-full rounded-full border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('subject') border-red-400 focus:border-red-500 @enderror" aria-invalid="@error('subject')true@enderror">
-                            @error('subject')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="message">{{ __('Pesan') }}</label>
-                            <textarea id="message" name="message" rows="5" minlength="10" class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('message') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="@error('message')true@enderror">{{ old('message') }}</textarea>
-                            @error('message')
-                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
-                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900">
-                                {{ __('Kirim pesan') }}
-                            </button>
-                            <span class="text-center text-xs text-slate-500 sm:text-left">{{ __('atau') }}</span>
-                        </div>
-                        @php($__waNum = preg_replace('/[^0-9]/','', setting('whatsapp_number') ?? ''))
-                        @php($__waMsg = rawurlencode(setting('whatsapp_prefill') ?? 'Halo DigiOH, saya ingin berdiskusi.'))
-                        @php($__waLink = $__waNum ? "https://wa.me/$__waNum?text=$__waMsg" : null)
-                        <button type="button" id="send-wa" class="inline-flex w-full items-center justify-center rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/30 transition hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900">{{ __('Kirim via WhatsApp') }}</button>
-                        <script>
-                            document.getElementById('send-wa').addEventListener('click', function(){
-                                const num = '{{ $__waNum }}';
-                                if(!num){ window.location.href = '{{ route('contact') }}'; return; }
-                                const name = encodeURIComponent(document.getElementById('name').value || '');
-                                const email = encodeURIComponent(document.getElementById('email').value || '');
-                                const subject = encodeURIComponent(document.getElementById('subject').value || '');
-                                const message = encodeURIComponent(document.getElementById('message').value || '');
-                                const base = 'https://wa.me/' + num + '?text=';
-                                const intro = `{{ setting('whatsapp_prefill') ?? 'Halo DigiOH, saya ingin berdiskusi.' }}`;
-                                const text = encodeURIComponent(intro) + '%0A%0A' +
-                                    `Nama: ${name}%0AEmail: ${email}%0ASubjek: ${subject}%0A%0A${message}`;
-                                window.open(base + text, '_blank');
-                            });
-                        </script>
-                        <div class="text-xs text-slate-500 mt-2 text-center sm:text-left">{{ __('Atau') }} <a href="mailto:{{ setting('contact_email') ?? 'hello@digioh.id' }}" class="underline">{{ __('kirim via email') }}</a></div>
-                    </form>
+                    </div>
                 </div>
             </div>
+
+            <div class="rounded-[32px] border border-[#d5def3] bg-white px-6 py-6 shadow-lg shadow-[#11224e]/5">
+                <h3 class="text-lg font-semibold text-[#11224e]">{{ __('Kirimkan brief singkat Anda') }}</h3>
+                <p class="mt-1 text-sm text-[#11224e]/80">{{ __('Ceritakan tujuan utama, tanggal, serta ekspektasi outcome. Kami akan hubungi Anda untuk sesi diskusi lanjut.') }}</p>
+                <form action="{{ route('contact.store') }}" method="POST" class="mt-6 space-y-4" novalidate>
+                    @csrf
+                    <input type="text" name="website" id="contact-website" class="sr-only" aria-hidden="true" tabindex="-1" autocomplete="off">
+
+                    <div>
+                        <label for="name" class="text-xs font-semibold uppercase tracking-wide text-[#11224e]/70">{{ __('Nama') }}</label>
+                        <input id="name" name="name" type="text" value="{{ old('name') }}" maxlength="100" autocomplete="name" class="mt-2 w-full rounded-full border border-[#d5def3] bg-white px-4 py-3 text-sm text-[#11224e] placeholder:text-[#11224e]/40 focus:border-[#5c83c4] focus:outline-none @error('name') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}">
+                        @error('name')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="email" class="text-xs font-semibold uppercase tracking-wide text-[#11224e]/70">{{ __('Email') }}</label>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" maxlength="150" autocomplete="email" class="mt-2 w-full rounded-full border border-[#d5def3] bg-white px-4 py-3 text-sm text-[#11224e] placeholder:text-[#11224e]/40 focus:border-[#5c83c4] focus:outline-none @error('email') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}">
+                        @error('email')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="subject" class="text-xs font-semibold uppercase tracking-wide text-[#11224e]/70">{{ __('Subjek (opsional)') }}</label>
+                        <input id="subject" name="subject" type="text" value="{{ old('subject') }}" maxlength="150" class="mt-2 w-full rounded-full border border-[#d5def3] bg-white px-4 py-3 text-sm text-[#11224e] placeholder:text-[#11224e]/40 focus:border-[#5c83c4] focus:outline-none @error('subject') border-red-400 focus:border-red-500 @enderror" aria-invalid="{{ $errors->has('subject') ? 'true' : 'false' }}">
+                        @error('subject')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="message" class="text-xs font-semibold uppercase tracking-wide text-[#11224e]/70">{{ __('Pesan') }}</label>
+                        <textarea id="message" name="message" rows="5" minlength="10" class="mt-2 w-full rounded-2xl border border-[#d5def3] bg-white px-4 py-3 text-sm text-[#11224e] placeholder:text-[#11224e]/40 focus:border-[#5c83c4] focus:outline-none @error('message') border-red-400 focus:border-red-500 @enderror" required aria-required="true" aria-invalid="{{ $errors->has('message') ? 'true' : 'false' }}">{{ old('message') }}</textarea>
+                        @error('message')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="grid gap-3 pt-4 sm:grid-cols-2">
+                        @php
+                            $waNumber = preg_replace('/[^0-9]/', '', setting('whatsapp_number') ?? '');
+                            $waPrefill = setting('whatsapp_prefill') ?? 'Halo Digioh, saya ingin berdiskusi.';
+                        @endphp
+                        <button type="button" id="send-wa" data-wa-number="{{ $waNumber }}" data-wa-prefill="{{ $waPrefill }}" class="inline-flex w-full items-center justify-center rounded-full bg-[#25d366] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#25d366]/30 transition hover:bg-[#1fb358] focus:outline-none focus:ring-2 focus:ring-[#25d366]/60 focus:ring-offset-2 focus:ring-offset-white">
+                            {{ __('Kirim via WhatsApp') }}
+                        </button>
+                        <a href="mailto:{{ setting('contact_email') ?? $defaultContactEmail }}" class="inline-flex w-full items-center justify-center rounded-full border border-[#d5def3] bg-white px-6 py-3 text-sm font-semibold text-[#11224e] transition hover:border-[#5c83c4] hover:text-[#5c83c4] focus:outline-none focus:ring-2 focus:ring-[#d5def3] focus:ring-offset-2 focus:ring-offset-white">
+                            {{ __('Kirim via Email') }}
+                        </a>
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const btn = document.getElementById('send-wa');
+                            if (!btn) {
+                                return;
+                            }
+                            btn.addEventListener('click', function () {
+                                const rawNum = btn.dataset.waNumber || '';
+                                if (!rawNum) {
+                                    window.location.href = 'mailto:{{ setting('contact_email') ?? $defaultContactEmail }}';
+                                    return;
+                                }
+                                const prefill = btn.dataset.waPrefill || '';
+                                const getValue = (id) => document.getElementById(id)?.value?.trim() || '';
+                                const name = getValue('name');
+                                const email = getValue('email');
+                                const subject = getValue('subject');
+                                const message = getValue('message');
+                                const lines = [
+                                    prefill,
+                                    '',
+                                    'Nama: ' + name,
+                                    'Email: ' + email,
+                                    'Subjek: ' + subject,
+                                    '',
+                                    message
+                                ];
+                                const base = 'https://wa.me/' + rawNum + '?text=';
+                                window.open(base + encodeURIComponent(lines.join('\n')), '_blank');
+                            });
+                        });
+                    </script>
+                </form>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 @endsection
-
-

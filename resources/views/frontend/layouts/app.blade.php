@@ -31,7 +31,10 @@
         <x-google-analytics />
     </head>
 
-    <body class="pt-16 bg-transparent">
+    @php
+        $hasHeroOverlap = request()->routeIs('frontend.index') || request()->routeIs('home');
+    @endphp
+    <body class="bg-transparent {{ $hasHeroOverlap ? 'hero-overlap' : 'pt-16' }}">
         <x-selected-theme />
 
         @include("frontend.includes.header")
@@ -43,21 +46,26 @@
         @include("frontend.includes.footer")
 
         <style>
-            /* Reset margin dan padding default browser */
-            html, body {
+            /* Reset margin default browser */
+            html,
+            body {
                 margin: 0;
                 padding: 0;
             }
-            
-            /* Khusus untuk halaman home (jika body memiliki navbar) */
-            body:has(#navbar) {
-                padding-top: 0 !important;
+
+            /* Default offset for fixed navbar on most pages */
+            body.pt-16 {
+                padding-top: 4rem;
             }
-            
-            /* Untuk hero section di halaman home, pastikan tidak tertutup navbar */
-            body:has(#navbar) main > section.relative.isolate.overflow-hidden {
-                margin-top: -4rem; /* Negatif margin sebesar tinggi navbar */
-                padding-top: 4rem; /* Kompensasi padding agar konten tetap terlihat */
+
+            /* Home hero overlaps navbar */
+            body.hero-overlap {
+                padding-top: 0;
+            }
+
+            body.hero-overlap main > section.relative.isolate.overflow-hidden {
+                margin-top: -4rem; /* match navbar height */
+                padding-top: 4rem;
             }
         </style>
 

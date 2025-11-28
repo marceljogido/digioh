@@ -57,16 +57,18 @@ class StatController extends Controller
             abort(403);
         }
 
-        $data = $request->validate([
-            'value' => 'required|string|max:255',
-            'label' => 'required|string|max:255',
-            'label_en' => 'nullable|string|max:255',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
-        ]);
+        $data = $request->validate(array_merge(
+            $this->translatableRules('label', true, 255),
+            [
+                'value' => 'required|string|max:255',
+                'sort_order' => 'nullable|integer|min:0',
+                'is_active' => 'boolean',
+            ]
+        ));
 
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
+        $data['label'] = normalize_translations($request->input('label', []));
 
         Stat::create($data);
 
@@ -94,16 +96,18 @@ class StatController extends Controller
             abort(403);
         }
 
-        $data = $request->validate([
-            'value' => 'required|string|max:255',
-            'label' => 'required|string|max:255',
-            'label_en' => 'nullable|string|max:255',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
-        ]);
+        $data = $request->validate(array_merge(
+            $this->translatableRules('label', true, 255),
+            [
+                'value' => 'required|string|max:255',
+                'sort_order' => 'nullable|integer|min:0',
+                'is_active' => 'boolean',
+            ]
+        ));
 
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
+        $data['label'] = normalize_translations($request->input('label', []));
 
         $stat->update($data);
 
@@ -144,14 +148,28 @@ class StatController extends Controller
 
     public function index_data()
     {
-        $stats = Stat::select('id', 'value', 'label', 'label_en', 'sort_order', 'is_active', 'updated_at')
+        $stats = Stat::select('id', 'value', 'label', 'sort_order', 'is_active', 'updated_at')
             ->orderBy('sort_order')
             ->orderBy('id');
 
         return DataTables::of($stats)
             ->addIndexColumn()
-            ->editColumn('label', fn ($stat) => e($stat->label))
-            ->editColumn('label_en', fn ($stat) => e($stat->label_en ?: 'N/A'))
+            ->editColumn('label', function ($stat) {
+                $sourceLocale = config('translatable.source_locale', 'id');
+                $secondaryLocale = $this->secondaryLocale();
+
+                $primary = e($stat->getTranslation('label', $sourceLocale));
+                $html = '<strong>'.$primary.'</strong>';
+
+                if ($secondaryLocale !== $sourceLocale) {
+                    $secondary = $stat->getTranslation('label', $secondaryLocale, false);
+                    if ($secondary && $secondary !== $stat->getTranslation('label', $sourceLocale, false)) {
+                        $html .= '<div class="text-muted small">'.strtoupper($secondaryLocale).': '.e($secondary).'</div>';
+                    }
+                }
+
+                return $html;
+            })
             ->addColumn('status', function ($stat) {
                 return $stat->is_active
                     ? '<span class="badge bg-success">'.__('Active').'</span>'
@@ -171,7 +189,44 @@ class StatController extends Controller
             ->addColumn('action', function ($stat) {
                 return view('backend.stats.partials.actions', compact('stat'))->render();
             })
-            ->rawColumns(['status', 'action'])
+            ->rawColumns(['label', 'status', 'action'])
             ->make(true);
+    }
+
+    private function translatableRules(string $field, bool $fieldRequired = true, ?int $maxLength = null): array
+    {
+        $rules = [
+            $field => [$fieldRequired ? 'required' : 'nullable', 'array'],
+        ];
+
+        $sourceLocale = config('translatable.source_locale', 'id');
+
+        foreach (available_locales() as $locale) {
+            $localeRules = [
+                ($fieldRequired && $locale === $sourceLocale) ? 'required' : 'nullable',
+                'string',
+            ];
+
+            if ($maxLength) {
+                $localeRules[] = 'max:'.$maxLength;
+            }
+
+            $rules["{$field}.{$locale}"] = $localeRules;
+        }
+
+        return $rules;
+    }
+
+    private function secondaryLocale(): string
+    {
+        $sourceLocale = config('translatable.source_locale', 'id');
+
+        foreach (available_locales() as $locale) {
+            if ($locale !== $sourceLocale) {
+                return $locale;
+            }
+        }
+
+        return $sourceLocale;
     }
 }

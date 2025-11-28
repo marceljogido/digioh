@@ -100,6 +100,31 @@ class Post extends BaseModel
         return $this->belongsToMany(\App\Models\Service::class, 'post_service')->withTimestamps();
     }
 
+    public function setScopeOfWorkAttribute($value): void
+    {
+        if (is_array($value)) {
+            $value = collect($value)
+                ->map(fn ($item) => trim((string) $item))
+                ->filter()
+                ->implode(', ');
+        }
+
+        $this->attributes['scope_of_work'] = $value;
+    }
+
+    public function getScopeOfWorkListAttribute(): array
+    {
+        if (blank($this->attributes['scope_of_work'] ?? null)) {
+            return [];
+        }
+
+        return collect(explode(',', (string) $this->attributes['scope_of_work']))
+            ->map(fn ($item) => trim($item))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
     /**
      * Create a new factory instance for the model.
      *

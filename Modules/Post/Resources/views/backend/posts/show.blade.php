@@ -88,6 +88,12 @@
                                         <td>{{ $post->event_location }}</td>
                                     </tr>
                                 @endif
+                                @if(!empty($post->scope_of_work))
+                                    <tr>
+                                        <th scope="row">{{ __('Scope of Work') }}</th>
+                                        <td>{{ $post->scope_of_work }}</td>
+                                    </tr>
+                                @endif
                                 <tr>
                                     <th scope="row">{{ __('Created By') }}</th>
                                     <td>{{ $post->created_by_name ?? 'N/A' }}</td>

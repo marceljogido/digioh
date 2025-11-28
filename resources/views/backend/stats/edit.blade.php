@@ -21,25 +21,27 @@
                     <small class="form-text text-muted">Contoh: 12+, 150+, 98%</small>
                 </div>
                 
-                <div class="form-group">
-                    <label for="label">Label (ID) <span class="text-danger">*</span></label>
-                    <input type="text" name="label" id="label" class="form-control @error('label') is-invalid @enderror" 
-                           value="{{ old('label', $stat->label) }}" required>
-                    @error('label')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                    <small class="form-text text-muted">Contoh: Tahun pengalaman, Proyek berhasil diselesaikan, dll</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="label_en">Label (EN)</label>
-                    <input type="text" name="label_en" id="label_en" class="form-control @error('label_en') is-invalid @enderror" 
-                           value="{{ old('label_en', $stat->label_en) }}">
-                    @error('label_en')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                    <small class="form-text text-muted">Terjemahan bahasa Inggris untuk label</small>
-                </div>
+                @php($locales = available_locales())
+                @php($sourceLocale = config('translatable.source_locale', 'id'))
+                @foreach($locales as $locale)
+                    <div class="form-group">
+                        <label for="label_{{ $locale }}">
+                            {{ __('Label') }} ({{ strtoupper($locale) }}) @if($locale === $sourceLocale)<span class="text-danger">*</span>@endif
+                        </label>
+                        <input
+                            type="text"
+                            name="label[{{ $locale }}]"
+                            id="label_{{ $locale }}"
+                            class="form-control @error('label.'.$locale) is-invalid @enderror"
+                            value="{{ old("label.$locale", $stat->getTranslation('label', $locale, false)) }}"
+                            @if($locale === $sourceLocale) required @endif
+                        >
+                        @error('label.'.$locale)
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Contoh: Tahun pengalaman, Proyek berhasil diselesaikan, dll</small>
+                    </div>
+                @endforeach
                 
                 <div class="form-group">
                     <label for="sort_order">Urutan Tampil</label>

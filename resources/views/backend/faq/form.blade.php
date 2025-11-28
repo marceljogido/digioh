@@ -1,23 +1,40 @@
 @php($faq = $faq ?? ($data ?? null))
 @php($isEdit = isset($faq) && $faq->exists)
+@php($locales = available_locales())
+@php($sourceLocale = config('translatable.source_locale', 'id'))
 <div class="row">
-    <div class="col-12 col-md-6 mb-3">
-        <label class="form-label" for="question">{{ __('Question') }}</label>
-        {!! field_required('required') !!}
-        <input type="text" name="question" id="question" value="{{ old('question', $faq->question ?? '') }}" class="form-control" required>
-    </div>
-    <div class="col-12 col-md-6 mb-3">
-        <label class="form-label" for="question_en">{{ __('Question (English)') }}</label>
-        <input type="text" name="question_en" id="question_en" value="{{ old('question_en', $faq->question_en ?? '') }}" class="form-control">
-    </div>
-    <div class="col-12 mb-3">
-        <label class="form-label" for="answer">{{ __('Answer') }}</label>
-        <textarea class="form-control" name="answer" id="answer" rows="4">{{ old('answer', $faq->answer ?? '') }}</textarea>
-    </div>
-    <div class="col-12 mb-3">
-        <label class="form-label" for="answer_en">{{ __('Answer (English)') }}</label>
-        <textarea class="form-control" name="answer_en" id="answer_en" rows="4">{{ old('answer_en', $faq->answer_en ?? '') }}</textarea>
-    </div>
+    @foreach($locales as $locale)
+        <div class="col-12 col-md-6 mb-3">
+            <label class="form-label" for="question_{{ $locale }}">
+                {{ __('Question') }} ({{ strtoupper($locale) }})
+            </label>
+            @if($locale === $sourceLocale)
+                {!! field_required('required') !!}
+            @endif
+            <input
+                type="text"
+                name="question[{{ $locale }}]"
+                id="question_{{ $locale }}"
+                value="{{ old("question.$locale", $faq?->getTranslation('question', $locale, false)) }}"
+                class="form-control"
+                @if($locale === $sourceLocale) required @endif
+            >
+        </div>
+    @endforeach
+
+    @foreach($locales as $locale)
+        <div class="col-12 mb-3">
+            <label class="form-label" for="answer_{{ $locale }}">
+                {{ __('Answer') }} ({{ strtoupper($locale) }})
+            </label>
+            <textarea
+                class="form-control"
+                name="answer[{{ $locale }}]"
+                id="answer_{{ $locale }}"
+                rows="4"
+            >{{ old("answer.$locale", $faq?->getTranslation('answer', $locale, false)) }}</textarea>
+        </div>
+    @endforeach
 </div>
 <div class="row">
     <div class="col-6 col-md-3 mb-3">

@@ -6,6 +6,8 @@ use App\Livewire\Privacy;
 use App\Livewire\Terms;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\ContactController;
+use Illuminate\Support\Facades\View;
+use Modules\OurWork\Http\Controllers\Frontend\OurWorksController;
 
 /*
 *
@@ -72,6 +74,13 @@ Route::group(['namespace' => 'App\Http\Controllers\Frontend', 'as' => 'frontend.
 Route::group(['namespace' => 'App\\Http\\Controllers\\Frontend', 'as' => 'frontend.'], function () {
     Route::get('services', 'ServiceController@index')->name('services.index');
     Route::get('services/{service:slug}', 'ServiceController@show')->name('services.show');
+});
+
+// Our Work pages (ensure route alias exists even if module auto-loading fails)
+View::addNamespace('ourwork', base_path('Modules/OurWork/Resources/views'));
+Route::group(['as' => 'frontend.'], function () {
+    Route::get('our-work', [OurWorksController::class, 'index'])->name('ourwork.index');
+    Route::get('our-work/{id}/{slug?}', [OurWorksController::class, 'show'])->name('ourwork.show');
 });
 
 /*

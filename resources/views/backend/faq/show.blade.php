@@ -25,11 +25,10 @@
             <div class="row mt-4">
                 <div class="col-md-6">
                     <dl class="row">
-                        <dt class="col-sm-4">{{ __('Question') }}</dt>
-                        <dd class="col-sm-8">{{ $faq->question }}</dd>
-
-                        <dt class="col-sm-4">{{ __('Question (EN)') }}</dt>
-                        <dd class="col-sm-8">{{ $faq->question_en ?: 'N/A' }}</dd>
+                        @foreach(available_locales() as $locale)
+                            <dt class="col-sm-4">{{ __('Question') }} ({{ strtoupper($locale) }})</dt>
+                            <dd class="col-sm-8">{{ $faq->getTranslation('question', $locale, false) ?: 'N/A' }}</dd>
+                        @endforeach
 
                         <dt class="col-sm-4">{{ __('Status') }}</dt>
                         <dd class="col-sm-8">
@@ -54,18 +53,16 @@
             </div>
 
             <div class="row mt-4">
-                <div class="col-md-6">
-                    <h5>{{ __('Answer') }}</h5>
-                    <div class="border rounded p-3 bg-light">
-                        {!! $faq->answer ? nl2br(e($faq->answer)) : '<span class="text-muted">N/A</span>' !!}
+                @foreach(available_locales() as $locale)
+                    <div class="col-md-6">
+                        <h5>{{ __('Answer') }} ({{ strtoupper($locale) }})</h5>
+                        <div class="border rounded p-3 bg-light">
+                            {!! $faq->getTranslation('answer', $locale, false)
+                                ? nl2br(e($faq->getTranslation('answer', $locale, false)))
+                                : '<span class="text-muted">N/A</span>' !!}
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <h5>{{ __('Answer (EN)') }}</h5>
-                    <div class="border rounded p-3 bg-light">
-                        {!! $faq->answer_en ? nl2br(e($faq->answer_en)) : '<span class="text-muted">N/A</span>' !!}
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

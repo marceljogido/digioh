@@ -5,157 +5,194 @@
 @endsection
 
 @section("content")
-    <section class="body-font bg-gray-100 px-6 text-gray-600 dark:bg-gray-800 dark:text-gray-400 sm:px-20">
-        <div class="container mx-auto flex flex-col items-center py-8 sm:py-16 md:flex-row">
-            <div
-                class="flex flex-col items-center text-center sm:w-4/12 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24"
-            >
-                <h1 class="mb-4 text-3xl font-medium text-gray-800 dark:text-gray-200 sm:text-4xl">
+    @php
+        $startDate = $$module_name_singular->event_start_date;
+        $endDate = $$module_name_singular->event_end_date;
+        $heroImages = collect();
+        if ($$module_name_singular->image) {
+            $heroImages->push(asset($$module_name_singular->image));
+        }
+        $galleryImages = collect($$module_name_singular->gallery_images ?? [])->filter()->map(function ($path) {
+            return \Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])
+                ? $path
+                : \Illuminate\Support\Facades\Storage::url($path);
+        });
+        $heroImages = $heroImages->merge($galleryImages)->unique()->values();
+        $sliderId = 'hero-slider-'.$$module_name_singular->id;
+    @endphp
+    <section class="relative overflow-hidden bg-[#11224e] text-white">
+        <div class="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#5c83c4]/30 to-transparent"></div>
+        <div class="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#ffa630]/30 to-transparent"></div>
+        <div class="relative mx-auto flex max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:flex-row lg:items-center">
+            <div class="flex-1 space-y-6">
+                <span class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
+                    {{ __('Our Work Detail') }}
+                </span>
+                <h1 class="text-3xl font-bold leading-tight sm:text-5xl">
                     {{ $$module_name_singular->name }}
                 </h1>
                 @if ($$module_name_singular->intro != "")
-                    <p class="mb-8 leading-relaxed">
-                        {{ $$module_name_singular->intro }}
-                    </p>
+                    <div class="text-base text-white/80">
+                        {!! $$module_name_singular->intro !!}
+                    </div>
                 @endif
-
+                @if(!empty($$module_name_singular->scope_of_work_list))
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($$module_name_singular->scope_of_work_list as $scope)
+                            <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide text-white">{{ $scope }}</span>
+                        @endforeach
+                    </div>
+                @endif
+                <div class="grid gap-4 text-sm text-white/80 sm:grid-cols-2">
+                    <div class="rounded-2xl border border-white/20 bg-white/5 p-4">
+                        <p class="text-xs uppercase tracking-wide text-white/60">{{ __('Periode') }}</p>
+                        <p class="text-lg font-semibold text-white">
+                            @if($startDate)
+                                @if($endDate && !$startDate->isSameDay($endDate))
+                                    {{ $startDate->isoFormat('D MMM YYYY') }} - {{ $endDate->isoFormat('D MMM YYYY') }}
+                                @else
+                                    {{ $startDate->isoFormat('D MMM YYYY') }}
+                                @endif
+                            @else
+                                {{ optional($$module_name_singular->published_at)->isoFormat('D MMM YYYY') }}
+                            @endif
+                        </p>
+                    </div>
+                    @if($$module_name_singular->event_location)
+                        <div class="rounded-2xl border border-white/20 bg-white/5 p-4">
+                            <p class="text-xs uppercase tracking-wide text-white/60">{{ __('Lokasi') }}</p>
+                            <p class="text-lg font-semibold text-white">{{ $$module_name_singular->event_location }}</p>
+                        </div>
+                    @endif
+                </div>
                 @include("frontend.includes.messages")
             </div>
-            <div class="mb-4 w-full sm:mb-0 sm:w-8/12">
-                <img
-                    class="rounded object-cover object-center shadow-md"
-                    src="{{ $$module_name_singular->image }}"
-                    alt="{{ $$module_name_singular->name }}"
-                />
+            <div class="flex-1">
+                <div class="relative rounded-[32px] border border-white/20 bg-white/5 p-3 shadow-2xl shadow-black/20 backdrop-blur" data-hero-slider="{{ $sliderId }}">
+                    <div class="relative overflow-hidden rounded-2xl">
+                        @foreach($heroImages as $index => $imageUrl)
+                            <button type="button" data-slide data-slide-preview="{{ $imageUrl }}" class="aspect-video w-full object-cover transition-all duration-500 {{ $index === 0 ? 'relative opacity-100 pointer-events-auto' : 'absolute inset-0 opacity-0 pointer-events-none' }}">
+                                <img
+                                    class="h-full w-full object-cover"
+                                    src="{{ $imageUrl }}"
+                                    alt="{{ $$module_name_singular->name }} slide {{ $index + 1 }}"
+                                />
+                            </button>
+                        @endforeach
+                    </div>
+                    @if($heroImages->count() > 1)
+                        <button type="button" class="absolute left-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-slide-prev>
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                        </button>
+                        <button type="button" class="absolute right-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-slide-next>
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                        </button>
+                        <div class="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+                            @foreach($heroImages as $index => $imageUrl)
+                                <span data-slide-dot class="h-2 w-2 rounded-full {{ $index === 0 ? 'bg-[#ffa630]' : 'bg-white/40' }}"></span>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="fixed inset-0 z-50 hidden bg-[#0b132f]/90 backdrop-blur" data-hero-lightbox="{{ $sliderId }}">
+            <button type="button" class="absolute right-6 top-6 rounded-full bg-white/80 p-3 text-[#11224e]" data-lightbox-close>
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="absolute inset-0 flex items-center justify-center gap-6 px-6">
+                <button type="button" class="rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-lightbox-prev>
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                </button>
+                <img data-lightbox-image class="max-h-[80vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl" src="{{ $heroImages->first() }}" alt="{{ $$module_name_singular->name }}">
+                <button type="button" class="rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-lightbox-next>
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </button>
             </div>
         </div>
     </section>
 
-    <section class="px-6 py-6 dark:bg-gray-700 dark:text-gray-300 sm:px-20 sm:py-10">
-        <div class="container mx-auto flex flex-col md:flex-row">
-            <div class="flex flex-col sm:w-8/12 sm:pr-8 lg:flex-grow">
-                <div class="pb-5">
-                    <p>
-                        {!! $$module_name_singular->content !!}
-                    </p>
+    <section class="bg-[#f4f6fb] px-4 py-16 sm:px-6">
+        <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)]">
+            <div class="space-y-4 text-[#11224e]">
+                <div class="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#ffa630]">
+                    <span>{{ __('Cerita inti') }}</span>
+                    <span>1</span>
                 </div>
-
-                <hr />
-
-                <div class="py-5">
-                    <div class="flex flex-col justify-between sm:flex-row">
-                        <div class="pb-2">
-                            {{ __('Tim proyek') }}:
-                            {{ isset($$module_name_singular->created_by_alias) ? $$module_name_singular->created_by_alias : $$module_name_singular->created_by_name }}
-                        </div>
-                        <div class="pb-2">
-                            {{ __('Tanggal publikasi') }}: {{ $$module_name_singular->published_at->isoFormat("llll") }}
-                        </div>
-                    </div>
+                <div class="prose max-w-none text-[#11224e]/90 prose-headings:text-[#11224e] prose-a:text-[#5c83c4]">
+                    {!! $$module_name_singular->content !!}
                 </div>
-
-                <div class="flex flex-row justify-between py-5">
+                <div class="grid gap-6 border-t border-[#d5def3] pt-4 text-sm sm:grid-cols-2">
                     <div>
-                        <span class="font-weight-bold">
-                            {{ __('Kategori proyek') }}:
-                        </span>
-                        <x-frontend.badge
-                            :url="route('frontend.categories.show', [
-                                encode_id($$module_name_singular->category_id),
-                                $$module_name_singular->category->slug,
-                            ])"
-                            :text="$$module_name_singular->category_name"
-                        />
+                        <p class="text-xs font-semibold uppercase tracking-wide text-[#5c83c4]">{{ __('Tim proyek') }}</p>
+                        <p class="mt-1 font-semibold">{{ isset($$module_name_singular->created_by_alias) ? $$module_name_singular->created_by_alias : $$module_name_singular->created_by_name }}</p>
                     </div>
-                </div>
-
-                @if (count($$module_name_singular->tags))
-                    <div class="py-5">
-                        <span class="font-weight-bold">
-                            {{ __('Tag proyek') }}:
-                        </span>
-
-                        @foreach ($$module_name_singular->tags as $tag)
-                            <x-frontend.badge
-                                :url="route('frontend.tags.show', [encode_id($tag->id), $tag->slug])"
-                                :text="$tag->name"
-                            />
-                        @endforeach
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-[#5c83c4]">{{ __('Tanggal publikasi') }}</p>
+                        <p class="mt-1 font-semibold">{{ optional($$module_name_singular->published_at)->isoFormat('LLLL') }}</p>
                     </div>
-                @endif
-
-                <div class="py-5">
-                    <div class="flex flex-row content-center items-center justify-around">
-                        <h6 class="">{{ __('Bagikan proyek ini') }}</h6>
-
-                        <div>
-                            @php
-                                $title_text = $$module_name_singular->name;
-                            @endphp
-
-                            <button
-                                class="tooltip m-2 rounded-sm border border-gray-400 p-2 transition duration-300 ease-out hover:border-gray-600 hover:bg-gray-100 hover:shadow-lg dark:hover:bg-gray-600 dark:hover:text-gray-200"
-                                data-title="Share on Twitter"
-                                data-placement="top"
-                                data-sharer="twitter"
-                                data-via="muktolibrary"
-                                data-title="{{ $title_text }}"
-                                data-hashtags="muktolibrary"
-                                data-url="{{ url()->full() }}"
-                                data-toggle="tooltip"
-                                data-original-title="Share on Twitter"
-                                title="Share on Twitter"
-                            >
-                                <svg
-                                    class="bi bi-twitter"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="20"
-                                    height="20"
-                                    fill="currentColor"
-                                    viewBox="0 0 16 16"
-                                >
-                                    <path
-                                        d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"
-                                    />
-                                </svg>
-                            </button>
-
-                            <button
-                                class="tooltip m-2 rounded-sm border border-gray-400 p-2 transition duration-300 ease-out hover:border-gray-600 hover:bg-gray-100 hover:shadow-lg dark:hover:bg-gray-600 dark:hover:text-gray-200"
-                                data-title="Share on Facebook"
-                                data-placement="top"
-                                data-sharer="facebook"
-                                data-hashtag="muktolibrary"
-                                data-url="{{ url()->full() }}"
-                                data-toggle="tooltip"
-                                data-original-title="Share on Facebook"
-                                title="Share on Facebook"
-                            >
-                                <svg
-                                    class="bi bi-facebook"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="20"
-                                    height="20"
-                                    fill="currentColor"
-                                    viewBox="0 0 16 16"
-                                >
-                                    <path
-                                        d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="py-5">
-                    {{-- @include('post::frontend.posts.blocks.comments') --}}
                 </div>
             </div>
 
-            <div class="flex flex-col sm:w-4/12">
-                <div class="py-5 sm:pt-0">
-                    <livewire:recent-posts />
+            <div class="rounded-[20px] border border-[#ffa630]/30 bg-white p-6 shadow-sm shadow-[#ffa630]/20 text-[#11224e]">
+                <div class="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#ffa630]">
+                    <span>{{ __('Info proyek') }}</span>
+                    <span>2</span>
+                </div>
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide text-[#5c83c4]">{{ __('Status publikasi') }}</p>
+                        <p class="mt-1 font-semibold text-[#11224e]">{{ ucfirst($$module_name_singular->status) }}</p>
+                    </div>
+                    @if($$module_name_singular->category)
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-[#5c83c4]">{{ __('Kategori') }}</p>
+                            <p class="mt-1 font-semibold text-[#11224e]">{{ $$module_name_singular->category->name }}</p>
+                        </div>
+                    @endif
+                    @if($$module_name_singular->services->count())
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-[#5c83c4]">{{ __('Layanan terlibat') }}</p>
+                            <p class="mt-1 font-semibold text-[#11224e]">
+                                {{ $$module_name_singular->services->sortBy('name')->pluck('name')->join(', ') }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-4">
+                <div class="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#ffa630]">
+                    <span>{{ __('Terbaru lainnya') }}</span>
+                </div>
+                <p class="text-sm text-[#5c83c4]">{{ __('Our Work Terbaru') }} · {{ __('Portofolio terbaru yang baru saja kami publikasikan.') }}</p>
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    @php $recent = \Modules\Post\Models\Post::where('is_our_work', true)->published()->latest()->take(3)->get(); @endphp
+                    @foreach($recent as $item)
+                        @php($recentUrl = route('frontend.posts.show', [encode_id($item->id), $item->slug]))
+                        <a href="{{ $recentUrl }}" class="flex h-full flex-col overflow-hidden rounded-2xl border border-[#d5def3] bg-[#f4f6fb] text-[#11224e] shadow-sm shadow-[#11224e]/10 transition hover:-translate-y-1 hover:border-[#ffa630] hover:shadow-lg">
+                            <div class="relative h-40 w-full overflow-hidden">
+                                <img src="{{ asset($item->image ?: 'img/default_post.svg') }}" alt="{{ $item->name }}" class="h-full w-full object-cover">
+                                <span class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></span>
+                            </div>
+                            <div class="flex flex-1 flex-col gap-2 p-4">
+                                <div class="text-xs text-[#5c83c4] font-semibold flex items-center justify-between">
+                                    <span>{{ optional($item->published_at)->isoFormat('D MMM YYYY') }}</span>
+                                    @if($item->event_location)
+                                        <span class="flex items-center gap-1 text-[#ffa630]">
+                                            <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                                            {{ $item->event_location }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <h4 class="text-base font-semibold group-hover:text-[#ffa630]">{{ $item->name }}</h4>
+                                <p class="text-sm text-[#11224e]/70">{{ \Str::limit(strip_tags($item->intro ?: $item->content), 110) }}</p>
+                                @if($item->services->count())
+                                    <p class="mt-auto text-xs text-[#5c83c4]">{{ $item->services->sortBy('name')->pluck('name')->join(', ') }}</p>
+                                @endif
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -163,9 +200,109 @@
 @endsection
 
 @push("after-style")
-    
+
 @endpush
 
 @push("after-scripts")
-    <script type="module" src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-hero-slider]').forEach(function (slider) {
+                const slides = slider.querySelectorAll('[data-slide]');
+                const dots = slider.querySelectorAll('[data-slide-dot]');
+                if (!slides.length) {
+                    return;
+                }
+
+                const sliderId = slider.getAttribute('data-hero-slider');
+                const lightbox = document.querySelector('[data-hero-lightbox="'+ sliderId +'"]');
+                const lightboxImg = lightbox?.querySelector('[data-lightbox-image]');
+                let current = 0;
+
+                const updateBodyScroll = (open) => {
+                    document.documentElement.classList.toggle('overflow-y-hidden', open);
+                    document.body.classList.toggle('overflow-y-hidden', open);
+                };
+
+                const showSlide = (index) => {
+                    slides.forEach((slide, idx) => {
+                        const isActive = idx === index;
+                        slide.classList.toggle('opacity-0', !isActive);
+                        slide.classList.toggle('opacity-100', isActive);
+                        slide.classList.toggle('absolute', !isActive);
+                        slide.classList.toggle('relative', isActive);
+                        slide.classList.toggle('pointer-events-none', !isActive);
+                        slide.classList.toggle('pointer-events-auto', isActive);
+                    });
+                    dots.forEach((dot, idx) => {
+                        dot.classList.toggle('bg-[#ffa630]', idx === index);
+                        dot.classList.toggle('bg-white/40', idx !== index);
+                    });
+                    if (lightboxImg && slides[index]) {
+                        lightboxImg.src = slides[index].dataset.slidePreview;
+                    }
+                };
+
+                const goNext = () => {
+                    current = (current + 1) % slides.length;
+                    showSlide(current);
+                };
+
+                const goPrev = () => {
+                    current = (current - 1 + slides.length) % slides.length;
+                    showSlide(current);
+                };
+
+                slider.querySelector('[data-slide-next]')?.addEventListener('click', goNext);
+                slider.querySelector('[data-slide-prev]')?.addEventListener('click', goPrev);
+
+                slides.forEach((slide, idx) => {
+                    slide.addEventListener('click', function () {
+                        if (!lightbox) return;
+                        current = idx;
+                        showSlide(current);
+                        lightbox.classList.remove('hidden');
+                        updateBodyScroll(true);
+                    });
+                });
+
+                lightbox?.querySelector('[data-lightbox-close]')?.addEventListener('click', function () {
+                    lightbox.classList.add('hidden');
+                    updateBodyScroll(false);
+                });
+
+                lightbox?.addEventListener('click', function (event) {
+                    if (event.target === lightbox) {
+                        lightbox.classList.add('hidden');
+                        updateBodyScroll(false);
+                    }
+                });
+
+                lightbox?.querySelector('[data-lightbox-next]')?.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    goNext();
+                });
+
+                lightbox?.querySelector('[data-lightbox-prev]')?.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    goPrev();
+                });
+
+                document.addEventListener('keydown', function (event) {
+                    if (!lightbox || lightbox.classList.contains('hidden')) {
+                        return;
+                    }
+                    if (event.key === 'Escape') {
+                        lightbox.classList.add('hidden');
+                        updateBodyScroll(false);
+                    } else if (event.key === 'ArrowRight') {
+                        goNext();
+                    } else if (event.key === 'ArrowLeft') {
+                        goPrev();
+                    }
+                });
+
+                showSlide(0);
+            });
+        });
+    </script>
 @endpush

@@ -2,22 +2,28 @@
 
 namespace App\Models;
 
+use App\Enums\ServiceStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Modules\Post\Models\Post;
-use App\Enums\ServiceStatus;
+use Spatie\Translatable\HasTranslations;
 
 class Service extends BaseModel
 {
+    use HasTranslations;
+
     protected $table = 'services';
+
+    public array $translatable = [
+        'name',
+        'description',
+    ];
 
     protected $fillable = [
         'name',
-        'name_en',
         'category',
         'slug',
         'description',
-        'description_en',
         'icon',
         'status',
         'image',

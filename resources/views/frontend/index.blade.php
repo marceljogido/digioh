@@ -56,10 +56,10 @@
         $locale = app()->getLocale();
         $dbServices = \App\Models\Service::active()->where('featured_on_home', true)->sorted()->get();
         $services = $dbServices->count()
-            ? $dbServices->map(function ($s) use ($locale, $genericServiceIcon) {
+            ? $dbServices->map(function ($s) use ($genericServiceIcon) {
                 return [
-                    'title' => $locale === 'en' ? ($s->name_en ?: $s->name) : $s->name,
-                    'description' => $locale === 'en' ? ($s->description_en ?: $s->description) : $s->description,
+                    'title' => $s->name,
+                    'description' => $s->description,
                     'icon' => $s->icon ?: $genericServiceIcon,
                     'slug' => $s->slug,
                 ];
@@ -90,16 +90,11 @@
         $faqEntries = \App\Models\Faq::active()->sorted()->get();
 
         $faqs = $faqEntries->isNotEmpty()
-            ? $faqEntries->values()->map(function ($faq, $index) use ($locale, $defaultFaqs) {
+            ? $faqEntries->values()->map(function ($faq, $index) use ($defaultFaqs) {
                 $default = $defaultFaqs[$index % count($defaultFaqs)];
 
-                $question = $locale === 'en'
-                    ? ($faq->question_en ?: $faq->question)
-                    : ($faq->question ?: $faq->question_en);
-
-                $answer = $locale === 'en'
-                    ? ($faq->answer_en ?: $faq->answer)
-                    : ($faq->answer ?: $faq->answer_en);
+                $question = $faq->question;
+                $answer = $faq->answer;
 
                 return [
                     'question' => $question ?: $default['question'],
@@ -343,14 +338,14 @@
     @endif
 
     @if($blogPosts->count())
-    <section id="our-works" class="bg-gradient-to-b from-[#5c83c4] via-[#4f6da9] to-[#11224e] text-white">
+    <section id="our-works" class="bg-gradient-to-b from-[#5c83c4] via-[#4f6da9] to-[#11224e] text-white scroll-mt-16 lg:scroll-mt-24 -mt-8 lg:-mt-12">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div>
                     <span class="text-xs font-semibold uppercase tracking-[0.3em] text-[#ffa630]">{{ __('Beyond Expectations Stories') }}</span>
                     <h2 class="mt-3 text-3xl font-bold text-white">{{ __('OUR RECENT PROJECT AND EVENTS') }}</h2>
                 </div>
-                <a href="{{ route('frontend.posts.index') }}" class="inline-flex items-center gap-2 rounded-full border border-white px-4 py-2 text-sm font-semibold text-white transition hover:bg-white hover:text-[#11224e]">
+                <a href="{{ route('frontend.ourwork.index') }}" class="inline-flex items-center gap-2 rounded-full border border-white px-4 py-2 text-sm font-semibold text-white transition hover:bg-white hover:text-[#11224e]">
                     {{ __('Jelajahi Ourwork') }}
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                 </a>
@@ -666,14 +661,6 @@
         </div>
     </section> --}}
 @endsection
-
-
-
-
-
-
-
-
 
 
 

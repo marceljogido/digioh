@@ -107,17 +107,24 @@ class FaqController extends Controller
 
     public function index_data()
     {
-        $faqs = Faq::select('id', 'question', 'question_en', 'is_active', 'sort_order', 'updated_at')
+        $faqs = Faq::select('id', 'question', 'is_active', 'sort_order', 'updated_at')
             ->orderBy('sort_order')
             ->orderBy('id');
 
         return DataTables::of($faqs)
             ->addIndexColumn()
             ->editColumn('question', function (Faq $faq) {
-                $html = '<strong>'.e($faq->question).'</strong>';
+                $sourceLocale = config('translatable.source_locale', 'id');
+                $secondaryLocale = $this->secondaryLocale();
 
-                if ($faq->question_en) {
-                    $html .= '<div class="text-muted small">'.e($faq->question_en).'</div>';
+                $primary = e($faq->getTranslation('question', $sourceLocale));
+                $html = '<strong>'.$primary.'</strong>';
+
+                if ($secondaryLocale !== $sourceLocale) {
+                    $secondary = $faq->getTranslation('question', $secondaryLocale, false);
+                    if ($secondary && $secondary !== $faq->getTranslation('question', $sourceLocale, false)) {
+                        $html .= '<div class="text-muted small">'.strtoupper($secondaryLocale).': '.e($secondary).'</div>';
+                    }
                 }
 
                 return $html;
@@ -147,18 +154,57 @@ class FaqController extends Controller
 
     protected function validatedData(Request $request): array
     {
-        $data = $request->validate([
-            'question' => 'required|string|max:255',
-            'question_en' => 'nullable|string|max:255',
-            'answer' => 'nullable|string',
-            'answer_en' => 'nullable|string',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-        ]);
+        $data = $request->validate(array_merge(
+            $this->translatableRules('question', true, 255),
+            $this->translatableRules('answer', false),
+            [
+                'is_active' => 'nullable|boolean',
+                'sort_order' => 'nullable|integer|min:0',
+            ]
+        ));
 
+        $data['question'] = normalize_translations($request->input('question', []));
+        $data['answer'] = normalize_translations($request->input('answer', []), allowEmpty: true);
         $data['is_active'] = $request->boolean('is_active');
         $data['sort_order'] = $data['sort_order'] ?? 0;
 
         return $data;
+    }
+
+    private function translatableRules(string $field, bool $fieldRequired = true, ?int $maxLength = null): array
+    {
+        $rules = [
+            $field => [$fieldRequired ? 'required' : 'nullable', 'array'],
+        ];
+
+        $sourceLocale = config('translatable.source_locale', 'id');
+
+        foreach (available_locales() as $locale) {
+            $localeRules = [
+                ($fieldRequired && $locale === $sourceLocale) ? 'required' : 'nullable',
+                'string',
+            ];
+
+            if ($maxLength) {
+                $localeRules[] = 'max:'.$maxLength;
+            }
+
+            $rules["{$field}.{$locale}"] = $localeRules;
+        }
+
+        return $rules;
+    }
+
+    private function secondaryLocale(): string
+    {
+        $sourceLocale = config('translatable.source_locale', 'id');
+
+        foreach (available_locales() as $locale) {
+            if ($locale !== $sourceLocale) {
+                return $locale;
+            }
+        }
+
+        return $sourceLocale;
     }
 }

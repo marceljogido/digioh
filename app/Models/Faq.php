@@ -3,16 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Translatable\HasTranslations;
 
 class Faq extends BaseModel
 {
+    use HasTranslations;
+
     protected $table = 'faqs';
+
+    public array $translatable = [
+        'question',
+        'answer',
+    ];
 
     protected $fillable = [
         'question',
-        'question_en',
         'answer',
-        'answer_en',
         'is_active',
         'sort_order',
     ];

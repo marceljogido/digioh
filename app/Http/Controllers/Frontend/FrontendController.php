@@ -29,7 +29,7 @@ class FrontendController extends Controller
             ? $statsFromModel->map(function ($stat) {
                 return [
                     'value' => $stat->value,
-                    'label' => app()->getLocale() === 'en' ? ($stat->label_en ?: $stat->label) : $stat->label,
+                    'label' => $stat->label,
                 ];
             })
             : collect($defaultStats);

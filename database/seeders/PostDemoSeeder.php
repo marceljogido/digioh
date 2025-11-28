@@ -36,7 +36,7 @@ class PostDemoSeeder extends Seeder
                 'type' => 'Article',
                 'category_id' => null,
                 'is_featured' => 1,
-                'image' => 'img/service-digirental.svg',
+                'image' => 'img/default_post.svg',
                 'status' => 'Published',
                 'published_at' => $now->copy()->subDays(2),
                 'service_id' => optional($service)->id,
@@ -61,4 +61,3 @@ class PostDemoSeeder extends Seeder
         }
     }
 }
-
