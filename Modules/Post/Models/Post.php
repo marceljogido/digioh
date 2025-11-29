@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Modules\Post\Enums\PostStatus;
 use Modules\Post\Models\Presenters\PostPresenter;
 use Spatie\Activitylog\LogOptions;
@@ -123,6 +124,64 @@ class Post extends BaseModel
             ->filter()
             ->values()
             ->all();
+    }
+
+    public function getHighlightVideoDataAttribute(): ?array
+    {
+        $raw = trim((string) ($this->attributes['highlight_video_url'] ?? ''));
+
+        if ($raw === '') {
+            return null;
+        }
+
+        $provider = 'iframe';
+        $embedUrl = $raw;
+        $thumbnail = null;
+        $videoId = null;
+
+        if (Str::contains($raw, ['youtube.com', 'youtu.be'])) {
+            if (Str::contains($raw, 'watch')) {
+                $query = [];
+                parse_str(parse_url($raw, PHP_URL_QUERY) ?? '', $query);
+                $videoId = $query['v'] ?? null;
+            }
+
+            if (! $videoId) {
+                $path = trim((string) parse_url($raw, PHP_URL_PATH), '/');
+                if ($path !== '') {
+                    $segments = explode('/', $path);
+                    $videoId = end($segments) ?: null;
+                }
+            }
+
+            if ($videoId) {
+                $provider = 'youtube';
+                $embedUrl = 'https://www.youtube.com/embed/'.$videoId;
+                $thumbnail = 'https://img.youtube.com/vi/'.$videoId.'/hqdefault.jpg';
+            }
+        } elseif (Str::contains($raw, 'vimeo.com')) {
+            if (preg_match('/player\.vimeo\.com\/video\/(\d+)/', $raw, $matches)) {
+                $videoId = $matches[1];
+            } elseif (preg_match('/vimeo\.com\/(\d+)/', $raw, $matches)) {
+                $videoId = $matches[1];
+            }
+
+            if ($videoId) {
+                $provider = 'vimeo';
+                $embedUrl = 'https://player.vimeo.com/video/'.$videoId;
+            }
+        } elseif (Str::endsWith(Str::lower($raw), ['.mp4', '.webm', '.ogg'])) {
+            $provider = 'file';
+            $embedUrl = $raw;
+        }
+
+        return [
+            'provider' => $provider,
+            'embed_url' => $embedUrl,
+            'source' => $raw,
+            'thumbnail' => $thumbnail,
+            'is_file' => $provider === 'file',
+        ];
     }
 
     /**

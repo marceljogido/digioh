@@ -60,52 +60,48 @@
             @if($services->count())
                 <div class="mt-10 grid gap-7 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                     @foreach($services as $service)
-                        <article class="flex h-full flex-col overflow-hidden rounded-[28px] border border-[#d5def3] bg-white shadow-lg shadow-[#11224e]/5 transition hover:-translate-y-1 hover:shadow-xl">
+                        @php($detailUrl = route('frontend.services.show', $service->slug))
+                        <article class="group relative overflow-hidden rounded-[36px] border border-white/40 bg-white/10 p-[1px] shadow-lg shadow-[#11224e]/10 backdrop-blur-xl transition hover:-translate-y-1 hover:border-[#ffa630]/60">
                             @if($service->image)
-                                <div class="relative h-40 w-full overflow-hidden">
+                                <div class="pointer-events-none absolute inset-0 opacity-20">
                                     <img src="{{ asset($service->image) }}" alt="{{ $service->name }}" class="h-full w-full object-cover">
-                                    <span class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></span>
                                 </div>
                             @endif
-                            <div class="flex flex-1 flex-col gap-4 px-6 py-6">
-                                <div class="flex items-center gap-4">
-                                    @if($service->icon)
-                                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ffa630]/15 text-[#f17720]">
-                                            @if(strpos($service->icon, '<') !== false && strpos($service->icon, '>') !== false)
-                                                {!! $service->icon !!}
+                            <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/80 via-white/50 to-[#f4f6fb]/80"></div>
+                            <a href="{{ $detailUrl }}" class="relative block h-full rounded-[34px] bg-white/70 p-7 text-[#11224e]">
+                                <div class="flex h-full flex-col gap-5">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#11224e] shadow-inner">
+                                            @if($service->icon)
+                                                @if(strpos($service->icon, '<') !== false && strpos($service->icon, '>') !== false)
+                                                    {!! $service->icon !!}
+                                                @else
+                                                    <img src="{{ asset($service->icon) }}" alt="{{ $service->name }}" class="h-7 w-7 object-contain">
+                                                @endif
                                             @else
-                                                <img src="{{ asset($service->icon) }}" alt="{{ $service->name }}" class="h-7 w-7 object-contain">
+                                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l7.5-7.5 4.5 4.5L21 4.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 20.25l7.5-7.5 4.5 4.5L21 11.25"/></svg>
                                             @endif
                                         </div>
-                                    @else
-                                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#5c83c4]/15 text-[#5c83c4]">
-                                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l7.5-7.5 4.5 4.5L21 4.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 20.25l7.5-7.5 4.5 4.5L21 11.25"/></svg>
-                                        </div>
-                                    @endif
-                                    <div class="text-xs font-semibold uppercase tracking-wide text-[#5c83c4]">
-                                        {{ $service->category ?: __('Experiential Service') }}
+                                        <span class="rounded-full border border-[#d5def3] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-[#5c83c4]">
+                                            {{ $service->category ?: __('Experiential Service') }}
+                                        </span>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <h3 class="text-2xl font-semibold leading-snug text-[#11224e]">
+                                            {{ $service->name }}
+                                        </h3>
+                                        <p class="text-sm text-[#11224e]/80">
+                                            {{ \Str::limit(strip_tags($service->description), 170) }}
+                                        </p>
+                                    </div>
+
+                                    <div class="mt-auto flex items-center justify-between pt-4 text-xs uppercase tracking-[0.4em] text-[#5c83c4]">
+                                        <span>{{ __('Tap to explore') }}</span>
+                                        <span class="inline-block h-1 w-14 rounded-full bg-[#d5def3] transition-all duration-200 group-hover:bg-[#ffa630]"></span>
                                     </div>
                                 </div>
-
-                                <div class="space-y-2">
-                                    <h3 class="text-xl font-semibold text-[#11224e]">
-                                        {{ $service->name }}
-                                    </h3>
-                                    <p class="text-sm text-[#11224e]/80">
-                                        {{ \Str::limit(strip_tags($service->description), 170) }}
-                                    </p>
-                                </div>
-
-                                <div class="mt-auto flex items-center justify-between pt-4 text-sm font-semibold text-[#5c83c4]">
-                                    <a href="{{ route('frontend.services.show', $service->slug) }}" class="inline-flex items-center gap-2 hover:text-[#f17720]">
-                                        {{ __('Lihat detail layanan') }}
-                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                                    </a>
-                                    <a href="{{ route('frontend.services.show', $service->slug) }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#11224e]/5 text-[#11224e] hover:bg-[#11224e] hover:text-white">
-                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                                    </a>
-                                </div>
-                            </div>
+                            </a>
                         </article>
                     @endforeach
                 </div>

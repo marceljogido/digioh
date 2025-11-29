@@ -116,6 +116,22 @@
 </div>
 
 <div class="row">
+    <div class="col-12 mb-3">
+        <div class="form-group">
+            <?php
+            $field_name = "highlight_video_url";
+            $field_lable = __("Highlight Video URL");
+            $field_placeholder = __("https://www.youtube.com/watch?v=...");
+            $required = "";
+            ?>
+            {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
+            {!! field_required($required) !!}
+            {{ html()->text($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(["$required"]) }}
+            <small class="text-muted d-block mt-1">
+                {{ __('Opsional. Tempel tautan video highlight (YouTube, Vimeo, atau file MP4). Video akan tampil di slider hero Our Work.') }}
+            </small>
+        </div>
+    </div>
     <div class="col-12 col-md-6 mb-3">
         <div class="form-group">
             <label class="form-label" for="service_ids">{{ __('Services') }}</label>

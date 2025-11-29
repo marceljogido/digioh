@@ -8,16 +8,45 @@
     @php
         $startDate = $$module_name_singular->event_start_date;
         $endDate = $$module_name_singular->event_end_date;
-        $heroImages = collect();
-        if ($$module_name_singular->image) {
-            $heroImages->push(asset($$module_name_singular->image));
+        $highlightVideo = $$module_name_singular->highlight_video_data;
+        $heroSlides = collect();
+
+        if ($highlightVideo) {
+            $heroSlides->push([
+                'type' => 'video',
+                'provider' => $highlightVideo['is_file'] ? 'file' : 'iframe',
+                'embed' => $highlightVideo['embed_url'],
+                'thumbnail' => $highlightVideo['thumbnail'] ?? null,
+            ]);
         }
-        $galleryImages = collect($$module_name_singular->gallery_images ?? [])->filter()->map(function ($path) {
-            return \Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])
+
+        if ($$module_name_singular->image) {
+            $heroSlides->push([
+                'type' => 'image',
+                'src' => asset($$module_name_singular->image),
+            ]);
+        }
+
+        $gallerySlides = collect($$module_name_singular->gallery_images ?? [])->filter()->map(function ($path) {
+            $url = \Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])
                 ? $path
                 : \Illuminate\Support\Facades\Storage::url($path);
+
+            return [
+                'type' => 'image',
+                'src' => $url,
+            ];
         });
-        $heroImages = $heroImages->merge($galleryImages)->unique()->values();
+
+        $heroSlides = $heroSlides
+            ->merge($gallerySlides)
+            ->unique(function ($slide) {
+                return $slide['type'] === 'image'
+                    ? $slide['src']
+                    : 'video-'.$slide['embed'];
+            })
+            ->values();
+
         $sliderId = 'hero-slider-'.$$module_name_singular->id;
     @endphp
     <section class="relative overflow-hidden bg-[#11224e] text-white">
@@ -68,32 +97,64 @@
                 @include("frontend.includes.messages")
             </div>
             <div class="flex-1">
-                <div class="relative rounded-[32px] border border-white/20 bg-white/5 p-3 shadow-2xl shadow-black/20 backdrop-blur" data-hero-slider="{{ $sliderId }}">
-                    <div class="relative overflow-hidden rounded-2xl">
-                        @foreach($heroImages as $index => $imageUrl)
-                            <button type="button" data-slide data-slide-preview="{{ $imageUrl }}" class="aspect-video w-full object-cover transition-all duration-500 {{ $index === 0 ? 'relative opacity-100 pointer-events-auto' : 'absolute inset-0 opacity-0 pointer-events-none' }}">
-                                <img
-                                    class="h-full w-full object-cover"
-                                    src="{{ $imageUrl }}"
-                                    alt="{{ $$module_name_singular->name }} slide {{ $index + 1 }}"
-                                />
+                @if($heroSlides->isNotEmpty())
+                    <div class="relative overflow-hidden rounded-[32px] shadow-2xl shadow-black/20" data-hero-slider="{{ $sliderId }}">
+                        @foreach($heroSlides as $index => $slide)
+                            <button
+                                type="button"
+                                data-slide
+                                data-slide-type="{{ $slide['type'] }}"
+                                @if($slide['type'] === 'image')
+                                    data-slide-src="{{ $slide['src'] }}"
+                                @else
+                                    data-slide-provider="{{ $slide['provider'] }}"
+                                    data-slide-video="{{ $slide['embed'] }}"
+                                @endif
+                                class="block w-full overflow-hidden transition-all duration-500 {{ $index === 0 ? 'relative opacity-100 pointer-events-auto' : 'absolute inset-0 opacity-0 pointer-events-none' }}"
+                                style="aspect-ratio: 16 / 9;"
+                            >
+                                @if($slide['type'] === 'image')
+                                    <img
+                                        class="h-full w-full object-cover"
+                                        src="{{ $slide['src'] }}"
+                                        alt="{{ $$module_name_singular->name }} slide {{ $index + 1 }}"
+                                        style="aspect-ratio: 16 / 9;"
+                                    />
+                                @else
+                                    <div class="pointer-events-none relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#11224e] via-[#5c83c4] to-[#ffa630] p-8 text-center text-white" style="aspect-ratio: 16 / 9;">
+                                        @if(!empty($slide['thumbnail']))
+                                            <img src="{{ $slide['thumbnail'] }}" alt="{{ $$module_name_singular->name }} video thumbnail" class="absolute inset-0 h-full w-full object-cover opacity-60">
+                                        @endif
+                                        <div class="absolute inset-0 bg-gradient-to-b from-[#040f2c]/70 via-[#040f2c]/35 to-transparent"></div>
+                                        <div class="relative flex flex-col items-center gap-4">
+                                            <span class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-[#11224e] shadow-xl shadow-black/30">
+                                                <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M8.75 6.73a.75.75 0 0 1 1.12-.66l8 4.77a.75.75 0 0 1 0 1.32l-8 4.77a.75.75 0 0 1-1.12-.66z"/></svg>
+                                            </span>
+                                            <p class="text-2xl font-semibold tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)]">{{ __('Highlight Video') }}</p>
+                                        </div>
+                                    </div>
+                                @endif
                             </button>
                         @endforeach
+                        @if($heroSlides->count() > 1)
+                            <button type="button" class="absolute left-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-slide-prev>
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                            </button>
+                            <button type="button" class="absolute right-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-slide-next>
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                            </button>
+                            <div class="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+                                @foreach($heroSlides as $index => $slide)
+                                    <span data-slide-dot class="h-2 w-2 rounded-full {{ $index === 0 ? 'bg-[#ffa630]' : 'bg-white/40' }}"></span>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
-                    @if($heroImages->count() > 1)
-                        <button type="button" class="absolute left-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-slide-prev>
-                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                        </button>
-                        <button type="button" class="absolute right-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-slide-next>
-                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                        </button>
-                        <div class="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-                            @foreach($heroImages as $index => $imageUrl)
-                                <span data-slide-dot class="h-2 w-2 rounded-full {{ $index === 0 ? 'bg-[#ffa630]' : 'bg-white/40' }}"></span>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
+                @else
+                    <div class="rounded-[32px] bg-[#0b132f]/30 p-12 text-center text-white">
+                        <p class="text-lg font-semibold">{{ __('Konten visual belum tersedia') }}</p>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="fixed inset-0 z-50 hidden bg-[#0b132f]/90 backdrop-blur" data-hero-lightbox="{{ $sliderId }}">
@@ -104,7 +165,23 @@
                 <button type="button" class="rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-lightbox-prev>
                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                 </button>
-                <img data-lightbox-image class="max-h-[80vh] max-w-[90vw] rounded-2xl object-contain shadow-2xl" src="{{ $heroImages->first() }}" alt="{{ $$module_name_singular->name }}">
+                <div class="flex max-h-[80vh] w-full max-w-5xl flex-col items-center justify-center">
+                    <img data-lightbox-image class="hidden max-h-[80vh] w-full rounded-2xl object-contain shadow-2xl" style="aspect-ratio: 16 / 9;" alt="{{ $$module_name_singular->name }}">
+                    <div data-lightbox-video-wrapper class="relative hidden w-full">
+                        <div class="w-full overflow-hidden rounded-2xl bg-black shadow-2xl" style="aspect-ratio: 16 / 9;">
+                            <iframe
+                                data-lightbox-video-iframe
+                                class="hidden h-full w-full"
+                                src=""
+                                title="Highlight video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                            <video data-lightbox-video-file class="hidden h-full w-full bg-black object-contain" controls playsinline></video>
+                        </div>
+                    </div>
+                </div>
                 <button type="button" class="rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-lightbox-next>
                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
                 </button>
@@ -158,6 +235,16 @@
                             </p>
                         </div>
                     @endif
+                    @if(!empty($$module_name_singular->scope_of_work_list))
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-[#5c83c4]">{{ __('Scope of Work') }}</p>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                @foreach($$module_name_singular->scope_of_work_list as $scope)
+                                    <span class="rounded-full bg-[#f4f6fb] px-3 py-1 text-xs font-semibold text-[#11224e]">{{ $scope }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -165,7 +252,7 @@
                 <div class="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#ffa630]">
                     <span>{{ __('Terbaru lainnya') }}</span>
                 </div>
-                <p class="text-sm text-[#5c83c4]">{{ __('Our Work Terbaru') }} · {{ __('Portofolio terbaru yang baru saja kami publikasikan.') }}</p>
+                <p class="text-sm text-[#5c83c4]">{{ __('Our Work Terbaru') }} &middot; {{ __('Portofolio terbaru yang baru saja kami publikasikan.') }}</p>
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @php $recent = \Modules\Post\Models\Post::where('is_our_work', true)->published()->latest()->take(3)->get(); @endphp
                     @foreach($recent as $item)
@@ -216,11 +303,87 @@
                 const sliderId = slider.getAttribute('data-hero-slider');
                 const lightbox = document.querySelector('[data-hero-lightbox="'+ sliderId +'"]');
                 const lightboxImg = lightbox?.querySelector('[data-lightbox-image]');
+                const videoWrapper = lightbox?.querySelector('[data-lightbox-video-wrapper]');
+                const iframeEl = lightbox?.querySelector('[data-lightbox-video-iframe]');
+                const videoEl = lightbox?.querySelector('[data-lightbox-video-file]');
                 let current = 0;
 
                 const updateBodyScroll = (open) => {
                     document.documentElement.classList.toggle('overflow-y-hidden', open);
                     document.body.classList.toggle('overflow-y-hidden', open);
+                };
+
+                const stopEmbeddedPlayback = () => {
+                    if (iframeEl) {
+                        iframeEl.src = '';
+                        iframeEl.classList.add('hidden');
+                    }
+                    if (videoEl) {
+                        videoEl.pause();
+                        videoEl.removeAttribute('src');
+                        videoEl.load();
+                        videoEl.classList.add('hidden');
+                    }
+                    videoWrapper?.classList.add('hidden');
+                };
+
+                const updateLightboxMedia = (index) => {
+                    if (!lightbox || !slides[index]) {
+                        return;
+                    }
+
+                    const target = slides[index];
+                    const type = target.dataset.slideType || 'image';
+                    if (type === 'video') {
+                        if (!videoWrapper) return;
+                        videoWrapper.classList.remove('hidden');
+                        lightboxImg?.classList.add('hidden');
+                        const provider = target.dataset.slideProvider || 'iframe';
+                        const source = target.dataset.slideVideo || '';
+
+                        if (provider === 'file') {
+                            if (iframeEl) {
+                                iframeEl.src = '';
+                                iframeEl.classList.add('hidden');
+                            }
+                            if (videoEl) {
+                                if (videoEl.src !== source) {
+                                    videoEl.src = source;
+                                    videoEl.load();
+                                }
+                                videoEl.classList.remove('hidden');
+                            }
+                        } else {
+                            if (videoEl) {
+                                videoEl.pause();
+                                videoEl.removeAttribute('src');
+                                videoEl.load();
+                                videoEl.classList.add('hidden');
+                            }
+                            if (iframeEl) {
+                                if (iframeEl.src !== source) {
+                                    iframeEl.src = source;
+                                }
+                                iframeEl.classList.remove('hidden');
+                            }
+                        }
+                    } else {
+                        videoWrapper?.classList.add('hidden');
+                        if (iframeEl) {
+                            iframeEl.src = '';
+                            iframeEl.classList.add('hidden');
+                        }
+                        if (videoEl) {
+                            videoEl.pause();
+                            videoEl.removeAttribute('src');
+                            videoEl.load();
+                            videoEl.classList.add('hidden');
+                        }
+                        if (lightboxImg) {
+                            lightboxImg.src = target.dataset.slideSrc || '';
+                            lightboxImg.classList.remove('hidden');
+                        }
+                    }
                 };
 
                 const showSlide = (index) => {
@@ -237,9 +400,7 @@
                         dot.classList.toggle('bg-[#ffa630]', idx === index);
                         dot.classList.toggle('bg-white/40', idx !== index);
                     });
-                    if (lightboxImg && slides[index]) {
-                        lightboxImg.src = slides[index].dataset.slidePreview;
-                    }
+                    updateLightboxMedia(index);
                 };
 
                 const goNext = () => {
@@ -266,14 +427,17 @@
                 });
 
                 lightbox?.querySelector('[data-lightbox-close]')?.addEventListener('click', function () {
+                    if (!lightbox) return;
                     lightbox.classList.add('hidden');
                     updateBodyScroll(false);
+                    stopEmbeddedPlayback();
                 });
 
                 lightbox?.addEventListener('click', function (event) {
                     if (event.target === lightbox) {
                         lightbox.classList.add('hidden');
                         updateBodyScroll(false);
+                        stopEmbeddedPlayback();
                     }
                 });
 
@@ -294,6 +458,7 @@
                     if (event.key === 'Escape') {
                         lightbox.classList.add('hidden');
                         updateBodyScroll(false);
+                        stopEmbeddedPlayback();
                     } else if (event.key === 'ArrowRight') {
                         goNext();
                     } else if (event.key === 'ArrowLeft') {
