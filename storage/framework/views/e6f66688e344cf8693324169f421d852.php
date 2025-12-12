@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace("_", "-", app()->currentLocale()) }}" dir="{{ language_direction() }}">
+<html lang="<?php echo e(str_replace("_", "-", app()->currentLocale())); ?>" dir="<?php echo e(language_direction()); ?>">
     <head>
         <meta charset="utf-8" />
-        <link href="{{ asset("img/favicon.png") }}" rel="apple-touch-icon" sizes="76x76" />
-        <link type="image/png" href="{{ asset("img/favicon.png") }}" rel="icon" />
+        <link href="<?php echo e(asset("img/favicon.png")); ?>" rel="apple-touch-icon" sizes="76x76" />
+        <link type="image/png" href="<?php echo e(asset("img/favicon.png")); ?>" rel="icon" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <title>@yield("title") | {{ config("app.name") }}</title>
+        <title><?php echo $__env->yieldContent("title"); ?> | <?php echo e(config("app.name")); ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="{{ setting("meta_description") }}" />
-        <meta name="keyword" content="{{ setting("meta_keyword") }}" />
-        @include("frontend.includes.meta")
+        <meta name="description" content="<?php echo e(setting("meta_description")); ?>" />
+        <meta name="keyword" content="<?php echo e(setting("meta_keyword")); ?>" />
+        <?php echo $__env->make("frontend.includes.meta", array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
         <!-- Shortcut Icon -->
-        <link href="{{ asset("img/favicon.png") }}" rel="shortcut icon" />
-        <link type="image/ico" href="{{ asset("img/favicon.png") }}" rel="icon" />
+        <link href="<?php echo e(asset("img/favicon.png")); ?>" rel="shortcut icon" />
+        <link type="image/ico" href="<?php echo e(asset("img/favicon.png")); ?>" rel="icon" />
 
         <!-- CSRF Token -->
-        <meta name="csrf-token" content="{{ csrf_token() }}" />
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,9 +25,10 @@
         <!-- AOS Animate On Scroll -->
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-        @vite(["resources/css/app-frontend.css", "resources/js/app-frontend.js"])
+        <?php echo app('Illuminate\Foundation\Vite')(["resources/css/app-frontend.css", "resources/js/app-frontend.js"]); ?>
 
-        @livewireStyles
+        <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
+
 
         <!-- Custom Animations -->
         <style>
@@ -115,24 +116,62 @@
         </style>
 
 
-        @stack("after-styles")
+        <?php echo $__env->yieldPushContent("after-styles"); ?>
 
-        <x-google-analytics />
+        <?php if (isset($component)) { $__componentOriginal5a71c2c3670795ec464153e22b9d2874 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal5a71c2c3670795ec464153e22b9d2874 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.google-analytics','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('google-analytics'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal5a71c2c3670795ec464153e22b9d2874)): ?>
+<?php $attributes = $__attributesOriginal5a71c2c3670795ec464153e22b9d2874; ?>
+<?php unset($__attributesOriginal5a71c2c3670795ec464153e22b9d2874); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal5a71c2c3670795ec464153e22b9d2874)): ?>
+<?php $component = $__componentOriginal5a71c2c3670795ec464153e22b9d2874; ?>
+<?php unset($__componentOriginal5a71c2c3670795ec464153e22b9d2874); ?>
+<?php endif; ?>
     </head>
 
-    @php
+    <?php
         $hasHeroOverlap = request()->routeIs('frontend.index') || request()->routeIs('home');
-    @endphp
-    <body class="bg-transparent {{ $hasHeroOverlap ? 'hero-overlap' : 'pt-16' }}">
-        <x-selected-theme />
+    ?>
+    <body class="bg-transparent <?php echo e($hasHeroOverlap ? 'hero-overlap' : 'pt-16'); ?>">
+        <?php if (isset($component)) { $__componentOriginalc560413a08e91edcc1296f14882e3c6a = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc560413a08e91edcc1296f14882e3c6a = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.selected-theme','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('selected-theme'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc560413a08e91edcc1296f14882e3c6a)): ?>
+<?php $attributes = $__attributesOriginalc560413a08e91edcc1296f14882e3c6a; ?>
+<?php unset($__attributesOriginalc560413a08e91edcc1296f14882e3c6a); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc560413a08e91edcc1296f14882e3c6a)): ?>
+<?php $component = $__componentOriginalc560413a08e91edcc1296f14882e3c6a; ?>
+<?php unset($__componentOriginalc560413a08e91edcc1296f14882e3c6a); ?>
+<?php endif; ?>
 
-        @include("frontend.includes.header")
+        <?php echo $__env->make("frontend.includes.header", array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
         <main class="bg-white dark:bg-gray-800">
-            @yield("content")
+            <?php echo $__env->yieldContent("content"); ?>
         </main>
 
-        @include("frontend.includes.footer")
+        <?php echo $__env->make("frontend.includes.footer", array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
         <style>
             /* Reset margin default browser */
@@ -159,7 +198,8 @@
         </style>
 
         <!-- Scripts -->
-        @livewireScripts
+        <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
+
         
         <!-- AOS Animate On Scroll -->
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -173,6 +213,7 @@
             });
         </script>
 
-        @stack("after-scripts")
+        <?php echo $__env->yieldPushContent("after-scripts"); ?>
     </body>
 </html>
+<?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/frontend/layouts/app.blade.php ENDPATH**/ ?>

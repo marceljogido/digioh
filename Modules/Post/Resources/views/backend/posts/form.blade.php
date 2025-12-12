@@ -1,8 +1,9 @@
 @php
     use Illuminate\Support\Facades\Storage;
     use Illuminate\Support\Str;
+    use Modules\Post\Models\Post;
 
-    $postEntity = $data ?? null;
+    $postEntity = ($data instanceof Post) ? $data : null;
     $serviceOptions = \App\Models\Service::sorted()->pluck('name','id');
     $selectedServices = old('service_ids', $postEntity ? $postEntity->services->pluck('id')->toArray() : []);
     $existingGallery = $postEntity && is_array($postEntity->gallery_images) ? $postEntity->gallery_images : [];
@@ -18,22 +19,34 @@
         ->count();
     $featuredLimitReached = $featuredCount >= $featuredLimit;
     $disableFeaturedToggle = $featuredLimitReached && ! $oldIsFeatured;
+
+    // Bilingual support
+    $locales = available_locales();
+    $sourceLocale = config('translatable.source_locale', 'id');
 @endphp
 
 <div class="row">
-    <div class="col-12 col-sm-6 mb-3">
-        <div class="form-group">
-            <?php
-            $field_name = "name";
-            $field_lable = __("Name");
-            $field_placeholder = $field_lable;
-            $required = "required";
-            ?>
-            {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
-            {!! field_required($required) !!}
-            {{ html()->text($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(["$required"]) }}
+    @foreach($locales as $locale)
+        <div class="col-12 col-sm-6 mb-3">
+            <div class="form-group">
+                <label class="form-label" for="name_{{ $locale }}">
+                    {{ __('Name') }} ({{ strtoupper($locale) }})
+                    @if($locale === $sourceLocale) <span class="text-danger">*</span> @endif
+                </label>
+                <input
+                    type="text"
+                    name="name[{{ $locale }}]"
+                    id="name_{{ $locale }}"
+                    value="{{ old("name.$locale", $postEntity?->getTranslation('name', $locale, false)) }}"
+                    class="form-control"
+                    placeholder="{{ __('Name') }}"
+                    @if($locale === $sourceLocale) required @endif
+                >
+            </div>
         </div>
-    </div>
+    @endforeach
+</div>
+<div class="row">
     <div class="col-12 col-sm-6 mb-3">
         <div class="form-group">
             <?php
@@ -49,34 +62,42 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-12 mb-3">
-        <div class="form-group">
-            <?php
-            $field_name = "intro";
-            $field_lable = __("Intro");
-            $field_placeholder = $field_lable;
-            $required = "required";
-            ?>
-            {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
-            {!! field_required($required) !!}
-            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class("form-control richtext")->attributes(["$required"]) }}
+    @foreach($locales as $locale)
+        <div class="col-12 mb-3">
+            <div class="form-group">
+                <label class="form-label" for="intro_{{ $locale }}">
+                    {{ __('Intro') }} ({{ strtoupper($locale) }})
+                    @if($locale === $sourceLocale) <span class="text-danger">*</span> @endif
+                </label>
+                <textarea
+                    name="intro[{{ $locale }}]"
+                    id="intro_{{ $locale }}"
+                    class="form-control richtext"
+                    placeholder="{{ __('Intro') }}"
+                    @if($locale === $sourceLocale) required @endif
+                >{{ old("intro.$locale", $postEntity?->getTranslation('intro', $locale, false)) }}</textarea>
+            </div>
         </div>
-    </div>
+    @endforeach
 </div>
 <div class="row">
-    <div class="col-12 mb-3">
-        <div class="form-group">
-            <?php
-            $field_name = "content";
-            $field_lable = __("Content");
-            $field_placeholder = $field_lable;
-            $required = "required";
-            ?>
-            {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
-            {!! field_required($required) !!}
-            {{ html()->textarea($field_name)->placeholder($field_placeholder)->class("form-control richtext")->attributes(["$required"]) }}
+    @foreach($locales as $locale)
+        <div class="col-12 mb-3">
+            <div class="form-group">
+                <label class="form-label" for="content_{{ $locale }}">
+                    {{ __('Content') }} ({{ strtoupper($locale) }})
+                    @if($locale === $sourceLocale) <span class="text-danger">*</span> @endif
+                </label>
+                <textarea
+                    name="content[{{ $locale }}]"
+                    id="content_{{ $locale }}"
+                    class="form-control richtext"
+                    placeholder="{{ __('Content') }}"
+                    @if($locale === $sourceLocale) required @endif
+                >{{ old("content.$locale", $postEntity?->getTranslation('content', $locale, false)) }}</textarea>
+            </div>
         </div>
-    </div>
+    @endforeach
 </div>
 <div class="row">
     <div class="col-12 mb-3">
@@ -116,22 +137,6 @@
 </div>
 
 <div class="row">
-    <div class="col-12 mb-3">
-        <div class="form-group">
-            <?php
-            $field_name = "highlight_video_url";
-            $field_lable = __("Highlight Video URL");
-            $field_placeholder = __("https://www.youtube.com/watch?v=...");
-            $required = "";
-            ?>
-            {{ html()->label($field_lable, $field_name)->class("form-label")->for($field_name) }}
-            {!! field_required($required) !!}
-            {{ html()->text($field_name)->placeholder($field_placeholder)->class("form-control")->attributes(["$required"]) }}
-            <small class="text-muted d-block mt-1">
-                {{ __('Opsional. Tempel tautan video highlight (YouTube, Vimeo, atau file MP4). Video akan tampil di slider hero Our Work.') }}
-            </small>
-        </div>
-    </div>
     <div class="col-12 col-md-6 mb-3">
         <div class="form-group">
             <label class="form-label" for="service_ids">{{ __('Services') }}</label>
@@ -332,6 +337,7 @@
                         })
                         .then(function (editor) {
                             textarea.dataset.editorInitialized = 'true';
+                            textarea.editorInstance = editor;
                             editor.model.document.on('change:data', function () {
                                 textarea.value = editor.getData();
                             });
@@ -344,3 +350,99 @@
         </script>
     @endpush
 @endonce
+
+{{-- Auto Translate Button --}}
+<div class="row mb-4">
+    <div class="col-12">
+        <button type="button" id="autoTranslateBtn" class="btn btn-outline-primary">
+            <i class="fas fa-language me-2"></i>{{ __('Auto Translate ID → EN') }}
+        </button>
+        <small class="text-muted ms-2">{{ __('Otomatis terjemahkan konten Indonesia ke Inggris') }}</small>
+    </div>
+</div>
+
+@push('after-scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const translateBtn = document.getElementById('autoTranslateBtn');
+    if (!translateBtn) return;
+
+    translateBtn.addEventListener('click', async function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Translating...';
+
+        try {
+            // Get values from ID fields
+            const nameId = document.getElementById('name_id')?.value || '';
+            const introTextarea = document.getElementById('intro_id');
+            const contentTextarea = document.getElementById('content_id');
+
+            // Get CKEditor content if available
+            let introId = introTextarea?.editorInstance?.getData() || introTextarea?.value || '';
+            let contentId = contentTextarea?.editorInstance?.getData() || contentTextarea?.value || '';
+
+            if (!nameId && !introId && !contentId) {
+                alert('{{ __("Tidak ada konten Indonesia untuk diterjemahkan") }}');
+                return;
+            }
+
+            const response = await fetch('{{ route("backend.translate.batch") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    texts: [nameId, introId, contentId],
+                    source: 'id',
+                    target: 'en'
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const [nameEn, introEn, contentEn] = data.translations;
+
+                // Set Name EN
+                const nameEnField = document.getElementById('name_en');
+                if (nameEnField && nameEn) nameEnField.value = nameEn;
+
+                // Set Intro EN (handle CKEditor)
+                const introEnTextarea = document.getElementById('intro_en');
+                if (introEnTextarea && introEn) {
+                    if (introEnTextarea.editorInstance) {
+                        introEnTextarea.editorInstance.setData(introEn);
+                    } else {
+                        introEnTextarea.value = introEn;
+                    }
+                }
+
+                // Set Content EN (handle CKEditor)
+                const contentEnTextarea = document.getElementById('content_en');
+                if (contentEnTextarea && contentEn) {
+                    if (contentEnTextarea.editorInstance) {
+                        contentEnTextarea.editorInstance.setData(contentEn);
+                    } else {
+                        contentEnTextarea.value = contentEn;
+                    }
+                }
+
+                btn.innerHTML = '<i class="fas fa-check me-2"></i>Translated!';
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+            } else {
+                throw new Error(data.message || 'Translation failed');
+            }
+        } catch (error) {
+            console.error('Translation error:', error);
+            alert('{{ __("Gagal menerjemahkan: ") }}' + error.message);
+            btn.innerHTML = originalText;
+        } finally {
+            btn.disabled = false;
+        }
+    });
+});
+</script>
+@endpush

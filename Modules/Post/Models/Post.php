@@ -13,14 +13,24 @@ use Modules\Post\Enums\PostStatus;
 use Modules\Post\Models\Presenters\PostPresenter;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Translatable\HasTranslations;
 
 class Post extends BaseModel
 {
     use HasFactory;
+    use HasTranslations;
     use LogsActivity;
     use Notifiable;
     use PostPresenter;
     use SoftDeletes;
+
+    public array $translatable = [
+        'name',
+        'intro',
+        'content',
+        'meta_title',
+        'meta_description',
+    ];
 
     protected $table = 'posts';
 

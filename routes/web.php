@@ -97,6 +97,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Backend', 'prefix' => 'admin'
     Route::get('/', 'BackendController@index')->name('home');
     Route::get('dashboard', 'BackendController@index')->name('dashboard');
 
+    // Translation API
+    Route::post('translate', 'TranslateController@translate')->name('translate');
+    Route::post('translate/batch', 'TranslateController@translateBatch')->name('translate.batch');
+
     /*
      *
      *  Settings Routes

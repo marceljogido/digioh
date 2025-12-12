@@ -47,8 +47,8 @@
                     @php($__waLink = $__waNum ? "https://wa.me/$__waNum?text=$__waMsg" : route('contact'))
                     <li><a href="{{ $__waLink }}" target="_blank" rel="noopener" class="transition hover:text-white">{{ __('Hubungi kami') }}</a></li>
                     <li><a href="{{ url('/#faq') }}" class="transition hover:text-white">{{ __('FAQ') }}</a></li>
-                    <li><a href="{{ route('contact') }}" class="transition hover:text-white">{{ __('Form Kontak') }}</a></li>
-                    <li><a href="{{ route('privacy') }}" class="transition hover:text-white">{{ __('Kebijakan privasi') }}</a></li>
+
+
                 </ul>
             </div>
 

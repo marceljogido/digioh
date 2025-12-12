@@ -9,16 +9,16 @@
 @endphp
 <section class="relative overflow-hidden bg-[#11224e] text-white">
     <div class="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#5c83c4]/30 to-transparent"></div>
-    <div class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[#ffa630]/40 to-transparent"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[#ffa630]/40 to-transparent animate-pulse-slow"></div>
     <div class="mx-auto flex max-w-screen-xl flex-col gap-8 px-4 py-12 sm:px-12 lg:flex-row lg:items-center">
         <div class="flex-1 space-y-6">
-            <span class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
+            <span data-aos="fade-down" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
                 {{ __('Let us collaborate') }}
             </span>
-            <h1 class="text-3xl font-bold leading-tight sm:text-5xl">
+            <h1 data-aos="fade-up" data-aos-delay="100" class="text-3xl font-bold leading-tight sm:text-5xl">
                 {{ __('Cerita dan kebutuhan Anda adalah titik awal ide kami') }}
             </h1>
-            <p class="max-w-2xl text-sm text-white/80">
+            <p data-aos="fade-up" data-aos-delay="200" class="max-w-2xl text-sm text-white/80">
                 {{ __('Hubungi tim Digioh untuk mendiskusikan event, experiential marketing, atau proyek business development berikutnya.') }}
             </p>
         </div>
@@ -45,7 +45,7 @@
         @endif
 
         <div class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-            <div class="rounded-[40px] border border-[#d5def3] bg-gradient-to-br from-white via-[#f8faff] to-[#eef2ff] px-6 py-8 shadow-2xl shadow-[#11224e]/10 space-y-6">
+            <div data-aos="fade-right" class="rounded-[40px] border border-[#d5def3] bg-gradient-to-br from-white via-[#f8faff] to-[#eef2ff] px-6 py-8 shadow-2xl shadow-[#11224e]/10 space-y-6 hover-glow">
                 <p class="text-xs font-semibold uppercase tracking-[0.4em] text-[#5c83c4]">{{ __('Kunjungi') }}</p>
                 @php
                     $mapAddress = setting('contact_address') ?? $defaultContactAddress;
@@ -99,7 +99,7 @@
                 </div>
             </div>
 
-            <div class="rounded-[32px] border border-[#d5def3] bg-white px-6 py-6 shadow-lg shadow-[#11224e]/5">
+            <div data-aos="fade-left" data-aos-delay="200" class="rounded-[32px] border border-[#d5def3] bg-white px-6 py-6 shadow-lg shadow-[#11224e]/5 hover-glow">
                 <h3 class="text-lg font-semibold text-[#11224e]">{{ __('Kirimkan brief singkat Anda') }}</h3>
                 <p class="mt-1 text-sm text-[#11224e]/80">{{ __('Ceritakan tujuan utama, tanggal, serta ekspektasi outcome. Kami akan hubungi Anda untuk sesi diskusi lanjut.') }}</p>
                 <form action="{{ route('contact.store') }}" method="POST" class="mt-6 space-y-4" novalidate>

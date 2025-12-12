@@ -5,14 +5,14 @@
 @section('content')
 
 <section class="relative overflow-hidden bg-[#11224e] pt-28 md:pt-32 lg:pt-12 pb-16 text-white scroll-mt-32">
-    <div class="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#ffa630]/30 to-transparent"></div>
+    <div class="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#ffa630]/30 to-transparent animate-pulse-slow"></div>
     <div class="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#5c83c4]/35 to-transparent"></div>
     <div class="relative mx-auto flex max-w-screen-xl flex-col gap-8 px-4 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex-1 space-y-5">
-            <p class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/80">
+            <p data-aos="fade-down" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/80">
                 {{ __('Showcase Portfolio') }}
             </p>
-            <h1 class="text-3xl font-black tracking-tight sm:text-4xl">
+            <h1 data-aos="fade-up" data-aos-delay="100" class="text-3xl font-black tracking-tight sm:text-4xl">
                 {{ __('Our Work & Experience Gallery') }}
             </h1>
             <p class="text-sm leading-relaxed text-white/75 sm:text-base">
@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <div class="w-full max-w-lg rounded-[32px] border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur">
+        <div data-aos="fade-left" data-aos-delay="300" class="w-full max-w-lg rounded-[32px] border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur hover-glow">
             <h2 class="text-sm font-semibold uppercase tracking-[0.4em] text-white/70">{{ __('Filter project') }}</h2>
             <form method="GET" class="mt-4 space-y-4">
                 <div class="flex flex-col space-y-2">
@@ -105,11 +105,11 @@
             </div>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($posts as $post)
+                @foreach ($posts as $index => $post)
                     @php
                         $details_url = route('frontend.posts.show', [encode_id($post->id), $post->slug]);
                     @endphp
-                    <a href="{{ $details_url }}" class="flex h-full flex-col overflow-hidden rounded-[32px] border border-[#d5def3] bg-white shadow-lg shadow-[#11224e]/5 transition hover:-translate-y-1.5 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-[#ffa630]/60">
+                    <a href="{{ $details_url }}" data-aos="fade-up" data-aos-delay="{{ ($index % 6) * 100 }}" class="flex h-full flex-col overflow-hidden rounded-[32px] border border-[#d5def3] bg-white shadow-lg shadow-[#11224e]/5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover-lift focus:outline-none focus:ring-2 focus:ring-[#ffa630]/60">
                         <div class="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
                             <img src="{{ asset($post->image ?: 'img/default_post.svg') }}" alt="{{ $post->name }}" class="h-full w-full object-cover">
                         </div>

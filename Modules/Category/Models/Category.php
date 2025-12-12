@@ -5,13 +5,19 @@ namespace Modules\Category\Models;
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Category extends BaseModel
 {
     use HasFactory;
+    use HasTranslations;
     use SoftDeletes;
 
     protected $table = 'categories';
+
+    public array $translatable = [
+        'name',
+    ];
 
     /**
      * Caegories has Many posts.

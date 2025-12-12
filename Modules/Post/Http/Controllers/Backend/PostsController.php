@@ -57,11 +57,18 @@ class PostsController extends BackendBaseController
 
         $module_action = 'Store';
 
+        $sourceLocale = config('translatable.source_locale', 'id');
         $validated_data = $request->validate([
-            'name' => 'required|max:191',
+            'name' => 'required|array',
+            "name.{$sourceLocale}" => 'required|string|max:191',
+            'name.*' => 'nullable|string|max:191',
             'slug' => 'nullable|max:191',
-            'intro' => 'required',
-            'content' => 'required',
+            'intro' => 'required|array',
+            "intro.{$sourceLocale}" => 'required|string',
+            'intro.*' => 'nullable|string',
+            'content' => 'required|array',
+            "content.{$sourceLocale}" => 'required|string',
+            'content.*' => 'nullable|string',
             'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'service_ids' => ['nullable', 'array'],
             'service_ids.*' => ['integer', 'exists:services,id'],
@@ -241,11 +248,18 @@ class PostsController extends BackendBaseController
 
         $$module_name_singular = $module_model::findOrFail($id);
 
+        $sourceLocale = config('translatable.source_locale', 'id');
         $validated_data = $request->validate([
-            'name' => 'required|max:191',
+            'name' => 'required|array',
+            "name.{$sourceLocale}" => 'required|string|max:191',
+            'name.*' => 'nullable|string|max:191',
             'slug' => 'nullable|max:191',
-            'intro' => 'required',
-            'content' => 'required',
+            'intro' => 'required|array',
+            "intro.{$sourceLocale}" => 'required|string',
+            'intro.*' => 'nullable|string',
+            'content' => 'required|array',
+            "content.{$sourceLocale}" => 'required|string',
+            'content.*' => 'nullable|string',
             'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'service_ids' => ['nullable', 'array'],
             'service_ids.*' => ['integer', 'exists:services,id'],

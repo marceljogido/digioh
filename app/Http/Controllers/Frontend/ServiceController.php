@@ -32,6 +32,13 @@ class ServiceController extends Controller
             ->limit(6)
             ->get();
 
-        return view('frontend.services.show', compact('service', 'posts', 'relatedWorks'));
+        // Other services for the "Explore more" section
+        $otherServices = Service::active()
+            ->sorted()
+            ->where('id', '!=', $service->id)
+            ->limit(3)
+            ->get();
+
+        return view('frontend.services.show', compact('service', 'posts', 'relatedWorks', 'otherServices'));
     }
 }
