@@ -33,8 +33,8 @@ class TranslateController extends Controller
 
         $translated = $this->translator->translate(
             $request->input('text'),
-            $request->input('target'),
-            $request->input('source')
+            $request->input('source'),
+            $request->input('target')
         );
 
         if ($translated === null) {
@@ -71,8 +71,8 @@ class TranslateController extends Controller
 
         $translations = $this->translator->translateBatch(
             $request->input('texts'),
-            $request->input('target'),
-            $request->input('source')
+            $request->input('source'),
+            $request->input('target')
         );
 
         return response()->json([

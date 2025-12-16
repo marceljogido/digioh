@@ -668,7 +668,7 @@
                              x-transition:leave-start="opacity-100" 
                              x-transition:leave-end="opacity-0">
                             <div class="border-t border-dashed border-[#e9e6df] px-5 py-5 pl-[4.5rem] dark:border-slate-700">
-                                <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{!! nl2br(e($faq['answer'])) !!}</p>
+                                <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300 faq-answer">{!! nl2br(e($faq['answer'])) !!}</p>
                             </div>
                         </div>
                     </div>
@@ -685,6 +685,14 @@
             </div>
         </div>
     </section>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.faq-answer').forEach(function(el) {
+                el.innerHTML = el.innerHTML.replace(/#([a-zA-Z0-9_-]+)/g, '<a href="#$1" class="text-[#5c83c4] hover:text-[#ffa630] font-medium underline underline-offset-2 transition">#$1</a>');
+            });
+        });
+    </script>
     @endif
 
     {{-- <section id="contact" class="fade-in relative overflow-hidden bg-gradient-to-b from-[#5c83c4] via-[#4f6da9] to-[#11224e] text-white">

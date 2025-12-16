@@ -229,4 +229,46 @@ class StatController extends Controller
 
         return $sourceLocale;
     }
+
+    /**
+     * Display a list of trashed items.
+     */
+    public function trashed()
+    {
+        if (! Auth::check() || ! Auth::user()->can('view_backend')) {
+            abort(403);
+        }
+
+        $module_title = $this->module_title;
+        $module_name = $this->module_name;
+        $module_path = $this->module_path;
+        $module_icon = $this->module_icon;
+        $module_action = 'Trash';
+
+        $$module_name = Stat::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate();
+
+        return view('backend.stats.trash', compact(
+            'module_title',
+            'module_name',
+            'module_path',
+            'module_icon',
+            'module_action',
+            $module_name
+        ));
+    }
+
+    /**
+     * Restore a trashed item.
+     */
+    public function restore($id)
+    {
+        if (! Auth::check() || ! Auth::user()->can('view_backend')) {
+            abort(403);
+        }
+
+        $stat = Stat::onlyTrashed()->findOrFail($id);
+        $stat->restore();
+
+        return redirect()->route('backend.stats.trashed')->with('message', 'Statistik berhasil dikembalikan.');
+    }
 }

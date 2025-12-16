@@ -101,9 +101,15 @@ class SlidersController extends BackendBaseController
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => ['required', 'string', 'max:191'],
-            'subtitle' => ['nullable', 'string', 'max:191'],
-            'button_text' => ['nullable', 'string', 'max:191'],
+            'title' => ['required', 'array'],
+            'title.id' => ['required', 'string', 'max:191'],
+            'title.en' => ['nullable', 'string', 'max:191'],
+            'subtitle' => ['nullable', 'array'],
+            'subtitle.id' => ['nullable', 'string', 'max:191'],
+            'subtitle.en' => ['nullable', 'string', 'max:191'],
+            'button_text' => ['nullable', 'array'],
+            'button_text.id' => ['nullable', 'string', 'max:191'],
+            'button_text.en' => ['nullable', 'string', 'max:191'],
             'button_link' => ['nullable', 'string', 'max:255'],
             'image' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
             'is_active' => ['required', 'boolean'],
@@ -129,9 +135,15 @@ class SlidersController extends BackendBaseController
         $slider = $this->module_model::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => ['required', 'string', 'max:191'],
-            'subtitle' => ['nullable', 'string', 'max:191'],
-            'button_text' => ['nullable', 'string', 'max:191'],
+            'title' => ['required', 'array'],
+            'title.id' => ['required', 'string', 'max:191'],
+            'title.en' => ['nullable', 'string', 'max:191'],
+            'subtitle' => ['nullable', 'array'],
+            'subtitle.id' => ['nullable', 'string', 'max:191'],
+            'subtitle.en' => ['nullable', 'string', 'max:191'],
+            'button_text' => ['nullable', 'array'],
+            'button_text.id' => ['nullable', 'string', 'max:191'],
+            'button_text.en' => ['nullable', 'string', 'max:191'],
             'button_link' => ['nullable', 'string', 'max:255'],
             'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
             'is_active' => ['required', 'boolean'],

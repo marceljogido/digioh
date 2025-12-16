@@ -15,44 +15,10 @@
         class="form-control {{ Arr::get($field, "class") }} {{ $errors->has($field["name"]) ? " is-invalid" : "" }}"
         id="{{ $field["name"] }}"
         placeholder="{{ $field["label"] }}"
-        rows="12"
-        style="min-height: 280px"
+        rows="4"
+        style="min-height: 100px"
         {{ $required }}
-    >
-    @if (isset($field["display"]))
-
-
-
-
-
-
-@if ($field["display"] == "raw")
-
-
-
-
-
-
-{!! old($field["name"], setting($field["name"])) !!}
-@else
-
-
-
-
-
-
-{{ old($field["name"], setting($field["name"])) }}
-@endif
-@else
-
-
-
-
-
-
-{{ old($field["name"], setting($field["name"])) }}
-@endif
-    </textarea>
+>@if (isset($field["display"]))@if ($field["display"] == "raw"){!! old($field["name"], setting($field["name"])) !!}@else{{ old($field["name"], setting($field["name"])) }}@endif @else{{ old($field["name"], setting($field["name"])) }}@endif</textarea>
 
     @if ($errors->has($field["name"]))
         <small class="invalid-feedback">{{ $errors->first($field["name"]) }}</small>

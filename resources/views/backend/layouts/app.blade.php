@@ -70,6 +70,44 @@
         @livewireScripts
 
         @stack("after-scripts")
+
+        <!-- Data Method Handler for DELETE links -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('a[data-method="DELETE"]').forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        var confirmMessage = this.getAttribute('data-confirm') || 'Are you sure?';
+                        if (!confirm(confirmMessage)) {
+                            return;
+                        }
+                        
+                        var form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = this.href;
+                        form.style.display = 'none';
+                        
+                        var csrfToken = this.getAttribute('data-token') || document.querySelector('meta[name="csrf-token"]').content;
+                        
+                        var csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+                        
+                        var methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+                        
+                        document.body.appendChild(form);
+                        form.submit();
+                    });
+                });
+            });
+        </script>
         <!-- / Scripts -->
     </body>
 </html>

@@ -1,0 +1,72 @@
+# ============================================
+# DIGIOH - PRODUCTION ENVIRONMENT TEMPLATE
+# ============================================
+# Copy this file to .env on your production server
+# and fill in the actual values
+# ============================================
+
+APP_NAME=DigiOH
+APP_ENV=production
+APP_KEY=base64:YOUR_APP_KEY_HERE
+APP_DEBUG=false
+APP_TIMEZONE=Asia/Jakarta
+APP_URL=https://your-domain.com
+
+# Locale
+APP_LOCALE=id
+APP_FALLBACK_LOCALE=en
+APP_FAKER_LOCALE=id_ID
+
+# ============================================
+# DATABASE - PostgreSQL
+# ============================================
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=digioh_production
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_secure_db_password
+
+# ============================================
+# SESSION & CACHE (Production Settings)
+# ============================================
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=true
+SESSION_SECURE_COOKIE=true
+
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+
+# ============================================
+# MAIL CONFIGURATION
+# ============================================
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.your-email-provider.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@domain.com
+MAIL_PASSWORD=your_email_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@your-domain.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+# ============================================
+# LOGGING (Production)
+# ============================================
+LOG_CHANNEL=daily
+LOG_LEVEL=error
+
+# ============================================
+# FILESYSTEM
+# ============================================
+FILESYSTEM_DISK=public
+
+# ============================================
+# NOTES:
+# ============================================
+# 1. Generate new APP_KEY: php artisan key:generate
+# 2. Run migrations: php artisan migrate --force
+# 3. Clear caches: php artisan optimize:clear
+# 4. Cache config: php artisan config:cache
+# 5. Cache routes: php artisan route:cache
+# ============================================

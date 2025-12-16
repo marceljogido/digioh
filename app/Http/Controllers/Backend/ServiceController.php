@@ -68,6 +68,9 @@ class ServiceController extends Controller
             'status' => ['required', Rule::enum(ServiceStatus::class)],
             'featured_on_home' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
+            'features' => 'nullable|string',
+            'price' => 'nullable|string|max:100',
+            'price_note' => 'nullable|string|max:255',
         ]);
 
         $imageFile = $data['image'] ?? null;
@@ -81,6 +84,24 @@ class ServiceController extends Controller
         $data['slug'] = filled($data['slug'])
             ? $data['slug']
             : Str::slug($this->primaryTranslation($data['name']));
+
+        // Process features - convert text (one per line OR comma-separated) to array
+        if (isset($data['features']) && is_string($data['features'])) {
+            // First split by newlines, then by commas
+            $lines = preg_split('/\r\n|\r|\n/', $data['features']);
+            $features = [];
+            foreach ($lines as $line) {
+                // Split each line by comma too
+                $parts = explode(',', $line);
+                foreach ($parts as $part) {
+                    $trimmed = trim($part);
+                    if ($trimmed !== '') {
+                        $features[] = $trimmed;
+                    }
+                }
+            }
+            $data['features'] = array_values($features);
+        }
 
         if ($data['featured_on_home']) {
             $featuredCount = Service::where('featured_on_home', true)->count();
@@ -153,6 +174,9 @@ class ServiceController extends Controller
             'status' => ['required', Rule::enum(ServiceStatus::class)],
             'featured_on_home' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
+            'features' => 'nullable|string',
+            'price' => 'nullable|string|max:100',
+            'price_note' => 'nullable|string|max:255',
         ]);
 
         $imageFile = $data['image'] ?? null;
@@ -166,6 +190,24 @@ class ServiceController extends Controller
         $data['slug'] = filled($data['slug'])
             ? $data['slug']
             : Str::slug($this->primaryTranslation($data['name']));
+
+        // Process features - convert text (one per line OR comma-separated) to array
+        if (isset($data['features']) && is_string($data['features'])) {
+            // First split by newlines, then by commas
+            $lines = preg_split('/\r\n|\r|\n/', $data['features']);
+            $features = [];
+            foreach ($lines as $line) {
+                // Split each line by comma too
+                $parts = explode(',', $line);
+                foreach ($parts as $part) {
+                    $trimmed = trim($part);
+                    if ($trimmed !== '') {
+                        $features[] = $trimmed;
+                    }
+                }
+            }
+            $data['features'] = array_values($features);
+        }
 
         if ($data['featured_on_home']) {
             $featuredCount = Service::where('featured_on_home', true)

@@ -1,8 +1,16 @@
 <div class="btn-group btn-group-sm" role="group">
-    <a href="{{ route('backend.stats.show', $stat) }}" class="btn btn-outline-secondary" title="{{ __('Show') }}">
+    <a
+        href="{{ route('backend.stats.show', $stat) }}"
+        class="btn btn-outline-secondary"
+        title="{{ __('Show') }}"
+    >
         <i class="fas fa-eye"></i>
     </a>
-    <a href="{{ route('backend.stats.edit', $stat) }}" class="btn btn-outline-primary" title="{{ __('Edit') }}">
+    <a
+        href="{{ route('backend.stats.edit', $stat) }}"
+        class="btn btn-outline-primary"
+        title="{{ __('Edit') }}"
+    >
         <i class="fas fa-edit"></i>
     </a>
     <a
@@ -16,3 +24,5 @@
         <i class="fas fa-trash"></i>
     </a>
 </div>
+
+

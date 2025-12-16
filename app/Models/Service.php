@@ -24,6 +24,9 @@ class Service extends BaseModel
         'category',
         'slug',
         'description',
+        'features',
+        'price',
+        'price_note',
         'icon',
         'status',
         'image',
@@ -38,6 +41,7 @@ class Service extends BaseModel
             'featured_on_home' => 'boolean',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
+            'features' => 'array',
         ]);
     }
 

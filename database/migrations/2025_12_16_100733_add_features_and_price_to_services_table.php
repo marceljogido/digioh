@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('services', function (Blueprint $table) {
+            $table->json('features')->nullable()->after('description');
+            $table->string('price', 100)->nullable()->after('features');
+            $table->string('price_note', 255)->nullable()->after('price');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('services', function (Blueprint $table) {
+            $table->dropColumn(['features', 'price', 'price_note']);
+        });
+    }
+};

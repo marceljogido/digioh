@@ -6,51 +6,86 @@
             ? $slider->image
             : asset($slider->image);
     }
+    $locales = config('app.available_locales', ['id' => 'Indonesia', 'en' => 'English']);
+    $sourceLocale = config('translatable.source_locale', 'id');
 @endphp
 
-<div class="row">
-    <div class="col-12 col-sm-6 mb-3">
-        <div class="form-group">
-            <label class="form-label" for="title">{{ __('Judul') }}</label>
-            {!! field_required('required') !!}
-            <input
-                type="text"
-                name="title"
-                id="title"
-                class="form-control"
-                value="{{ old('title', optional($slider)->title) }}"
-                maxlength="191"
-                required
-            >
-        </div>
+<!-- Auto Translate Button -->
+<div class="row mb-3">
+    <div class="col-12">
+        <button type="button" id="btn-auto-translate-slider" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-language me-1"></i> Auto Translate ID → EN
+        </button>
+        <small class="text-muted ms-2">Terjemahkan otomatis dari Indonesia ke English</small>
     </div>
-    <div class="col-12 col-sm-6 mb-3">
-        <div class="form-group">
-            <label class="form-label" for="subtitle">{{ __('Subjudul') }}</label>
-            <input
-                type="text"
-                name="subtitle"
-                id="subtitle"
-                class="form-control"
-                value="{{ old('subtitle', optional($slider)->subtitle) }}"
-                maxlength="191"
-            >
+</div>
+
+<!-- Title -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <label class="form-label fw-bold">{{ __('Judul') }}</label>
+        {!! field_required('required') !!}
+        <div class="row">
+            @foreach($locales as $localeCode => $localeName)
+                <div class="col-md-6 mb-2">
+                    <label class="form-label small text-muted" for="title_{{ $localeCode }}">
+                        {{ $localeName }} {{ $localeCode === $sourceLocale ? '(Sumber)' : '' }}
+                    </label>
+                    <input
+                        type="text"
+                        name="title[{{ $localeCode }}]"
+                        id="title_{{ $localeCode }}"
+                        class="form-control"
+                        value="{{ old('title.'.$localeCode, $slider?->getTranslation('title', $localeCode, false) ?? '') }}"
+                        maxlength="191"
+                        {{ $localeCode === $sourceLocale ? 'required' : '' }}
+                    >
+                </div>
+            @endforeach
         </div>
     </div>
 </div>
 
+<!-- Subtitle -->
+<div class="row">
+    <div class="col-12 mb-3">
+        <label class="form-label fw-bold">{{ __('Subjudul') }}</label>
+        <div class="row">
+            @foreach($locales as $localeCode => $localeName)
+                <div class="col-md-6 mb-2">
+                    <label class="form-label small text-muted" for="subtitle_{{ $localeCode }}">{{ $localeName }}</label>
+                    <input
+                        type="text"
+                        name="subtitle[{{ $localeCode }}]"
+                        id="subtitle_{{ $localeCode }}"
+                        class="form-control"
+                        value="{{ old('subtitle.'.$localeCode, $slider?->getTranslation('subtitle', $localeCode, false) ?? '') }}"
+                        maxlength="191"
+                    >
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+<!-- Button Text -->
 <div class="row">
     <div class="col-12 col-sm-6 mb-3">
-        <div class="form-group">
-            <label class="form-label" for="button_text">{{ __('Teks Tombol') }}</label>
-            <input
-                type="text"
-                name="button_text"
-                id="button_text"
-                class="form-control"
-                value="{{ old('button_text', optional($slider)->button_text) }}"
-                maxlength="191"
-            >
+        <label class="form-label fw-bold">{{ __('Teks Tombol') }}</label>
+        <div class="row">
+            @foreach($locales as $localeCode => $localeName)
+                <div class="col-12 mb-2">
+                    <label class="form-label small text-muted" for="button_text_{{ $localeCode }}">{{ $localeName }}</label>
+                    <input
+                        type="text"
+                        name="button_text[{{ $localeCode }}]"
+                        id="button_text_{{ $localeCode }}"
+                        class="form-control"
+                        value="{{ old('button_text.'.$localeCode, $slider?->getTranslation('button_text', $localeCode, false) ?? '') }}"
+                        maxlength="191"
+                    >
+                </div>
+            @endforeach
         </div>
     </div>
     <div class="col-12 col-sm-6 mb-3">
@@ -69,6 +104,64 @@
         </div>
     </div>
 </div>
+
+<!-- Auto Translate Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('btn-auto-translate-slider');
+    if (!btn) return;
+    
+    btn.addEventListener('click', async function() {
+        const fields = ['title', 'subtitle', 'button_text'];
+        const texts = [];
+        
+        fields.forEach(field => {
+            const input = document.getElementById(field + '_id');
+            texts.push(input ? input.value : '');
+        });
+        
+        if (texts.every(t => !t.trim())) {
+            alert('Isi field Indonesia terlebih dahulu.');
+            return;
+        }
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Translating...';
+        
+        try {
+            const response = await fetch('{{ route("backend.translate.batch") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    texts: texts,
+                    source: 'id',
+                    target: 'en'
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.translations) {
+                fields.forEach((field, index) => {
+                    const enInput = document.getElementById(field + '_en');
+                    if (enInput && data.translations[index]) {
+                        enInput.value = data.translations[index];
+                    }
+                });
+            }
+        } catch (error) {
+            alert('Translation failed: ' + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-language me-1"></i> Auto Translate ID → EN';
+        }
+    });
+});
+</script>
+
 
 <div class="row">
     <div class="col-12 col-sm-6 mb-3">

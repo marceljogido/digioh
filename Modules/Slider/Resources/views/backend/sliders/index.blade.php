@@ -59,8 +59,32 @@
                                 {{ $module_name_singular->created_by }}
                             </td>
                             <td class="text-end">
-                                <a href='{!!route("backend.$module_name.edit", $module_name_singular)!!}' class='btn btn-sm btn-primary mt-1' data-toggle="tooltip" title="Edit {{ ucwords(Str::singular($module_name)) }}"><i class="fas fa-wrench"></i></a>
-                                <a href='{!!route("backend.$module_name.show", $module_name_singular)!!}' class='btn btn-sm btn-success mt-1' data-toggle="tooltip" title="Show {{ ucwords(Str::singular($module_name)) }}"><i class="fas fa-tv"></i></a>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a
+                                        href="{{ route('backend.'.$module_name.'.show', $module_name_singular) }}"
+                                        class="btn btn-outline-secondary"
+                                        title="{{ __('Show') }}"
+                                    >
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a
+                                        href="{{ route('backend.'.$module_name.'.edit', $module_name_singular) }}"
+                                        class="btn btn-outline-primary"
+                                        title="{{ __('Edit') }}"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a
+                                        href="{{ route('backend.'.$module_name.'.destroy', $module_name_singular) }}"
+                                        class="btn btn-outline-danger"
+                                        data-method="DELETE"
+                                        data-token="{{ csrf_token() }}"
+                                        data-confirm="{{ __('Are you sure you want to delete this slider?') }}"
+                                        title="{{ __('Delete') }}"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @endforeach

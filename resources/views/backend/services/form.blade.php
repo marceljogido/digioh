@@ -53,6 +53,55 @@
         </div>
     @endforeach
 
+    {{-- Features List --}}
+    <div class="col-12">
+        <label class="form-label" for="features">{{ __('Features') }}</label>
+        @php
+            $existingFeatures = old('features', $service->features ?? []);
+            $featuresText = is_array($existingFeatures) ? implode("\n", $existingFeatures) : $existingFeatures;
+        @endphp
+        <textarea
+            class="form-control"
+            name="features"
+            id="features"
+            rows="6"
+            placeholder="Professional Equipment
+On-site Setup & Support
+24/7 Technical Assistance
+Custom Configurations
+Backup Equipment
+Post-event Support"
+        >{{ $featuresText }}</textarea>
+        <small class="text-muted">{{ __('Masukkan satu fitur per baris. Fitur akan ditampilkan dengan icon checklist.') }}</small>
+    </div>
+
+    {{-- Price Fields --}}
+    <div class="col-12 col-md-6">
+        <label class="form-label" for="price">{{ __('Price') }}</label>
+        <input 
+            type="text" 
+            name="price" 
+            id="price" 
+            value="{{ old('price', $service->price ?? '') }}" 
+            class="form-control"
+            placeholder="Starting at $1,800"
+        >
+        <small class="text-muted">{{ __('Contoh: "Starting at $1,800" atau "Custom Quote"') }}</small>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <label class="form-label" for="price_note">{{ __('Price Note') }}</label>
+        <input 
+            type="text" 
+            name="price_note" 
+            id="price_note" 
+            value="{{ old('price_note', $service->price_note ?? '') }}" 
+            class="form-control"
+            placeholder="Professional setup included"
+        >
+        <small class="text-muted">{{ __('Catatan tambahan di bawah harga') }}</small>
+    </div>
+
     <div class="col-12 col-lg-6">
         <label class="form-label" for="image">{{ __('Image') }}</label>
         <input class="form-control" type="file" name="image" id="image" accept=".jpg,.jpeg,.png,.gif,.webp">

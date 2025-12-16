@@ -6,13 +6,17 @@ use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Slider extends BaseModel
 {
     use HasFactory;
     use SoftDeletes;
+    use HasTranslations;
 
     protected $table = 'sliders';
+
+    public array $translatable = ['title', 'subtitle', 'button_text'];
 
     protected $fillable = [
         'title',

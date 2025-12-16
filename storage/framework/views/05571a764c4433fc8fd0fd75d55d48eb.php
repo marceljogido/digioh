@@ -4,113 +4,124 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection("content"); ?>
+    
     <section class="relative overflow-hidden bg-[#11224e] text-white">
         <div class="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#5c83c4]/30 to-transparent"></div>
         <div class="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[#ffa630]/40 to-transparent animate-pulse-slow"></div>
-        <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-12 lg:flex lg:items-center lg:gap-16">
-            <div class="flex-1 space-y-6">
-                <span data-aos="fade-down" data-aos-delay="100" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
+        <div class="mx-auto max-w-screen-xl px-4 py-12 sm:px-12 lg:py-16">
+            <div class="text-center">
+                <span data-aos="fade-down" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
                     <?php echo e(__('Service Portfolio')); ?>
 
                 </span>
-                <h1 data-aos="fade-up" data-aos-delay="200" class="text-3xl font-bold leading-tight sm:text-5xl">
+                <h1 data-aos="fade-up" data-aos-delay="100" class="mt-4 text-3xl font-bold leading-tight sm:text-5xl">
                     <?php echo e(__('Products & Services')); ?>
 
                 </h1>
-                <p data-aos="fade-up" data-aos-delay="300" class="max-w-2xl text-base text-white/80">
+                <p data-aos="fade-up" data-aos-delay="200" class="mx-auto mt-4 max-w-2xl text-base text-white/80">
                     <?php echo e(__('Solusi experiential + creative tech + business development untuk eksekusi event tanpa pemborosan.')); ?>
 
                 </p>
             </div>
-            <div class="mt-12 flex-1 lg:mt-0" data-aos="fade-left" data-aos-delay="400">
-                <div class="rounded-[32px] border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur hover-glow">
-                    <p class="text-sm font-semibold uppercase tracking-[0.4em] text-white/70"><?php echo e(__('Signature pillars')); ?></p>
-                    <ul class="mt-4 space-y-3 text-white/80">
-                        <li class="flex items-start gap-3" data-aos="fade-up" data-aos-delay="500">
-                            <span class="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#ffa630]/20 text-[#ffa630]">
-                                <span class="text-xs font-semibold">1</span>
-                            </span>
-                            <div>
-                                <p class="font-semibold"><?php echo e(__('Creative & Experience Design')); ?></p>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3" data-aos="fade-up" data-aos-delay="600">
-                            <span class="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#5c83c4]/20 text-[#5c83c4]">
-                                <span class="text-xs font-semibold">2</span>
-                            </span>
-                            <div>
-                                <p class="font-semibold"><?php echo e(__('Technology & Production')); ?></p>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3" data-aos="fade-up" data-aos-delay="700">
-                            <span class="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#f17720]/20 text-[#f17720]">
-                                <span class="text-xs font-semibold">3</span>
-                            </span>
-                            <div>
-                                <p class="font-semibold"><?php echo e(__('Business Acceleration')); ?></p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
     </section>
 
-    <section class="bg-[#f4f6fb]">
-        <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-
+    
+    <section class="bg-white py-16">
+        <div class="mx-auto max-w-screen-xl px-4 sm:px-12">
             <?php if($services->count()): ?>
-                <div class="mt-10 grid gap-7 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                <div class="space-y-16 lg:space-y-24">
                     <?php $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <?php ($detailUrl = route('frontend.services.show', $service->slug)); ?>
-                        <article 
-                            data-aos="fade-up" 
-                            data-aos-delay="<?php echo e(100 + ($index * 100)); ?>"
-                            class="group relative overflow-hidden rounded-[32px] border border-[#e0e7f7] bg-white shadow-lg shadow-[#11224e]/10 hover-lift"
-                        >
-                            <a href="<?php echo e($detailUrl); ?>" class="flex h-full flex-col">
-                                <?php if($service->image): ?>
-                                    <div class="relative aspect-square w-full overflow-hidden rounded-t-[30px]">
-                                        <img src="<?php echo e(asset($service->image)); ?>" alt="<?php echo e($service->name); ?>" class="h-full w-full object-cover transition duration-500 group-hover:scale-110">
-                                        <span class="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent"></span>
-                                        <?php if($service->category): ?>
-                                            <span class="absolute left-4 top-4 inline-flex items-center rounded-full bg-white/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#11224e]">
-                                                <?php echo e($service->category); ?>
+                        <?php
+                            $isEven = $index % 2 === 0;
+                            $features = $service->features ?? [];
+                        ?>
+                        
+                        <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-16" data-aos="fade-up" data-aos-delay="<?php echo e($index * 100); ?>">
+                            
+                            <div class="<?php echo e($isEven ? 'lg:order-1' : 'lg:order-2'); ?>">
+                                <div class="aspect-[4/3] overflow-hidden rounded-[24px] bg-gradient-to-br from-slate-100 to-slate-50 shadow-lg">
+                                    <?php if($service->image): ?>
+                                        <img src="<?php echo e(asset($service->image)); ?>" alt="<?php echo e($service->name); ?>" class="h-full w-full object-cover">
+                                    <?php else: ?>
+                                        <div class="flex h-full w-full items-center justify-center">
+                                            <?php if($service->icon): ?>
+                                                <i class="<?php echo e($service->icon); ?> text-6xl text-[#5c83c4]/40"></i>
+                                            <?php else: ?>
+                                                <svg class="h-24 w-24 text-[#5c83c4]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
 
-                                            </span>
-                                        <?php endif; ?>
+                            
+                            <div class="<?php echo e($isEven ? 'lg:order-2' : 'lg:order-1'); ?>">
+                                
+                                <div class="flex items-center gap-4">
+                                    <?php if($service->icon): ?>
+                                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-[#11224e] text-white shadow-lg">
+                                            <i class="<?php echo e($service->icon); ?> text-xl"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                    <h2 class="text-2xl font-bold uppercase tracking-wide text-[#11224e]">
+                                        <?php echo e($service->name); ?>
+
+                                    </h2>
+                                </div>
+
+                                
+                                <p class="mt-4 text-slate-600 leading-relaxed">
+                                    <?php echo e(strip_tags($service->description)); ?>
+
+                                </p>
+
+                                
+                                <?php if(count($features) > 0): ?>
+                                    <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                                        <?php $__currentLoopData = $features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="flex items-center gap-3">
+                                                <svg class="h-5 w-5 flex-shrink-0 text-[#5c83c4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                <span class="text-sm text-slate-700"><?php echo e($feature); ?></span>
+                                            </div>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
                                 <?php endif; ?>
-                                <div class="flex flex-1 flex-col gap-4 px-6 py-6">
-                                    <?php if($service->category): ?>
-                                        <span class="self-start rounded-full border border-[#d5def3] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-[#5c83c4]">
-                                            <?php echo e($service->category); ?>
 
-                                        </span>
-                                    <?php endif; ?>
-
-                                    <div class="space-y-2">
-                                        <h3 class="text-2xl font-semibold leading-snug text-[#11224e] transition group-hover:text-[#5c83c4]">
-                                            <?php echo e($service->name); ?>
-
-                                        </h3>
-                                        <p class="text-sm text-[#11224e]/80">
-                                            <?php echo e(\Str::limit(strip_tags($service->description), 170)); ?>
-
-                                        </p>
+                                
+                                <div class="mt-8 flex flex-wrap items-center gap-4">
+                                    <div>
+                                        <?php if($service->price): ?>
+                                            <p class="text-xl font-bold text-[#5c83c4]"><?php echo e($service->price); ?></p>
+                                        <?php else: ?>
+                                            <p class="text-xl font-bold text-[#5c83c4]"><?php echo e(__('Custom Quote')); ?></p>
+                                        <?php endif; ?>
+                                        <?php if($service->price_note): ?>
+                                            <p class="text-sm text-[#ffa630]"><?php echo e($service->price_note); ?></p>
+                                        <?php else: ?>
+                                            <p class="text-sm text-[#ffa630]"><?php echo e(__('Professional setup included')); ?></p>
+                                        <?php endif; ?>
                                     </div>
+                                    <a href="<?php echo e(route('contact')); ?>" class="inline-flex items-center rounded-lg bg-[#11224e] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[#1a3366]">
+                                        <?php echo e(__('Get Quote')); ?>
 
-                                    <div class="mt-auto flex items-center justify-between pt-4 text-xs uppercase tracking-[0.4em] text-[#5c83c4]">
-                                        <span><?php echo e(__('Tap to explore')); ?></span>
-                                        <span class="inline-block h-1 w-14 rounded-full bg-[#d5def3] transition-all duration-300 group-hover:w-20 group-hover:bg-[#ffa630]"></span>
-                                    </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </article>
+                            </div>
+                        </div>
+
+                        
+                        <?php if(!$loop->last): ?>
+                            <div class="border-t border-slate-200"></div>
+                        <?php endif; ?>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             <?php else: ?>
-                <p class="mt-8 rounded-2xl border border-dashed border-[#d5def3] bg-white px-6 py-5 text-sm text-[#11224e]/70">
+                <p class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-8 text-center text-slate-600">
                     <?php echo e(__('Belum ada layanan yang aktif.')); ?>
 
                 </p>
@@ -118,9 +129,10 @@
         </div>
     </section>
 
-    <section class="bg-white" data-aos="fade-up">
+    
+    <section class="bg-[#f4f6fb]" data-aos="fade-up">
         <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-12">
-            <div class="rounded-[32px] border border-[#d5def3] bg-gradient-to-r from-white to-[#f4f6fb] px-8 py-10 text-center shadow-lg shadow-[#11224e]/5 hover-glow">
+            <div class="rounded-[32px] border border-[#d5def3] bg-gradient-to-r from-white to-[#f4f6fb] px-8 py-10 text-center shadow-lg shadow-[#11224e]/5">
                 <p class="text-xs font-semibold uppercase tracking-[0.4em] text-[#f17720]"><?php echo e(__('Need a custom activation?')); ?></p>
                 <h3 class="mt-4 text-2xl font-bold text-[#11224e] sm:text-3xl">
                     <?php echo e(__('Kolaborasikan ide Anda dengan tim konsultan Digioh')); ?>

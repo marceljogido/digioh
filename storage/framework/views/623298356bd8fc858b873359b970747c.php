@@ -16,8 +16,8 @@ $notifications_latest = optional($notifications)->take(5);
         </button>
         <ul class="header-nav d-none d-lg-flex">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route("frontend.index") }}" target="_blank">
-                    {{ app_name() }}&nbsp;
+                <a class="nav-link" href="<?php echo e(route("frontend.index")); ?>" target="_blank">
+                    <?php echo e(app_name()); ?>&nbsp;
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
             </li>
@@ -31,40 +31,41 @@ $notifications_latest = optional($notifications)->take(5);
                     aria-expanded="false"
                 >
                     <i class="fa-regular fa-bell"></i>
-                    @if ($notifications_count)
+                    <?php if($notifications_count): ?>
                         &nbsp;
-                        <span class="badge badge-pill bg-danger">{{ $notifications_count }}</span>
-                    @endif
+                        <span class="badge badge-pill bg-danger"><?php echo e($notifications_count); ?></span>
+                    <?php endif; ?>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" style="--cui-dropdown-min-width: 8rem">
                     <li>
                         <div class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold rounded-top mb-2">
                             <strong>
-                                @lang("You have :count notifications", ["count" => $notifications_count])
+                                <?php echo app('translator')->get("You have :count notifications", ["count" => $notifications_count]); ?>
                             </strong>
                         </div>
                     </li>
-                    @if ($notifications_latest)
-                        @foreach ($notifications_latest as $notification)
-                            @php
+                    <?php if($notifications_latest): ?>
+                        <?php $__currentLoopData = $notifications_latest; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
                                 $notification_text = isset($notification->data["title"])
                                     ? $notification->data["title"]
                                     : $notification->data["module"];
-                            @endphp
+                            ?>
 
                             <li>
                                 <a
                                     class="dropdown-item d-flex align-items-center"
-                                    href="{{ route("backend.notifications.show", $notification) }}"
+                                    href="<?php echo e(route("backend.notifications.show", $notification)); ?>"
                                 >
                                     <i
-                                        class="{{ isset($notification->data["icon"]) ? $notification->data["icon"] : "fa-solid fa-bullhorn" }}"
+                                        class="<?php echo e(isset($notification->data["icon"]) ? $notification->data["icon"] : "fa-solid fa-bullhorn"); ?>"
                                     ></i>
-                                    &nbsp;{{ $notification_text }}
+                                    &nbsp;<?php echo e($notification_text); ?>
+
                                 </a>
                             </li>
-                        @endforeach
-                    @endif
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endif; ?>
                 </ul>
             </li>
         </ul>
@@ -247,19 +248,21 @@ $notifications_latest = optional($notifications)->take(5);
                         <path d="M12 20l4 -9l4 9" />
                         <path d="M19.1 18h-6.2" />
                     </svg>
-                    &nbsp; {{ strtoupper(App::getLocale()) }}
+                    &nbsp; <?php echo e(strtoupper(App::getLocale())); ?>
+
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" style="--cui-dropdown-min-width: 8rem">
-                    @foreach (config("app.available_locales") as $locale_code => $locale_name)
+                    <?php $__currentLoopData = config("app.available_locales"); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $locale_code => $locale_name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <li>
                             <a
                                 class="dropdown-item d-flex align-items-center"
-                                href="{{ route("language.switch", $locale_code) }}"
+                                href="<?php echo e(route("language.switch", $locale_code)); ?>"
                             >
-                                {{ $locale_name }}
+                                <?php echo e($locale_name); ?>
+
                             </a>
                         </li>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </li>
         </ul>
@@ -276,55 +279,58 @@ $notifications_latest = optional($notifications)->take(5);
                     <div class="avatar avatar-md">
                         <img
                             class="avatar-img"
-                            src="{{ asset(auth()->user()->avatar) }}"
-                            alt="{{ asset(auth()->user()->name) }}"
+                            src="<?php echo e(asset(auth()->user()->avatar)); ?>"
+                            alt="<?php echo e(asset(auth()->user()->name)); ?>"
                         />
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end pt-0">
                     <div class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold rounded-top mb-2">
-                        {{ __("Account") }}
+                        <?php echo e(__("Account")); ?>
+
                     </div>
-                    <a class="dropdown-item" href="{{ route("backend.users.show", Auth::user()->id) }}">
+                    <a class="dropdown-item" href="<?php echo e(route("backend.users.show", Auth::user()->id)); ?>">
                         <i class="fa-regular fa-user me-2"></i>
-                        &nbsp;{{ Auth::user()->name }}
+                        &nbsp;<?php echo e(Auth::user()->name); ?>
+
                     </a>
-                    <a class="dropdown-item" href="{{ route("backend.users.show", Auth::user()->id) }}">
+                    <a class="dropdown-item" href="<?php echo e(route("backend.users.show", Auth::user()->id)); ?>">
                         <i class="fa-solid fa-at me-2"></i>
-                        &nbsp;{{ Auth::user()->email }}
+                        &nbsp;<?php echo e(Auth::user()->email); ?>
+
                     </a>
-                    <a class="dropdown-item" href="{{ route("backend.notifications.index", Auth::user()->id) }}">
+                    <a class="dropdown-item" href="<?php echo e(route("backend.notifications.index", Auth::user()->id)); ?>">
                         <i class="fa-regular fa-bell me-2"></i>
                         &nbsp;
-                        @lang("Notifications")
-                        @if ($notifications_count)
+                        <?php echo app('translator')->get("Notifications"); ?>
+                        <?php if($notifications_count): ?>
                             &nbsp;
-                            <span class="badge bg-danger ms-2">{{ $notifications_count }}</span>
-                        @endif
+                            <span class="badge bg-danger ms-2"><?php echo e($notifications_count); ?></span>
+                        <?php endif; ?>
                     </a>
                     <div class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold my-2">
-                        <div class="fw-semibold">@lang("Settings")</div>
+                        <div class="fw-semibold"><?php echo app('translator')->get("Settings"); ?></div>
                     </div>
-                    <a class="dropdown-item" href="{{ route('frontend.users.profileEdit') }}">
+                    <a class="dropdown-item" href="<?php echo e(route('frontend.users.profileEdit')); ?>">
                         <i class="fa-solid fa-user-pen me-2"></i>
-                        &nbsp;@lang("Edit Profile")
+                        &nbsp;<?php echo app('translator')->get("Edit Profile"); ?>
                     </a>
-                    <a class="dropdown-item" href="{{ route('frontend.users.changePassword') }}">
+                    <a class="dropdown-item" href="<?php echo e(route('frontend.users.changePassword')); ?>">
                         <i class="fa-solid fa-key me-2"></i>
-                        &nbsp;@lang("Change Password")
+                        &nbsp;<?php echo app('translator')->get("Change Password"); ?>
                     </a>
                     <div class="dropdown-divider"></div>
                     <a
                         class="dropdown-item"
-                        href="{{ route("logout") }}"
+                        href="<?php echo e(route("logout")); ?>"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                     >
                         <i class="fa-solid fa-right-from-bracket me-2"></i>
                         &nbsp;
-                        @lang("Logout")
+                        <?php echo app('translator')->get("Logout"); ?>
                     </a>
-                    <form id="logout-form" style="display: none" action="{{ route("logout") }}" method="POST">
-                        @csrf
+                    <form id="logout-form" style="display: none" action="<?php echo e(route("logout")); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
                     </form>
                 </div>
             </li>
@@ -333,12 +339,13 @@ $notifications_latest = optional($notifications)->take(5);
     <div class="container-fluid px-4">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb my-0 ms-2">
-                @yield("breadcrumbs")
+                <?php echo $__env->yieldContent("breadcrumbs"); ?>
             </ol>
         </nav>
         <div class="d-none d-sm-flex float-end flex-row">
-            <div class="">{{ date_today() }}&nbsp;</div>
+            <div class=""><?php echo e(date_today()); ?>&nbsp;</div>
             <div class="clock" id="liveClock" onload="showTime()"></div>
         </div>
     </div>
 </header>
+<?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/backend/includes/header.blade.php ENDPATH**/ ?>

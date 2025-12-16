@@ -207,4 +207,36 @@ class FaqController extends Controller
 
         return $sourceLocale;
     }
+
+    /**
+     * Display a list of trashed items.
+     */
+    public function trashed()
+    {
+        $module_name = $this->module_name;
+        $module_title = $this->module_title;
+        $module_icon = $this->module_icon;
+        $module_action = 'Trash';
+
+        $$module_name = Faq::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate();
+
+        return view('backend.faq.trash', compact(
+            'module_name',
+            'module_title',
+            'module_icon',
+            'module_action',
+            $module_name
+        ));
+    }
+
+    /**
+     * Restore a trashed item.
+     */
+    public function restore($id)
+    {
+        $faq = Faq::onlyTrashed()->findOrFail($id);
+        $faq->restore();
+
+        return redirect()->route('backend.faq.trashed')->with('status', 'FAQ berhasil dikembalikan.');
+    }
 }
