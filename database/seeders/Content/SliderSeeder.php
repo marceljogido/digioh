@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Home;
+namespace Database\Seeders\Content;
 
 use Illuminate\Database\Seeder;
 use Modules\Slider\Models\Slider;

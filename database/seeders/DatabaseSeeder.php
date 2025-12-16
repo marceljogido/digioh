@@ -2,15 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Database\Seeders\Home\SliderSeeder;
-use Modules\Category\database\seeders\CategoryDatabaseSeeder;
-use Modules\Post\database\seeders\PostDatabaseSeeder;
-use Modules\Tag\database\seeders\TagDatabaseSeeder;
 use Database\Seeders\Auth\AttachSliderClientLogoPermissionsSeeder;
+use Database\Seeders\Content\ClientLogoSeeder;
+use Database\Seeders\Content\FaqSeeder;
+use Database\Seeders\Content\PostSeeder;
+use Database\Seeders\Content\ServiceSeeder;
+use Database\Seeders\Content\SliderSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
+use Modules\Category\database\seeders\CategoryDatabaseSeeder;
+use Modules\Tag\database\seeders\TagDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,21 +22,19 @@ class DatabaseSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
 
+        // Auth - Users, Roles, Permissions
         $this->call(AuthTableSeeder::class);
-        $this->call(PostDatabaseSeeder::class);
+        $this->call(AttachSliderClientLogoPermissionsSeeder::class);
+        
+        // Content - Posts, Services, Sliders, etc
         $this->call(CategoryDatabaseSeeder::class);
         $this->call(TagDatabaseSeeder::class);
         $this->call(SliderSeeder::class);
-        $this->call(AttachSliderClientLogoPermissionsSeeder::class);
-        
-        // Ensure admin user exists with correct password
-        // $this->call(EnsureAdminUserSeeder::class);
+        $this->call(ServiceSeeder::class);
+        $this->call(PostSeeder::class);
+        $this->call(FaqSeeder::class);
+        $this->call(ClientLogoSeeder::class);
 
         Schema::enableForeignKeyConstraints();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }
