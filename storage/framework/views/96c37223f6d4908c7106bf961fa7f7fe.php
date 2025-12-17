@@ -1,7 +1,7 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag;
 
 $__newAttributes = [];
-$__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames((["small" => ""]));
+$__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames((["small" => "true"]));
 
 foreach ($attributes->all() as $__key => $__value) {
     if (in_array($__key, $__propNames)) {
@@ -16,7 +16,7 @@ $attributes = new \Illuminate\View\ComponentAttributeBag($__newAttributes);
 unset($__propNames);
 unset($__newAttributes);
 
-foreach (array_filter((["small" => ""]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+foreach (array_filter((["small" => "true"]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
 
@@ -27,6 +27,14 @@ foreach ($attributes->all() as $__key => $__value) {
 }
 
 unset($__defined_vars, $__key, $__value); ?>
-<?php echo e(html()->submit($text = icon("fa-solid fa-floppy-disk fa-fw") . " " . __("Save"))->class("btn btn-success m-1" . ($small == "true" ? " btn-sm" : ""))); ?>
+<button
+    onclick="window.history.back();"
+    class="btn btn-warning <?php echo e($small == "true" ? "btn-sm" : ""); ?> m-1"
+    data-toggle="tooltip"
+    title="<?php echo e(__("Return Back")); ?>"
+>
+    <i class="fas fa-reply fa-fw"></i>
+    <?php echo $slot != "" ? "&nbsp;" . $slot : ""; ?>
 
-<?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/components/backend/buttons/save.blade.php ENDPATH**/ ?>
+</button>
+<?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/components/backend/buttons/return-back.blade.php ENDPATH**/ ?>

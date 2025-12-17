@@ -31,10 +31,10 @@ unset($__defined_vars, $__key, $__value); ?>
 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check($permission)): ?>
     <li class="nav-item">
         <a class="nav-link" href="<?php echo e($url); ?>">
-            <i class="nav-icon <?php echo e($icon); ?>"></i>
-            &nbsp;<?php echo e($text); ?>
-
+            <i class="nav-icon <?php echo e($icon); ?> fa-fw"></i>
+            <span class="ms-1"><?php echo e($text); ?></span>
         </a>
     </li>
 <?php endif; ?>
+
 <?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/components/backend/sidebar-nav-item.blade.php ENDPATH**/ ?>

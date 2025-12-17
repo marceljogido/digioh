@@ -16,7 +16,7 @@ $notifications_latest = optional($notifications)->take(5);
                 />
                 <img
                     class="sidebar-brand-narrow"
-                    src="<?php echo e(asset("img/logo-square.jpg")); ?>"
+                    src="<?php echo e(asset("img/DIGIOH_Logomark.png")); ?>"
                     alt="<?php echo e(app_name()); ?>"
                     height="46"
                 />
@@ -34,9 +34,8 @@ $notifications_latest = optional($notifications)->take(5);
     <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
         <li class="nav-item">
             <a class="nav-link" href="<?php echo e(route("backend.dashboard")); ?>">
-                <i class="nav-icon fa-solid fa-cubes"></i>
-                &nbsp;
-                <?php echo app('translator')->get("Dashboard"); ?>
+                <i class="nav-icon fa-solid fa-cubes fa-fw"></i>
+                <span class="ms-1"><?php echo app('translator')->get("Dashboard"); ?></span>
             </a>
         </li>
 
@@ -274,11 +273,9 @@ $notifications_latest = optional($notifications)->take(5);
 
         <li class="nav-item">
             <a class="nav-link" href="<?php echo e(route("backend.notifications.index")); ?>">
-                <i class="nav-icon fa-regular fa-bell"></i>
-                &nbsp;
-                <?php echo app('translator')->get("Notifications"); ?>
+                <i class="nav-icon fa-regular fa-bell fa-fw"></i>
+                <span class="ms-1"><?php echo app('translator')->get("Notifications"); ?></span>
                 <?php if($notifications_count): ?>
-                    &nbsp;
                     <span class="badge badge-sm bg-info ms-auto"><?php echo e($notifications_count); ?></span>
                 <?php endif; ?>
             </a>

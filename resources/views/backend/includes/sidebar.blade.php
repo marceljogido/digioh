@@ -16,7 +16,7 @@ $notifications_latest = optional($notifications)->take(5);
                 />
                 <img
                     class="sidebar-brand-narrow"
-                    src="{{ asset("img/logo-square.jpg") }}"
+                    src="{{ asset("img/DIGIOH_Logomark.png") }}"
                     alt="{{ app_name() }}"
                     height="46"
                 />
@@ -34,9 +34,8 @@ $notifications_latest = optional($notifications)->take(5);
     <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
         <li class="nav-item">
             <a class="nav-link" href="{{ route("backend.dashboard") }}">
-                <i class="nav-icon fa-solid fa-cubes"></i>
-                &nbsp;
-                @lang("Dashboard")
+                <i class="nav-icon fa-solid fa-cubes fa-fw"></i>
+                <span class="ms-1">@lang("Dashboard")</span>
             </a>
         </li>
 
@@ -122,11 +121,9 @@ $notifications_latest = optional($notifications)->take(5);
 
         <li class="nav-item">
             <a class="nav-link" href="{{ route("backend.notifications.index") }}">
-                <i class="nav-icon fa-regular fa-bell"></i>
-                &nbsp;
-                @lang("Notifications")
+                <i class="nav-icon fa-regular fa-bell fa-fw"></i>
+                <span class="ms-1">@lang("Notifications")</span>
                 @if ($notifications_count)
-                    &nbsp;
                     <span class="badge badge-sm bg-info ms-auto">{{ $notifications_count }}</span>
                 @endif
             </a>
