@@ -36,5 +36,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ClientLogoSeeder::class);
 
         Schema::enableForeignKeyConstraints();
+        $this->call(SettingsTableSeeder::class);
     }
 }
