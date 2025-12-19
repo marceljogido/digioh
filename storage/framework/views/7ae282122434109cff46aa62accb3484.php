@@ -52,18 +52,30 @@
                 <?php
                     $mapAddress = setting('contact_address') ?? $defaultContactAddress;
                     $mapLink = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($mapAddress);
-                    $mapEmbed = 'https://maps.google.com/maps?q=' . urlencode($mapAddress) . '&z=16&output=embed';
+                    $mapEmbedCode = setting('contact_map_embed');
                 ?>
                 <div class="overflow-hidden rounded-3xl border border-[#d5def3] bg-white shadow-lg shadow-[#11224e]/5">
-                    <iframe
-                        src="<?php echo e($mapEmbed); ?>"
-                        width="100%"
-                        height="320"
-                        style="border:0;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
+                    <?php if($mapEmbedCode): ?>
+                        
+                        <div class="contact-map-embed [&>iframe]:w-full [&>iframe]:h-[320px] [&>iframe]:border-0">
+                            <?php echo $mapEmbedCode; ?>
+
+                        </div>
+                    <?php else: ?>
+                        
+                        <?php
+                            $mapEmbed = 'https://maps.google.com/maps?q=' . urlencode($mapAddress) . '&z=16&output=embed';
+                        ?>
+                        <iframe
+                            src="<?php echo e($mapEmbed); ?>"
+                            width="100%"
+                            height="320"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    <?php endif; ?>
                 </div>
 
                 <div class="relative overflow-hidden rounded-3xl border border-[#e2e9fb] bg-gradient-to-br from-[#eef3ff] to-white px-6 py-5 shadow-[0_25px_45px_rgba(17,34,78,0.07)]">

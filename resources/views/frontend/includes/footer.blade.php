@@ -54,9 +54,9 @@
 
             <div class="space-y-3 text-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Kunjungi lokasi kami') }}</p>
-                @if(setting('contact_map_embed'))
+                @if(setting('footer_map_embed'))
                     <div class="footer-map overflow-hidden rounded-2xl border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-                        {!! setting('contact_map_embed') !!}
+                        {!! setting('footer_map_embed') !!}
                     </div>
                 @else
                     <p class="text-white/70">{{ setting('contact_address') ?? $defaultContactAddress }}</p>
