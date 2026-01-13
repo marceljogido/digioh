@@ -7,6 +7,7 @@ use App\Observers\UserObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 
@@ -25,6 +26,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        /**
+         * Force HTTPS in production
+         */
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         /**
          * Change default string length.
          *
