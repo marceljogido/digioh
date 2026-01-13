@@ -289,9 +289,9 @@
                 </div>
                 <div class="flex flex-wrap justify-center gap-6">
                     @foreach($stats as $index => $stat)
-                        <div data-aos="zoom-in" data-aos-delay="{{ $index * 100 }}" class="stat-card flex items-center gap-5 rounded-3xl border border-white/25 bg-white/10 px-8 py-6 shadow-[0_20px_70px_rgba(0,0,0,0.25)] backdrop-blur hover-glow transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto sm:min-w-[280px] sm:max-w-[360px]">
+                        <div data-aos="zoom-in" data-aos-delay="{{ $index * 100 }}" class="stat-card flex flex-1 min-w-[300px] max-w-[400px] lg:min-w-0 lg:max-w-none lg:flex-none lg:w-[calc(25%-1.5rem)] items-center gap-5 rounded-3xl border border-white/25 bg-white/10 px-8 py-6 shadow-[0_20px_70px_rgba(0,0,0,0.25)] backdrop-blur hover-glow transition-all duration-300 hover:-translate-y-1">
                             <div class="text-4xl font-bold tracking-tight text-[#ffa630]">{{ $stat['value'] }}</div>
-                            <p class="text-sm font-semibold uppercase tracking-wide text-white/90">{{ $stat['label'] }}</p>
+                            <p class="text-xs font-semibold uppercase tracking-widest text-white/90">{{ $stat['label'] }}</p>
                         </div>
                     @endforeach
                 </div>
