@@ -1,5 +1,5 @@
 @props([
-    "data" => "",
+    "data" => null,
     "module_name",
     "module_path",
     "module_title" => "",
@@ -61,7 +61,7 @@
     <div class="card-footer">
         <div class="row">
             <div class="col">
-                @if ($data != "")
+                @if ($data)
                     <small class="text-muted float-end text-end">
                         @lang("Updated at")
                         : {{ $data->updated_at->diffForHumans() }},

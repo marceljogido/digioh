@@ -27,6 +27,14 @@ foreach ($attributes->all() as $__key => $__value) {
 }
 
 unset($__defined_vars, $__key, $__value); ?>
-<?php echo e(html()->submit($text = icon("fa-solid fa-floppy-disk fa-fw") . " " . __("Save"))->class("btn btn-success m-1" . ($small == "true" ? " btn-sm" : ""))); ?>
+<button
+    onclick="window.history.back();"
+    class="btn btn-warning <?php echo e($small == "true" ? "btn-sm" : ""); ?> m-1"
+    data-toggle="tooltip"
+    title="<?php echo e(__("Cancel")); ?>"
+>
+    <i class="fas fa-reply fa-fw"></i>
+    &nbsp;<?php echo $slot != "" ? "&nbsp;" . $slot : ""; ?>
 
-<?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/components/backend/buttons/save.blade.php ENDPATH**/ ?>
+</button>
+<?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/components/backend/buttons/cancel.blade.php ENDPATH**/ ?>

@@ -1,5 +1,5 @@
 @php
-    $slider = $slider ?? $data ?? null;
+    $slider = (isset($slider) && is_object($slider)) ? $slider : ((isset($data) && is_object($data)) ? $data : null);
     $imageUrl = null;
     if ($slider && $slider->image) {
         $imageUrl = \Illuminate\Support\Str::startsWith($slider->image, ['http://', 'https://'])

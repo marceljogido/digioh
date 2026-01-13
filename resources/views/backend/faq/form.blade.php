@@ -1,4 +1,4 @@
-@php($faq = $faq ?? ($data ?? null))
+@php($faq = (isset($faq) && is_object($faq)) ? $faq : ((isset($data) && is_object($data)) ? $data : null))
 @php($isEdit = isset($faq) && $faq->exists)
 @php($locales = available_locales())
 @php($sourceLocale = config('translatable.source_locale', 'id'))

@@ -1,6 +1,6 @@
 @php
     use App\Enums\ServiceStatus;
-    $service = $service ?? ($data ?? null);
+    $service = (isset($service) && is_object($service)) ? $service : ((isset($data) && is_object($data)) ? $data : null);
     $isEdit = isset($service) && $service->exists;
     $statusOptions = $statusOptions ?? ServiceStatus::options();
     $selectedStatus = old('status', $service->status ?? ServiceStatus::Draft->value);
@@ -56,21 +56,16 @@
     {{-- Features List --}}
     <div class="col-12">
         <label class="form-label" for="features">{{ __('Features') }}</label>
-        @php
-            $existingFeatures = old('features', $service->features ?? []);
-            $featuresText = is_array($existingFeatures) ? implode("\n", $existingFeatures) : $existingFeatures;
-        @endphp
+        <?php
+            $existingFeatures = old('features', $service?->features ?? []);
+            $featuresText = is_array($existingFeatures) ? implode("\n", $existingFeatures) : ($existingFeatures ?? '');
+        ?>
         <textarea
             class="form-control"
             name="features"
             id="features"
             rows="6"
-            placeholder="Professional Equipment
-On-site Setup & Support
-24/7 Technical Assistance
-Custom Configurations
-Backup Equipment
-Post-event Support"
+            placeholder="Professional Equipment, On-site Setup & Support, 24/7 Technical Assistance"
         >{{ $featuresText }}</textarea>
         <small class="text-muted">{{ __('Masukkan satu fitur per baris. Fitur akan ditampilkan dengan icon checklist.') }}</small>
     </div>

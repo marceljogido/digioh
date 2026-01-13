@@ -2,7 +2,7 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    "data" => "",
+    "data" => null,
     "module_name",
     "module_path",
     "module_title" => "",
@@ -24,7 +24,7 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    "data" => "",
+    "data" => null,
     "module_name",
     "module_path",
     "module_title" => "",
@@ -135,13 +135,13 @@ unset($__defined_vars, $__key, $__value); ?>
     <div class="card-footer">
         <div class="row">
             <div class="col">
-                <?php if($data != ""): ?>
+                <?php if($data && $data->updated_at): ?>
                     <small class="text-muted float-end text-end">
                         <?php echo app('translator')->get("Updated at"); ?>
                         : <?php echo e($data->updated_at->diffForHumans()); ?>,
                         <br class="d-block d-sm-none" />
                         <?php echo app('translator')->get("Created at"); ?>
-                        : <?php echo e($data->created_at->isoFormat("LLLL")); ?>
+                        : <?php echo e($data->created_at?->isoFormat("LLLL") ?? '-'); ?>
 
                     </small>
                 <?php endif; ?>

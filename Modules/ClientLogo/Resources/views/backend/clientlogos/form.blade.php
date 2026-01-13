@@ -18,7 +18,7 @@
 			$field_name = 'logo';
 			$field_lable = __('Logo Image');
 			$required = isset($clientlogo) ? "" : "required";
-			$entity = $clientlogo ?? $data ?? null;
+			$entity = (isset($clientlogo) && is_object($clientlogo)) ? $clientlogo : ((isset($data) && is_object($data)) ? $data : null);
 			?>
 			{{ html()->label($field_lable, $field_name)->class('form-label') }} {!! field_required($required) !!}
 			<input

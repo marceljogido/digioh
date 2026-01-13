@@ -67,26 +67,26 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
-    <?php if (isset($component)) { $__componentOriginald36b52f60875c92b52c37822caf252de = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald36b52f60875c92b52c37822caf252de = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.backend.layouts.edit','data' => ['data' => $service,'moduleName' => $module_name,'modulePath' => $module_path,'moduleTitle' => $module_title,'moduleIcon' => $module_icon,'moduleAction' => $module_action]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('backend.layouts.edit'); ?>
+    <?php if (isset($component)) { $__componentOriginalcbd37a8fcd74c8a79412655eadaa4da4 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalcbd37a8fcd74c8a79412655eadaa4da4 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.backend.layouts.create','data' => ['data' => $faq,'moduleName' => $module_name,'modulePath' => $module_path,'moduleTitle' => $module_title,'moduleIcon' => $module_icon,'moduleAction' => $module_action]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('backend.layouts.create'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['data' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($service),'module_name' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_name),'module_path' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_path),'module_title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_title),'module_icon' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_icon),'module_action' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_action)]); ?>
+<?php $component->withAttributes(['data' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($faq),'module_name' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_name),'module_path' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_path),'module_title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_title),'module_icon' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_icon),'module_action' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($module_action)]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginald36b52f60875c92b52c37822caf252de)): ?>
-<?php $attributes = $__attributesOriginald36b52f60875c92b52c37822caf252de; ?>
-<?php unset($__attributesOriginald36b52f60875c92b52c37822caf252de); ?>
+<?php if (isset($__attributesOriginalcbd37a8fcd74c8a79412655eadaa4da4)): ?>
+<?php $attributes = $__attributesOriginalcbd37a8fcd74c8a79412655eadaa4da4; ?>
+<?php unset($__attributesOriginalcbd37a8fcd74c8a79412655eadaa4da4); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginald36b52f60875c92b52c37822caf252de)): ?>
-<?php $component = $__componentOriginald36b52f60875c92b52c37822caf252de; ?>
-<?php unset($__componentOriginald36b52f60875c92b52c37822caf252de); ?>
+<?php if (isset($__componentOriginalcbd37a8fcd74c8a79412655eadaa4da4)): ?>
+<?php $component = $__componentOriginalcbd37a8fcd74c8a79412655eadaa4da4; ?>
+<?php unset($__componentOriginalcbd37a8fcd74c8a79412655eadaa4da4); ?>
 <?php endif; ?>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('backend.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/backend/services/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('backend.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/backend/faq/create.blade.php ENDPATH**/ ?>
