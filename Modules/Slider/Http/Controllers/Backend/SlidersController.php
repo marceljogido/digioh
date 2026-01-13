@@ -76,9 +76,7 @@ class SlidersController extends BackendBaseController
         $page_heading = label_case($module_title);
         $title = $page_heading.' '.label_case($module_action);
 
-        $$module_name = $module_model::select('id', 'title as name', 'is_active', 'button_link', 'sort_order', 'updated_at')
-            ->orderBy('sort_order')
-            ->orderBy('id');
+        $$module_name = $module_model::select('id', 'title as name', 'is_active', 'button_link', 'sort_order', 'updated_at');
 
         return DataTables::of($$module_name)
             ->addIndexColumn()

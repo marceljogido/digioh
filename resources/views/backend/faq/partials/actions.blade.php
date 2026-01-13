@@ -13,14 +13,16 @@
     >
         <i class="fas fa-edit"></i>
     </a>
-    <a
-        href="{{ route('backend.faq.destroy', $faq) }}"
-        class="btn btn-outline-danger"
-        data-method="DELETE"
-        data-token="{{ csrf_token() }}"
-        data-confirm="{{ __('Are you sure you want to delete this FAQ?') }}"
-        title="{{ __('Delete') }}"
+    <form
+        action="{{ route('backend.faq.destroy', $faq) }}"
+        method="POST"
+        class="d-inline"
+        onsubmit="return confirm('{{ __('Are you sure you want to delete this FAQ?') }}')"
     >
-        <i class="fas fa-trash"></i>
-    </a>
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-outline-danger" title="{{ __('Delete') }}">
+            <i class="fas fa-trash"></i>
+        </button>
+    </form>
 </div>

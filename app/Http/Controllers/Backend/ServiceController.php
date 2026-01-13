@@ -308,9 +308,7 @@ class ServiceController extends Controller
     {
         $services = Service::query()
             ->withCount('posts')
-            ->select('id', 'name', 'slug', 'status', 'featured_on_home', 'sort_order', 'updated_at')
-            ->orderBy('sort_order')
-            ->orderBy('id');
+            ->select('id', 'name', 'slug', 'status', 'featured_on_home', 'sort_order', 'updated_at');
 
         return DataTables::of($services)
             ->addIndexColumn()

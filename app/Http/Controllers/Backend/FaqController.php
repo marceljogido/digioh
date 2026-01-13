@@ -107,9 +107,7 @@ class FaqController extends Controller
 
     public function index_data()
     {
-        $faqs = Faq::select('id', 'question', 'is_active', 'sort_order', 'updated_at')
-            ->orderBy('sort_order')
-            ->orderBy('id');
+        $faqs = Faq::select('id', 'question', 'is_active', 'sort_order', 'updated_at');
 
         return DataTables::of($faqs)
             ->addIndexColumn()

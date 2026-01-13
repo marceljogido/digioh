@@ -13,16 +13,16 @@
     >
         <i class="fas fa-edit"></i>
     </a>
-    <a
-        href="{{ route('backend.stats.destroy', $stat) }}"
-        class="btn btn-outline-danger"
-        data-method="DELETE"
-        data-token="{{ csrf_token() }}"
-        data-confirm="{{ __('Are you sure you want to delete this statistic?') }}"
-        title="{{ __('Delete') }}"
+    <form
+        action="{{ route('backend.stats.destroy', $stat) }}"
+        method="POST"
+        class="d-inline"
+        onsubmit="return confirm('{{ __('Are you sure you want to delete this statistic?') }}')"
     >
-        <i class="fas fa-trash"></i>
-    </a>
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-outline-danger" title="{{ __('Delete') }}">
+            <i class="fas fa-trash"></i>
+        </button>
+    </form>
 </div>
-
-

@@ -127,9 +127,7 @@ class ClientLogosController extends BackendBaseController
 
         $module_action = 'List';
 
-        $$module_name = $module_model::select('id', 'client_name as name', 'sort_order', 'updated_at')
-            ->orderBy('sort_order')
-            ->orderBy('id');
+        $$module_name = $module_model::select('id', 'client_name as name', 'sort_order', 'updated_at');
 
         return DataTables::of($$module_name)
             ->addIndexColumn()

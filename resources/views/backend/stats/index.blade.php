@@ -75,7 +75,9 @@
                 },
                 {
                     data: 'label',
-                    name: 'label'
+                    name: 'label',
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'sort_order',

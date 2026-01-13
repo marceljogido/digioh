@@ -70,7 +70,9 @@
                 },
                 {
                     data: 'question',
-                    name: 'question'
+                    name: 'question',
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'status',

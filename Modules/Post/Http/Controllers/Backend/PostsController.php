@@ -156,9 +156,7 @@ class PostsController extends BackendBaseController
             'event_location',
             'published_at',
             'updated_at',
-        ])
-            ->orderBy('sort_order')
-            ->orderBy('id');
+        ]);
 
         if ($year = (int) $request->get('year')) {
             $posts->where(function ($query) use ($year) {

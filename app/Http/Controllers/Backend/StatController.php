@@ -148,9 +148,7 @@ class StatController extends Controller
 
     public function index_data()
     {
-        $stats = Stat::select('id', 'value', 'label', 'sort_order', 'is_active', 'updated_at')
-            ->orderBy('sort_order')
-            ->orderBy('id');
+        $stats = Stat::select('id', 'value', 'label', 'sort_order', 'is_active', 'updated_at');
 
         return DataTables::of($stats)
             ->addIndexColumn()

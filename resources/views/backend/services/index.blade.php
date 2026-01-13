@@ -74,7 +74,9 @@
             },
             {
                 data: 'name',
-                name: 'name'
+                name: 'name',
+                orderable: false,
+                searchable: false
             },
             {
                 data: 'usage',
