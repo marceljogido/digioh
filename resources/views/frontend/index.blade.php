@@ -61,6 +61,7 @@
                     'title' => $s->name,
                     'description' => $s->description,
                     'icon' => $s->icon ?: $genericServiceIcon,
+                    'image' => $s->image,
                     'slug' => $s->slug,
                 ];
             })
@@ -299,40 +300,106 @@
     @endif
 
     @if($services->count())
-    <section id="services" class="bg-white dark:bg-slate-950">
-        <div class="mx-auto max-w-screen-xl px-4 py-16 text-center sm:px-12">
-            <span data-aos="fade-down" class="text-xs font-semibold uppercase tracking-[0.3em] text-[#f17720]">{{ __('Our Services') }}</span>
-            <h2 data-aos="fade-up" data-aos-delay="100" class="mt-3 text-3xl font-bold text-[#11224e] dark:text-white">{{ __('Layanan yang kami tawarkan') }}</h2>
-            <p data-aos="fade-up" data-aos-delay="200" class="mx-auto mt-4 max-w-3xl text-sm text-slate-600 dark:text-slate-100">{{ __('We help companies design, build, and grow end-to-end digital products.') }}</p>
+    <section 
+        id="services" 
+        class="group mesh-gradient relative overflow-hidden py-24 sm:py-32"
+        x-data="{ mouseX: 0, mouseY: 0, active: false }"
+        @mousemove="mouseX = $event.clientX; mouseY = $event.clientY; active = true"
+        @mouseleave="active = false"
+    >
+        {{-- Interactive Spotlight --}}
+        <div 
+            class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-1000"
+            :class="active ? 'opacity-100' : 'opacity-0'"
+            :style="`background: radial-gradient(circle 600px at ${mouseX}px ${mouseY}px, rgba(255, 166, 48, 0.08), transparent 80%)`"
+        ></div>
 
-            <div class="mt-12 grid gap-10 md:grid-cols-2 xl:grid-cols-4">
+
+        {{-- Decorative 3D Floating Orbs --}}
+
+        <div class="floating-orb left-[10%] top-[20%] h-64 w-64 bg-indigo-500/20 dark:bg-indigo-500/40"></div>
+        <div class="floating-orb right-[5%] top-[10%] h-80 w-80 bg-[#ffa630]/20 dark:bg-[#ffa630]/30" style="animation-delay: -2s;"></div>
+        <div class="floating-orb bottom-[10%] left-[20%] h-72 w-72 bg-[#f17720]/20 dark:bg-[#f17720]/30" style="animation-delay: -5s;"></div>
+
+        <div class="relative z-10 mx-auto max-w-screen-xl px-4 sm:px-12">
+            <div class="mb-20 text-center">
+                <div data-aos="fade-down" class="inline-flex items-center gap-3 rounded-full bg-white/40 px-6 py-2 text-xs font-bold uppercase tracking-[0.4em] text-[#f17720] shadow-sm backdrop-blur-md dark:bg-white/5 dark:text-[#ffa630]">
+                    <span class="h-2 w-2 animate-pulse rounded-full bg-[#f17720]"></span>
+                    {{ __('Our Expertise') }}
+                </div>
+                <h2 data-aos="fade-up" data-aos-delay="100" class="mt-8 text-4xl font-black tracking-tight text-[#11224e] dark:text-white sm:text-5xl lg:text-6xl">
+                    {{ __('Layanan yang kami tawarkan') }}
+                </h2>
+                <div data-aos="fade-up" data-aos-delay="200" class="mx-auto mt-8 h-1.5 w-24 rounded-full bg-gradient-to-r from-[#ffa630] to-[#f17720]"></div>
+                <p data-aos="fade-up" data-aos-delay="300" class="mx-auto mt-8 max-w-2xl text-lg font-medium leading-relaxed text-slate-600 dark:text-slate-300">
+                    {{ __('Kami membantu produk Anda bertransformasi melalui strategi digital yang tajam, desain yang memukau, dan teknologi mutakhir.') }}
+                </p>
+            </div>
+
+
+            <div class="flex flex-wrap justify-center gap-10">
                 @foreach($services->take(8) as $index => $service)
-                    <article data-aos="fade-up" data-aos-delay="{{ 100 + ($index * 100) }}" class="flex h-full flex-col items-center text-center gap-4 rounded-3xl border border-[#e9e6df] bg-white p-6 shadow-sm hover-lift dark:border-slate-800/60 dark:bg-slate-900 dark:shadow-black/40">
-                        @php($imagePath = $service['image'] ?? null)
-                        <div class="h-28 w-28 rounded-full border-4 border-[#ffa630] bg-white p-1 shadow-lg shadow-[#ffa630]/30">
-                            <div class="h-full w-full overflow-hidden rounded-full">
+                    <article 
+                        data-aos="fade-up" 
+                        data-aos-delay="{{ 100 + ($index * 100) }}" 
+                        x-data="{ rotateX: 0, rotateY: 0 }"
+                        @mousemove="
+                            const card = $el.getBoundingClientRect();
+                            const x = $event.clientX - card.left;
+                            const y = $event.clientY - card.top;
+                            const centerX = card.width / 2;
+                            const centerY = card.height / 2;
+                            rotateX = ((y - centerY) / centerY) * -15;
+                            rotateY = ((x - centerX) / centerX) * 15;
+                        "
+                        @mouseleave="rotateX = 0; rotateY = 0"
+                        class="glass-card glow-border group relative flex flex-col items-center gap-8 rounded-[2.5rem] p-10 text-center transition-all duration-500 hover:-translate-y-4 w-full sm:w-[calc(50%-2.5rem)] lg:w-[calc(25%-2.5rem)] min-w-[300px] perspective-container"
+                    >
+                        {{-- Image/Icon with 3D Tilt --}}
+                        <div 
+                            class="tilt-box relative z-20"
+                            :style="`transform: rotateX(${rotateX}deg) rotateY(${rotateY}deg)`"
+                        >
+                            <div class="absolute inset-0 -m-4 rounded-[3rem] bg-gradient-to-br from-[#ffa630] to-[#f17720] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20"></div>
+                            <div class="relative flex h-36 w-36 items-center justify-center img-squircle border-4 border-white bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900 tilt-content">
+                                @php($imagePath = $service['image'] ?? null)
                                 @if($imagePath)
-                                    <img src="{{ asset($imagePath) }}" alt="{{ $service['title'] }}" class="h-full w-full object-cover">
+                                    <img src="{{ asset($imagePath) }}" alt="{{ $service['title'] }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 @elseif(!empty($service['icon']) && strpos($service['icon'], '<') === false)
                                     <img src="{{ asset($service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-cover">
                                 @else
-                                    <div class="flex h-full w-full items-center justify-center bg-[#f8f7f5] text-[#ffa630]">
-                                        <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/></svg>
+                                    <div class="flex h-16 w-16 items-center justify-center text-[#ffa630] [&>svg]:h-full [&>svg]:w-full">
+                                        {!! $service['icon'] ?? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>' !!}
                                     </div>
                                 @endif
                             </div>
                         </div>
-                        <h3 class="text-lg font-bold text-[#11224e] dark:text-white">{{ $service['title'] }}</h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-100">{{ $service['description'] }}</p>
+
+                        <div class="space-y-4 tilt-content">
+                            <h3 class="text-2xl font-extrabold tracking-tight text-[#11224e] transition-colors duration-300 group-hover:text-[#f17720] dark:text-white dark:group-hover:text-[#ffa630]">
+                                {{ $service['title'] }}
+                            </h3>
+                            <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                                {{ \Str::limit($service['description'], 140) }}
+                            </p>
+                        </div>
+
                         @if(!empty($service['slug']))
-                            <a href="{{ route('frontend.services.show', $service['slug']) }}" class="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-[#f17720] dark:text-[#ffa630]">
-                                {{ __('Pelajari layanan ini') }}
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                            <a 
+                                href="{{ route('frontend.services.show', $service['slug']) }}" 
+                                class="mt-auto inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#11224e] to-[#1a3a6e] px-8 py-3 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:from-[#ffa630] hover:to-[#f17720] hover:shadow-[#ffa630]/30 dark:from-[#ffa630] dark:to-[#f17720] dark:text-[#11224e] dark:hover:from-white dark:hover:to-white tilt-content"
+                            >
+                                {{ __('Jelajahi Solusi') }}
+                                <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"/>
+                                </svg>
                             </a>
                         @endif
                     </article>
                 @endforeach
             </div>
+
+
         </div>
     </section>
     @endif
