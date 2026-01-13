@@ -1,4 +1,4 @@
-@php
+<?php
     $slider = $slider ?? $data ?? null;
     $imageUrl = null;
     if ($slider && $slider->image) {
@@ -8,7 +8,7 @@
     }
     $locales = config('app.available_locales', ['id' => 'Indonesia', 'en' => 'English']);
     $sourceLocale = config('translatable.source_locale', 'id');
-@endphp
+?>
 
 <!-- Auto Translate Button -->
 <div class="row mb-3">
@@ -23,25 +23,28 @@
 <!-- Title -->
 <div class="row">
     <div class="col-12 mb-3">
-        <label class="form-label fw-bold">{{ __('Judul') }}</label>
-        {!! field_required('required') !!}
+        <label class="form-label fw-bold"><?php echo e(__('Judul')); ?></label>
+        <?php echo field_required('required'); ?>
+
         <div class="row">
-            @foreach($locales as $localeCode => $localeName)
+            <?php $__currentLoopData = $locales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $localeCode => $localeName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="col-md-6 mb-2">
-                    <label class="form-label small text-muted" for="title_{{ $localeCode }}">
-                        {{ $localeName }} {{ $localeCode === $sourceLocale ? '(Sumber)' : '' }}
+                    <label class="form-label small text-muted" for="title_<?php echo e($localeCode); ?>">
+                        <?php echo e($localeName); ?> <?php echo e($localeCode === $sourceLocale ? '(Sumber)' : ''); ?>
+
                     </label>
                     <input
                         type="text"
-                        name="title[{{ $localeCode }}]"
-                        id="title_{{ $localeCode }}"
+                        name="title[<?php echo e($localeCode); ?>]"
+                        id="title_<?php echo e($localeCode); ?>"
                         class="form-control"
-                        value="{{ old('title.'.$localeCode, $slider?->getTranslation('title', $localeCode, false) ?? '') }}"
+                        value="<?php echo e(old('title.'.$localeCode, $slider?->getTranslation('title', $localeCode, false) ?? '')); ?>"
                         maxlength="191"
-                        {{ $localeCode === $sourceLocale ? 'required' : '' }}
+                        <?php echo e($localeCode === $sourceLocale ? 'required' : ''); ?>
+
                     >
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </div>
@@ -49,21 +52,21 @@
 <!-- Subtitle -->
 <div class="row">
     <div class="col-12 mb-3">
-        <label class="form-label fw-bold">{{ __('Subjudul') }}</label>
+        <label class="form-label fw-bold"><?php echo e(__('Subjudul')); ?></label>
         <div class="row">
-            @foreach($locales as $localeCode => $localeName)
+            <?php $__currentLoopData = $locales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $localeCode => $localeName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="col-md-6 mb-2">
-                    <label class="form-label small text-muted" for="subtitle_{{ $localeCode }}">{{ $localeName }}</label>
+                    <label class="form-label small text-muted" for="subtitle_<?php echo e($localeCode); ?>"><?php echo e($localeName); ?></label>
                     <input
                         type="text"
-                        name="subtitle[{{ $localeCode }}]"
-                        id="subtitle_{{ $localeCode }}"
+                        name="subtitle[<?php echo e($localeCode); ?>]"
+                        id="subtitle_<?php echo e($localeCode); ?>"
                         class="form-control"
-                        value="{{ old('subtitle.'.$localeCode, $slider?->getTranslation('subtitle', $localeCode, false) ?? '') }}"
+                        value="<?php echo e(old('subtitle.'.$localeCode, $slider?->getTranslation('subtitle', $localeCode, false) ?? '')); ?>"
                         maxlength="191"
                     >
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 </div>
@@ -71,36 +74,36 @@
 <!-- Button Text -->
 <div class="row">
     <div class="col-12 col-sm-6 mb-3">
-        <label class="form-label fw-bold">{{ __('Teks Tombol') }}</label>
+        <label class="form-label fw-bold"><?php echo e(__('Teks Tombol')); ?></label>
         <div class="row">
-            @foreach($locales as $localeCode => $localeName)
+            <?php $__currentLoopData = $locales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $localeCode => $localeName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="col-12 mb-2">
-                    <label class="form-label small text-muted" for="button_text_{{ $localeCode }}">{{ $localeName }}</label>
+                    <label class="form-label small text-muted" for="button_text_<?php echo e($localeCode); ?>"><?php echo e($localeName); ?></label>
                     <input
                         type="text"
-                        name="button_text[{{ $localeCode }}]"
-                        id="button_text_{{ $localeCode }}"
+                        name="button_text[<?php echo e($localeCode); ?>]"
+                        id="button_text_<?php echo e($localeCode); ?>"
                         class="form-control"
-                        value="{{ old('button_text.'.$localeCode, $slider?->getTranslation('button_text', $localeCode, false) ?? '') }}"
+                        value="<?php echo e(old('button_text.'.$localeCode, $slider?->getTranslation('button_text', $localeCode, false) ?? '')); ?>"
                         maxlength="191"
                     >
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
     <div class="col-12 col-sm-6 mb-3">
         <div class="form-group">
-            <label class="form-label" for="button_link">{{ __('Link Tombol') }}</label>
+            <label class="form-label" for="button_link"><?php echo e(__('Link Tombol')); ?></label>
             <input
                 type="text"
                 name="button_link"
                 id="button_link"
                 class="form-control"
-                value="{{ old('button_link', optional($slider)->button_link) }}"
+                value="<?php echo e(old('button_link', optional($slider)->button_link)); ?>"
                 maxlength="255"
                 placeholder="https:// atau /halaman"
             >
-            <small class="text-muted">{{ __('Gunakan URL penuh atau path internal (misal: /layanan).') }}</small>
+            <small class="text-muted"><?php echo e(__('Gunakan URL penuh atau path internal (misal: /layanan).')); ?></small>
         </div>
     </div>
 </div>
@@ -129,11 +132,11 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Translating...';
         
         try {
-            const response = await fetch('{{ route("backend.translate.batch") }}', {
+            const response = await fetch('<?php echo e(route("backend.translate.batch")); ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                 },
                 body: JSON.stringify({
                     texts: texts,
@@ -166,57 +169,62 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="row">
     <div class="col-12 col-sm-6 mb-3">
         <div class="form-group">
-            <label class="form-label" for="image">{{ __('Gambar Slider') }}</label>
-            {!! field_required($slider ? '' : 'required') !!}
+            <label class="form-label" for="image"><?php echo e(__('Gambar Slider')); ?></label>
+            <?php echo field_required($slider ? '' : 'required'); ?>
+
             <input
                 type="file"
                 name="image"
                 id="image"
                 class="form-control"
                 accept=".jpg,.jpeg,.png,.gif,.webp"
-                @if(empty($slider)) required @endif
+                <?php if(empty($slider)): ?> required <?php endif; ?>
             >
             <small class="text-muted d-block mt-1">
-                {{ __('Unggah gambar landscape (JPG/PNG/GIF/WEBP) maksimal 2 MB.') }}
-                @if($slider && $slider->image)
-                    <br>{{ __('Biarkan kosong jika tidak ingin mengganti gambar yang ada.') }}
-                @endif
+                <?php echo e(__('Unggah gambar landscape (JPG/PNG/GIF/WEBP) maksimal 2 MB.')); ?>
+
+                <?php if($slider && $slider->image): ?>
+                    <br><?php echo e(__('Biarkan kosong jika tidak ingin mengganti gambar yang ada.')); ?>
+
+                <?php endif; ?>
             </small>
 
-            @if($imageUrl)
+            <?php if($imageUrl): ?>
                 <div class="mt-3">
-                    <p class="text-muted mb-2">{{ __('Pratinjau saat ini') }}</p>
-                    <img src="{{ $imageUrl }}" alt="{{ $slider->title }}" style="max-height: 220px" class="rounded border">
+                    <p class="text-muted mb-2"><?php echo e(__('Pratinjau saat ini')); ?></p>
+                    <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($slider->title); ?>" style="max-height: 220px" class="rounded border">
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
     <div class="col-12 col-sm-3 mb-3">
         <div class="form-group">
-            <label class="form-label" for="is_active">{{ __('Status') }}</label>
-            {!! field_required('required') !!}
-            @php
+            <label class="form-label" for="is_active"><?php echo e(__('Status')); ?></label>
+            <?php echo field_required('required'); ?>
+
+            <?php
                 $currentStatus = old('is_active', $slider?->is_active ?? 1);
                 $isActive = filter_var($currentStatus, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? (bool) $currentStatus;
-            @endphp
+            ?>
             <select name="is_active" id="is_active" class="form-select" required>
-                <option value="1" @selected($isActive === true)>{{ __('Published') }}</option>
-                <option value="0" @selected($isActive === false)>{{ __('Unpublished') }}</option>
+                <option value="1" <?php if($isActive === true): echo 'selected'; endif; ?>><?php echo e(__('Published')); ?></option>
+                <option value="0" <?php if($isActive === false): echo 'selected'; endif; ?>><?php echo e(__('Unpublished')); ?></option>
             </select>
         </div>
     </div>
     <div class="col-12 col-sm-3 mb-3">
         <div class="form-group">
-            <label class="form-label" for="sort_order">{{ __('Urutan Tampil') }}</label>
+            <label class="form-label" for="sort_order"><?php echo e(__('Urutan Tampil')); ?></label>
             <input
                 type="number"
                 min="0"
                 name="sort_order"
                 id="sort_order"
                 class="form-control"
-                value="{{ old('sort_order', optional($slider)->sort_order ?? 0) }}"
+                value="<?php echo e(old('sort_order', optional($slider)->sort_order ?? 0)); ?>"
             >
-            <small class="text-muted">{{ __('Angka lebih kecil akan tampil lebih awal.') }}</small>
+            <small class="text-muted"><?php echo e(__('Angka lebih kecil akan tampil lebih awal.')); ?></small>
         </div>
     </div>
 </div>
+<?php /**PATH C:\Users\Marcel\Music\3.digioh\Modules/Slider/Resources/views/backend/sliders/form.blade.php ENDPATH**/ ?>

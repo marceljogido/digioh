@@ -1,10 +1,7 @@
-<?php $__env->startSection("title"); ?>
-    <?php echo e(__($module_action)); ?> <?php echo e(__($module_title)); ?>
+<?php $__env->startSection('title'); ?> <?php echo e(__($module_action)); ?> <?php echo e(__($module_title)); ?> <?php $__env->stopSection(); ?>
 
-<?php $__env->stopSection(); ?>
-
-<?php $__env->startSection("breadcrumbs"); ?>
-    <?php if (isset($component)) { $__componentOriginal73d065ab05177f56255c078a05ab5686 = $component; } ?>
+<?php $__env->startSection('breadcrumbs'); ?>
+<?php if (isset($component)) { $__componentOriginal73d065ab05177f56255c078a05ab5686 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal73d065ab05177f56255c078a05ab5686 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.backend.breadcrumbs','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('backend.breadcrumbs'); ?>
@@ -14,7 +11,7 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-        <?php if (isset($component)) { $__componentOriginal5e5b40e973d9c7c18a583cb81079b74e = $component; } ?>
+    <?php if (isset($component)) { $__componentOriginal5e5b40e973d9c7c18a583cb81079b74e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal5e5b40e973d9c7c18a583cb81079b74e = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.backend.breadcrumb-item','data' => ['route' => ''.e(route("backend.$module_name.index")).'','icon' => ''.e($module_icon).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('backend.breadcrumb-item'); ?>
@@ -24,9 +21,9 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['route' => ''.e(route("backend.$module_name.index")).'','icon' => ''.e($module_icon).'']); ?>
-            <?php echo e(__($module_title)); ?>
+        <?php echo e(__($module_title)); ?>
 
-         <?php echo $__env->renderComponent(); ?>
+     <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal5e5b40e973d9c7c18a583cb81079b74e)): ?>
 <?php $attributes = $__attributesOriginal5e5b40e973d9c7c18a583cb81079b74e; ?>
@@ -36,7 +33,7 @@
 <?php $component = $__componentOriginal5e5b40e973d9c7c18a583cb81079b74e; ?>
 <?php unset($__componentOriginal5e5b40e973d9c7c18a583cb81079b74e); ?>
 <?php endif; ?>
-        <?php if (isset($component)) { $__componentOriginal5e5b40e973d9c7c18a583cb81079b74e = $component; } ?>
+    <?php if (isset($component)) { $__componentOriginal5e5b40e973d9c7c18a583cb81079b74e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal5e5b40e973d9c7c18a583cb81079b74e = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.backend.breadcrumb-item','data' => ['type' => 'active']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('backend.breadcrumb-item'); ?>
@@ -55,7 +52,7 @@
 <?php $component = $__componentOriginal5e5b40e973d9c7c18a583cb81079b74e; ?>
 <?php unset($__componentOriginal5e5b40e973d9c7c18a583cb81079b74e); ?>
 <?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
+ <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal73d065ab05177f56255c078a05ab5686)): ?>
 <?php $attributes = $__attributesOriginal73d065ab05177f56255c078a05ab5686; ?>
@@ -67,8 +64,8 @@
 <?php endif; ?>
 <?php $__env->stopSection(); ?>
 
-<?php $__env->startSection("content"); ?>
-    <?php if (isset($component)) { $__componentOriginald36b52f60875c92b52c37822caf252de = $component; } ?>
+<?php $__env->startSection('content'); ?>
+<?php if (isset($component)) { $__componentOriginald36b52f60875c92b52c37822caf252de = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald36b52f60875c92b52c37822caf252de = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.backend.layouts.edit','data' => ['data' => $$module_name_singular,'moduleName' => $module_name,'modulePath' => $module_path,'moduleTitle' => $module_title,'moduleIcon' => $module_icon,'moduleAction' => $module_action]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('backend.layouts.edit'); ?>
@@ -89,5 +86,4 @@
 <?php unset($__componentOriginald36b52f60875c92b52c37822caf252de); ?>
 <?php endif; ?>
 <?php $__env->stopSection(); ?>
-
-<?php echo $__env->make("backend.layouts.app", array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Marcel\Music\3.digioh\Modules/Post/Resources/views/backend/posts/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('backend.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Marcel\Music\3.digioh\Modules/Slider/Resources/views/backend/sliders/edit.blade.php ENDPATH**/ ?>

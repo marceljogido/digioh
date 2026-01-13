@@ -26,6 +26,12 @@
                                 @lang("slider::text.name")
                             </th>
                             <th>
+                                {{ __('Status') }}
+                            </th>
+                            <th>
+                                {{ __('Link') }}
+                            </th>
+                            <th>
                                 @lang("slider::text.updated_at")
                             </th>
                             <th class="text-end">
@@ -80,6 +86,16 @@
             {
                 data: 'name',
                 name: 'title'
+            },
+            {
+                data: 'status',
+                name: 'is_active',
+                orderable: true,
+                searchable: false
+            },
+            {
+                data: 'link',
+                name: 'button_link'
             },
             {
                 data: 'updated_at',

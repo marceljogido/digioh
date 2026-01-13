@@ -76,7 +76,7 @@ class SlidersController extends BackendBaseController
         $page_heading = label_case($module_title);
         $title = $page_heading.' '.label_case($module_action);
 
-        $$module_name = $module_model::select('id', 'title as name', 'sort_order', 'updated_at')
+        $$module_name = $module_model::select('id', 'title as name', 'is_active', 'button_link', 'sort_order', 'updated_at')
             ->orderBy('sort_order')
             ->orderBy('id');
 
@@ -87,6 +87,18 @@ class SlidersController extends BackendBaseController
                 return view('backend.includes.action_column', compact('module_name', 'data'));
             })
             ->editColumn('name', '<strong>{{$name}}</strong>')
+            ->addColumn('status', function ($data) {
+                if ($data->is_active) {
+                    return '<span class="badge bg-success">Published</span>';
+                }
+                return '<span class="badge bg-secondary">Unpublished</span>';
+            })
+            ->addColumn('link', function ($data) {
+                if ($data->button_link) {
+                    return '<a href="'.$data->button_link.'" target="_blank" class="text-truncate d-inline-block" style="max-width:150px;" title="'.$data->button_link.'">'.$data->button_link.'</a>';
+                }
+                return '<span class="text-muted">-</span>';
+            })
             ->editColumn('updated_at', function ($data) {
                 $diff = Carbon::now()->diffInHours($data->updated_at);
                 if ($diff < 25) {
@@ -94,7 +106,7 @@ class SlidersController extends BackendBaseController
                 }
                 return $data->updated_at->isoFormat('llll');
             })
-            ->rawColumns(['name', 'action'])
+            ->rawColumns(['name', 'status', 'link', 'action'])
             ->make(true);
     }
 

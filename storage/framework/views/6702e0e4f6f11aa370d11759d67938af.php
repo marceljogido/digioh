@@ -79,6 +79,14 @@
                                 <?php echo app('translator')->get("slider::text.name"); ?>
                             </th>
                             <th>
+                                <?php echo e(__('Status')); ?>
+
+                            </th>
+                            <th>
+                                <?php echo e(__('Link')); ?>
+
+                            </th>
+                            <th>
                                 <?php echo app('translator')->get("slider::text.updated_at"); ?>
                             </th>
                             <th class="text-end">
@@ -133,6 +141,16 @@
             {
                 data: 'name',
                 name: 'title'
+            },
+            {
+                data: 'status',
+                name: 'is_active',
+                orderable: true,
+                searchable: false
+            },
+            {
+                data: 'link',
+                name: 'button_link'
             },
             {
                 data: 'updated_at',
