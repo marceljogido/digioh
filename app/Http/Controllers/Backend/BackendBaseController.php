@@ -338,7 +338,7 @@ class BackendBaseController extends Controller
 
         logUserAccess($module_title.' '.$module_action.' | Id: '.$$module_name_singular->id);
 
-        return redirect("admin/{$module_name}");
+        return redirect()->route("backend.{$module_name}.index");
     }
 
     /**
@@ -397,7 +397,7 @@ class BackendBaseController extends Controller
 
         logUserAccess($module_title.' '.$module_action.' | Id: '.$$module_name_singular->id);
 
-        return redirect("admin/{$module_name}");
+        return redirect()->route("backend.{$module_name}.index");
     }
 
     /**

@@ -358,7 +358,7 @@
                             rotateY = ((x - centerX) / centerX) * 15;
                         "
                         @mouseleave="rotateX = 0; rotateY = 0"
-                        class="glass-card glow-border group relative flex flex-col items-center gap-8 rounded-[2.5rem] p-10 text-center transition-all duration-500 hover:-translate-y-4 w-full sm:w-[calc(50%-2.5rem)] lg:w-[calc(25%-2.5rem)] min-w-[300px] perspective-container"
+                        class="glass-card glow-border group relative flex flex-col items-center gap-8 rounded-[2.5rem] p-10 text-center transition-all duration-500 hover:-translate-y-4 w-full sm:w-[calc(50%-2.5rem)] lg:w-[calc(25%-2.5rem)] min-w-[240px] perspective-container"
                     >
                         
                         <div 
