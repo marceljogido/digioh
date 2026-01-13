@@ -77,6 +77,7 @@
                                         @lang("post::text.name")
                                     </th>
                                     <th>{{ __('Event Date') }}</th>
+                                    <th>{{ __('Event Location') }}</th>
                                     <th>
                                         @lang("post::text.updated_at")
                                     </th>
@@ -138,6 +139,10 @@
                 {
                     data: 'event_period',
                     name: 'event_period',
+                },
+                {
+                    data: 'event_location',
+                    name: 'event_location',
                 },
                 {
                     data: 'updated_at',

@@ -153,6 +153,7 @@ class PostsController extends BackendBaseController
             'sort_order',
             'event_start_date',
             'event_end_date',
+            'event_location',
             'published_at',
             'updated_at',
         ])
@@ -207,6 +208,9 @@ class PostsController extends BackendBaseController
                 return $diff < 25
                     ? $post->updated_at->diffForHumans()
                     : $post->updated_at->isoFormat('llll');
+            })
+            ->addColumn('event_location', function ($post) {
+                return $post->event_location ?: '-';
             })
             ->orderColumn('event_period', function ($query, $direction) {
                 $order = strtolower($direction) === 'asc' ? 'asc' : 'desc';

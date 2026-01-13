@@ -16,16 +16,18 @@
         </a>
     <?php endif; ?>
     <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check("delete_" . $module_name)): ?>
-        <a
-            href="<?php echo e(route('backend.'.$module_name.'.destroy', $data)); ?>"
-            class="btn btn-outline-danger"
-            data-method="DELETE"
-            data-token="<?php echo e(csrf_token()); ?>"
-            data-confirm="<?php echo e(__('Are you sure you want to delete this item?')); ?>"
-            title="<?php echo e(__('Delete')); ?>"
+        <form
+            action="<?php echo e(route('backend.'.$module_name.'.destroy', $data)); ?>"
+            method="POST"
+            class="d-inline"
+            onsubmit="return confirm('<?php echo e(__('Are you sure you want to delete this item?')); ?>')"
         >
-            <i class="fas fa-trash"></i>
-        </a>
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('DELETE'); ?>
+            <button type="submit" class="btn btn-outline-danger border-start-0" title="<?php echo e(__('Delete')); ?>">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
     <?php endif; ?>
 </div>
 <?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/backend/includes/action_column.blade.php ENDPATH**/ ?>

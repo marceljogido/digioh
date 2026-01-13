@@ -16,15 +16,17 @@
         </a>
     @endcan
     @can("delete_" . $module_name)
-        <a
-            href="{{ route('backend.'.$module_name.'.destroy', $data) }}"
-            class="btn btn-outline-danger"
-            data-method="DELETE"
-            data-token="{{ csrf_token() }}"
-            data-confirm="{{ __('Are you sure you want to delete this item?') }}"
-            title="{{ __('Delete') }}"
+        <form
+            action="{{ route('backend.'.$module_name.'.destroy', $data) }}"
+            method="POST"
+            class="d-inline"
+            onsubmit="return confirm('{{ __('Are you sure you want to delete this item?') }}')"
         >
-            <i class="fas fa-trash"></i>
-        </a>
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-outline-danger border-start-0" title="{{ __('Delete') }}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
     @endcan
 </div>

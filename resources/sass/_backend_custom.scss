@@ -10,9 +10,63 @@ a {
         text-align: center;
         margin-right: 0.5rem;
     }
-    
+
     .nav-link {
         display: flex;
         align-items: center;
+    }
+}
+
+// Fix btn-group with inline delete form
+.btn-group {
+    >form.d-inline {
+        display: inline-flex !important;
+
+        >.btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    }
+
+    // When form is not last child
+    >form.d-inline:not(:last-child)>.btn {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    // Normalize all action button sizes
+    &.btn-group-sm {
+
+        >.btn,
+        >a.btn,
+        >form.d-inline>.btn {
+            min-width: 32px;
+            height: 31px;
+            padding: 0.25rem 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                font-size: 0.8rem;
+            }
+        }
+    }
+}
+
+// Action column alignment in tables
+table.table,
+.dataTable {
+
+    th.text-end,
+    td.text-end,
+    th:last-child,
+    td:last-child {
+        text-align: center !important;
+    }
+
+    td .btn-group {
+        display: inline-flex !important;
+        justify-content: center;
     }
 }
