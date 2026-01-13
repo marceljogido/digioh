@@ -74,9 +74,9 @@
 
             <div class="space-y-3 text-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70"><?php echo e(__('Kunjungi lokasi kami')); ?></p>
-                <?php if(setting('contact_map_embed')): ?>
+                <?php if(setting('footer_map_embed')): ?>
                     <div class="footer-map overflow-hidden rounded-2xl border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-                        <?php echo setting('contact_map_embed'); ?>
+                        <?php echo setting('footer_map_embed'); ?>
 
                     </div>
                 <?php else: ?>
