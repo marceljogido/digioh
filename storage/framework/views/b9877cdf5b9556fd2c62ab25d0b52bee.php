@@ -1,22 +1,41 @@
 <div>
-    <x-frontend.header-block :title="$title" />
+    <?php if (isset($component)) { $__componentOriginal885417cb62579f505f388b228557db34 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal885417cb62579f505f388b228557db34 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.frontend.header-block','data' => ['title' => $title]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('frontend.header-block'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($title)]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal885417cb62579f505f388b228557db34)): ?>
+<?php $attributes = $__attributesOriginal885417cb62579f505f388b228557db34; ?>
+<?php unset($__attributesOriginal885417cb62579f505f388b228557db34); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal885417cb62579f505f388b228557db34)): ?>
+<?php $component = $__componentOriginal885417cb62579f505f388b228557db34; ?>
+<?php unset($__componentOriginal885417cb62579f505f388b228557db34); ?>
+<?php endif; ?>
 
     <section class="mx-auto max-w-screen-xl bg-white p-6 text-gray-600 sm:p-20">
         <div class="grid grid-cols-1">
-            <p>Welcome to {{ app_name() }}!</p>
+            <p>Welcome to <?php echo e(app_name()); ?>!</p>
             <p>
-                {{ app_name() }} adalah layanan yang disediakan oleh {{ $company_name }}.
+                <?php echo e(app_name()); ?> adalah layanan yang disediakan oleh <?php echo e($company_name); ?>.
                 Layanan ini bertujuan untuk membantu brand dan bisnis melalui solusi digital, event, dan experiential marketing.
             </p>
             <p>
-                These terms and conditions outline the rules and regulations for the use of {{ $company_name }}'s
+                These terms and conditions outline the rules and regulations for the use of <?php echo e($company_name); ?>'s
                 Website, located at
-                <a href="{{ config("app.url") }}">{{ config("app.url") }}</a>
+                <a href="<?php echo e(config("app.url")); ?>"><?php echo e(config("app.url")); ?></a>
                 .
             </p>
             <p>
                 By accessing this website we assume you accept these terms and conditions. Do not continue to use
-                {{ app_name() }} if you do not agree to take all of the terms and conditions stated on this page.
+                <?php echo e(app_name()); ?> if you do not agree to take all of the terms and conditions stated on this page.
             </p>
             <p>
                 The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice
@@ -31,8 +50,8 @@
             </p>
             <h3 class="mb-2 mt-4 text-2xl">Cookies</h3>
             <p>
-                We employ the use of cookies. By accessing {{ app_name() }}, you agreed to use cookies in agreement
-                with the {{ $company_name }}'s Privacy Policy.
+                We employ the use of cookies. By accessing <?php echo e(app_name()); ?>, you agreed to use cookies in agreement
+                with the <?php echo e($company_name); ?>'s Privacy Policy.
             </p>
             <p>
                 Most interactive websites use cookies to let us retrieve the user's details for each visit. Cookies are
@@ -41,30 +60,31 @@
             </p>
             <h3 class="mb-2 mt-4 text-2xl">License</h3>
             <p>
-                Unless otherwise stated, {{ $company_name }} and/or its licensors own the intellectual property rights
-                for all material on {{ app_name() }}. All intellectual property rights are reserved. You may access
-                this from {{ app_name() }} for your own personal use subjected to restrictions set in these terms and
+                Unless otherwise stated, <?php echo e($company_name); ?> and/or its licensors own the intellectual property rights
+                for all material on <?php echo e(app_name()); ?>. All intellectual property rights are reserved. You may access
+                this from <?php echo e(app_name()); ?> for your own personal use subjected to restrictions set in these terms and
                 conditions.
             </p>
             <h3 class="mb-2 mt-4 text-2xl">You must not:</h3>
             <ul class="list-inside list-disc">
-                <li>Republish material from {{ app_name() }}</li>
-                <li>Sell, rent or sub-license material from {{ app_name() }}</li>
-                <li>Reproduce, duplicate or copy material from {{ app_name() }}</li>
-                <li>Redistribute content from {{ app_name() }}</li>
+                <li>Republish material from <?php echo e(app_name()); ?></li>
+                <li>Sell, rent or sub-license material from <?php echo e(app_name()); ?></li>
+                <li>Reproduce, duplicate or copy material from <?php echo e(app_name()); ?></li>
+                <li>Redistribute content from <?php echo e(app_name()); ?></li>
             </ul>
             <h3 class="mb-2 mt-4 text-2xl">This Agreement shall begin on the date hereof.</h3>
             <p>
                 Parts of this website offer an opportunity for users to post and exchange opinions and information in
-                certain areas of the website. {{ $company_name }} does not filter, edit, publish or review Comments
+                certain areas of the website. <?php echo e($company_name); ?> does not filter, edit, publish or review Comments
                 prior to their presence on the website. Comments do not reflect the views and opinions of
-                {{ $company_name }},its agents and/or affiliates. Comments reflect the views and opinions of the person
-                who post their views and opinions. To the extent permitted by applicable laws, {{ $company_name }}
+                <?php echo e($company_name); ?>,its agents and/or affiliates. Comments reflect the views and opinions of the person
+                who post their views and opinions. To the extent permitted by applicable laws, <?php echo e($company_name); ?>
+
                 shall not be liable for the Comments or for any liability, damages or expenses caused and/or suffered as
                 a result of any use of and/or posting of and/or appearance of the Comments on this website.
             </p>
             <p>
-                {{ $company_name }} reserves the right to monitor all Comments and to remove any Comments which can be
+                <?php echo e($company_name); ?> reserves the right to monitor all Comments and to remove any Comments which can be
                 considered inappropriate, offensive or causes breach of these Terms and Conditions.
             </p>
             <ul class="list-inside list-disc">
@@ -86,7 +106,7 @@
                 </li>
             </ul>
             <p>
-                You hereby grant {{ $company_name }} a non-exclusive license to use, reproduce, edit and authorize
+                You hereby grant <?php echo e($company_name); ?> a non-exclusive license to use, reproduce, edit and authorize
                 others to use, reproduce and edit any of your Comments in any and all forms, formats or media.
             </p>
 
@@ -126,7 +146,7 @@
                 We will approve link requests from these organizations if we decide that: (a) the link would not make us
                 look unfavorably to ourselves or to our accredited businesses; (b) the organization does not have any
                 negative records with us; (c) the benefit to us from the visibility of the hyperlink compensates the
-                absence of {{ $company_name }}; and (d) the link is in the context of general resource information.
+                absence of <?php echo e($company_name); ?>; and (d) the link is in the context of general resource information.
             </p>
             <p>
                 These organizations may link to our home page so long as the link: (a) is not in any way deceptive; (b)
@@ -135,7 +155,7 @@
             </p>
             <p>
                 If you are one of the organizations listed in paragraph 2 above and are interested in linking to our
-                website, you must inform us by sending an e-mail to {{ $company_name }}. Please include your name, your
+                website, you must inform us by sending an e-mail to <?php echo e($company_name); ?>. Please include your name, your
                 organization name, contact information as well as the URL of your site, a list of any URLs from which
                 you intend to link to our Website, and a list of the URLs on our site to which you would like to link.
                 Wait 2-3 weeks for a response.
@@ -151,7 +171,7 @@
             </ul>
             <p></p>
             <p>
-                No use of {{ $company_name }}'s logo or other artwork will be allowed for linking absent a trademark
+                No use of <?php echo e($company_name); ?>'s logo or other artwork will be allowed for linking absent a trademark
                 license agreement.
             </p>
 
@@ -213,3 +233,4 @@
         </div>
     </section>
 </div>
+<?php /**PATH C:\Users\Marcel\Music\3.digioh\resources\views/livewire/terms.blade.php ENDPATH**/ ?>

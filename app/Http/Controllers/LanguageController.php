@@ -33,10 +33,6 @@ class LanguageController extends Controller
 
         $localeLabel = config("app.available_locales.$language", strtoupper($language));
 
-        flash()
-            ->success(__('Language changed to').' '.$localeLabel)
-            ->important();
-
         return redirect()->back();
     }
 
