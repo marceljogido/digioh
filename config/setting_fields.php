@@ -26,6 +26,15 @@ return [
                 'value' => 'DigiOH adalah studio digital yang membantu brand tumbuh melalui solusi kreatif dan teknologi modern.', // default value if you want
             ],
             [
+                'type' => 'text',
+                'data' => 'text',
+                'name' => 'app_description_en',
+                'label' => 'App Description (English)',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => 'DigiOH is a digital studio that helps brands grow through creative solutions and modern technology.',
+            ],
+            [
                 'type' => 'text', // input fields type
                 'data' => 'string', // data type, string, int, boolean
                 'name' => 'footer_text', // unique name for field
@@ -466,6 +475,15 @@ return [
                 'data' => 'string',
                 'name' => 'contact_address',
                 'label' => 'Contact Address',
+                'rules' => 'nullable',
+                'class' => '',
+                'value' => '',
+            ],
+            [
+                'type' => 'textarea',
+                'data' => 'string',
+                'name' => 'contact_address_en',
+                'label' => 'Contact Address (English)',
                 'rules' => 'nullable',
                 'class' => '',
                 'value' => '',

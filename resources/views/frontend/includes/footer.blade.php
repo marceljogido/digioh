@@ -14,7 +14,7 @@
                     <img src="{{ asset('/img/DIGIOH_Main Logo_Flat Color White.svg') }}" alt="{{app_name() }}" class="h-10 w-auto" />
                 </a>
                 <p class="text-xs leading-relaxed text-white/70">
-                    {!! setting('meta_description') !!}
+                    {!! (app()->getLocale() == 'en' && setting('app_description_en')) ? setting('app_description_en') : setting('meta_description') !!}
                 </p>
                 <div class="space-y-2 text-sm text-white/85">
                     <div class="flex items-center gap-4">
@@ -27,7 +27,7 @@
                         <span class="mt-1 inline-flex h-10 w-10 shrink-0 aspect-square items-center justify-center rounded-full border border-white/20 bg-white/5 text-[#ffa630]">
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                         </span>
-                        <span class="leading-relaxed">{!! nl2br(e(setting('contact_address') ?? $defaultContactAddress)) !!}</span>
+                        <span class="leading-relaxed">{!! nl2br(e((app()->getLocale() == 'en' && setting('contact_address_en')) ? setting('contact_address_en') : (setting('contact_address') ?? $defaultContactAddress))) !!}</span>
                     </div>
                 </div>
                 <div class="pt-1">
@@ -53,7 +53,7 @@
             </div>
 
             <div class="space-y-3 text-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Kunjungi lokasi kami') }}</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">{{ __('Visit Our Location') }}</p>
                 @if(setting('footer_map_embed'))
                     <div class="footer-map overflow-hidden rounded-2xl border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
                         {!! setting('footer_map_embed') !!}
