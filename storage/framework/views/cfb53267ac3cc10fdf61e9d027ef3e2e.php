@@ -28,7 +28,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<section class="bg-gray-100 py-20 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+<section class="bg-gray-100 pt-28 pb-20 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
     <div class="container mx-auto flex flex-col items-center justify-center px-5">
         <div class="w-full text-center lg:w-2/3">
             <?php echo $sub_title; ?>
