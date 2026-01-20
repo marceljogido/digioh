@@ -509,60 +509,18 @@
                 @if($useMarquee)
                     <div class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-gray-900 dark:via-gray-900/80"></div>
                     <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-gray-900 dark:via-gray-900/80"></div>
-                    <div
-                        class="trusted-marquee"
-                        role="list"
-                        x-data="{
-                            isDown: false,
-                            startX: 0,
-                            scrollStart: 0,
-                            moved: false,
-                            startDrag(event) {
-                                this.isDown = true;
-                                this.moved = false;
-                                this.startX = this.pageX(event);
-                                this.scrollStart = this.$refs.logoTrack.scrollLeft;
-                            },
-                            drag(event) {
-                                if (!this.isDown) return;
-                                event.preventDefault();
-                                this.moved = true;
-                                const x = this.pageX(event);
-                                const walk = x - this.startX;
-                                this.$refs.logoTrack.scrollLeft = this.scrollStart - walk;
-                            },
-                            endDrag() {
-                                this.isDown = false;
-                                setTimeout(() => (this.moved = false), 60);
-                            },
-                            pageX(event) {
-                                if (event.touches && event.touches.length) {
-                                    return event.touches[0].pageX;
-                                }
-                                return event.pageX;
-                            }
-                        }"
-                        x-ref="logoTrack"
-                        @mousedown.prevent="startDrag($event)"
-                        @touchstart.prevent="startDrag($event)"
-                        @mouseleave="endDrag()"
-                        @mouseup.window="endDrag()"
-                        @touchend.window="endDrag()"
-                        @mousemove="drag($event)"
-                        @touchmove="drag($event)"
-                    >
+                    <div class="trusted-marquee">
+                        {{-- First Loop --}}
                         @foreach($marqueeLogos as $logo)
-                            <div class="trusted-marquee-item" role="listitem">
+                            <div class="trusted-marquee-item">
                                 @if($logo->website_url)
                                     <a
                                         href="{{ $logo->website_url }}"
                                         target="_blank"
                                         rel="nofollow noopener"
                                         title="{{ $logo->client_name }}"
-                                        draggable="false"
-                                        @click="if(moved){ $event.preventDefault(); }"
                                     >
-                                        <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}" draggable="false">
+                                        <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}">
                                     </a>
                                 @else
                                     <img
@@ -570,8 +528,29 @@
                                         src="{{ asset($logo->logo) }}"
                                         alt="{{ $logo->client_name }}"
                                         title="{{ $logo->client_name }}"
-                                        draggable="false"
-                                        @click="if(moved){ $event.preventDefault(); }"
+                                    >
+                                @endif
+                            </div>
+                        @endforeach
+
+                        {{-- Duplicate Loop for Seamless Infinite Scroll --}}
+                        @foreach($marqueeLogos as $logo)
+                            <div class="trusted-marquee-item">
+                                @if($logo->website_url)
+                                    <a
+                                        href="{{ $logo->website_url }}"
+                                        target="_blank"
+                                        rel="nofollow noopener"
+                                        title="{{ $logo->client_name }}"
+                                    >
+                                        <img loading="lazy" src="{{ asset($logo->logo) }}" alt="{{ $logo->client_name }}">
+                                    </a>
+                                @else
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset($logo->logo) }}"
+                                        alt="{{ $logo->client_name }}"
+                                        title="{{ $logo->client_name }}"
                                     >
                                 @endif
                             </div>

@@ -10,7 +10,7 @@ class Terms extends Component
 {
     public function render()
     {
-        $title = 'Terms and Conditions';
+        $title = app()->getLocale() === 'id' ? 'Syarat dan Ketentuan' : 'Terms and Conditions';
         $company_name = app_name();
         $app_email = setting('email');
 
