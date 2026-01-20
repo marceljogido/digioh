@@ -175,6 +175,32 @@
 @push('after-scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Auto-generate Slug
+    const nameIdField = document.getElementById('name_id');
+    const slugField = document.getElementById('slug');
+
+    if (nameIdField && slugField) {
+        let isSlugManuallyEdited = false;
+
+        slugField.addEventListener('input', () => {
+             if (slugField.value.trim() !== '') {
+                isSlugManuallyEdited = true;
+             }
+        });
+
+        nameIdField.addEventListener('input', function() {
+            if (!isSlugManuallyEdited) {
+                const slug = this.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+                    .replace(/\s+/g, '-') // collapse whitespace and replace by -
+                    .replace(/-+/g, '-'); // collapse dashes
+
+                slugField.value = slug;
+            }
+        });
+    }
+
     const translateBtn = document.getElementById('autoTranslateServiceBtn');
     if (!translateBtn) return;
 
