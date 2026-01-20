@@ -4,6 +4,8 @@
     {{ $service->name }}
 @endsection
 
+@section("meta_description", Str::limit(strip_tags($service->description), 160))
+
 @section("content")
     {{-- Hero Section with Full-Width Image --}}
     <section class="relative min-h-[60vh] overflow-hidden">

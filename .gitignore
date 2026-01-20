@@ -17,6 +17,13 @@ yarn-error.log
 /.fleet
 /.vscode
 *.cache
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+!/storage/framework/views/.gitignore
+!/storage/logs/.gitignore
 
 
 

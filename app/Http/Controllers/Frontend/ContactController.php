@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactFormSubmitted;
+use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
@@ -30,6 +33,16 @@ class ContactController extends Controller
             'ip' => $request->ip(),
             'hp' => '',
         ]);
+
+        // Send Email Notification
+        try {
+            $recruitEmail = setting('contact_email') ?? config('mail.from.address');
+            if ($recruitEmail) {
+                Mail::to($recruitEmail)->send(new ContactFormSubmitted($validated));
+            }
+        } catch (\Exception $e) {
+            Log::error('Contact Form Email Failed: ' . $e->getMessage());
+        }
 
         return back()->with('flash_success', 'Pesan berhasil dikirim. Terima kasih!');
 	}

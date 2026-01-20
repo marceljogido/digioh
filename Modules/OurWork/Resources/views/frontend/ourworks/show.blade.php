@@ -2,6 +2,8 @@
 
 @section('title') {{$$module_name_singular->name}} - {{ __($module_title) }} @endsection
 
+@section('meta_description', Str::limit(strip_tags($$module_name_singular->description), 160))
+
 @section('content')
 
 <section class="bg-gray-100 text-gray-600 py-10 sm:py-20">
