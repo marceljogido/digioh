@@ -1,1 +1,0 @@
-<?php\nvar_dump(App\\Models\\Service::first()->toArray());\nexit;\n
