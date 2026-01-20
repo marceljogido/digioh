@@ -28,7 +28,7 @@
     <section class="bg-white py-16">
         <div class="mx-auto max-w-screen-xl px-4 sm:px-12">
             @if($services->count())
-                <div class="space-y-16 lg:space-y-24">
+                <div class="space-y-10 lg:space-y-12">
                     @foreach($services as $index => $service)
                         @php
                             $isEven = $index % 2 === 0;
@@ -103,7 +103,7 @@
                                         @endif
                                     </div>
                                     <a href="{{ route('contact') }}" class="inline-flex items-center rounded-lg bg-[#11224e] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[#1a3366]">
-                                        {{ __('Get Quote') }}
+                                        {{ __('Hubungi Kami') }}
                                     </a>
                                 </div>
                             </div>
