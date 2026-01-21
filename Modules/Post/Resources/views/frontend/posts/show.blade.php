@@ -158,9 +158,6 @@
             </div>
         </div>
         <div class="fixed inset-0 z-50 hidden bg-[#0b132f]/90 backdrop-blur" data-hero-lightbox="{{ $sliderId }}">
-            <button type="button" class="absolute right-6 top-6 rounded-full bg-white/80 p-3 text-[#11224e]" data-lightbox-close>
-                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
             <div class="absolute inset-0 flex items-center justify-center gap-6 px-6">
                 <button type="button" class="rounded-full bg-white/80 p-3 text-[#11224e] shadow hover:bg-white" data-lightbox-prev>
                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
@@ -186,16 +183,16 @@
                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
                 </button>
             </div>
+            <button type="button" class="absolute right-6 top-6 z-50 rounded-full bg-white/80 p-3 text-[#11224e] hover:bg-white transition" data-lightbox-close>
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
         </div>
     </section>
 
     <section class="bg-[#f4f6fb] px-4 py-16 sm:px-6">
         <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)]">
             <div class="space-y-4 text-[#11224e]">
-                <div class="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#ffa630]">
-                    <span>{{ __('Cerita inti') }}</span>
-                    <span>1</span>
-                </div>
+
                 <div class="prose max-w-none text-[#11224e]/90 prose-headings:text-[#11224e] prose-a:text-[#5c83c4]">
                     {!! $$module_name_singular->content !!}
                 </div>
@@ -212,10 +209,7 @@
             </div>
 
             <div class="rounded-[20px] border border-[#ffa630]/30 bg-white p-6 shadow-sm shadow-[#ffa630]/20 text-[#11224e]">
-                <div class="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-[#ffa630]">
-                    <span>{{ __('Info proyek') }}</span>
-                    <span>2</span>
-                </div>
+
                 <div class="space-y-4 text-sm">
                     <div>
                         <p class="text-xs uppercase tracking-wide text-[#5c83c4]">{{ __('Status publikasi') }}</p>

@@ -53,55 +53,79 @@
         </div>
     @endforeach
 
-    {{-- Features List --}}
-    <div class="col-12">
-        <label class="form-label" for="features">{{ __('Features') }}</label>
-        <?php
-            $existingFeatures = old('features', $service?->features ?? []);
-            $featuresText = is_array($existingFeatures) ? implode("\n", $existingFeatures) : ($existingFeatures ?? '');
-        ?>
-        <textarea
-            class="form-control"
-            name="features"
-            id="features"
-            rows="6"
-            placeholder="Professional Equipment, On-site Setup & Support, 24/7 Technical Assistance"
-        >{{ $featuresText }}</textarea>
-        <small class="text-muted">{{ __('Masukkan satu fitur per baris. Fitur akan ditampilkan dengan icon checklist.') }}</small>
-    </div>
+    @foreach($locales as $locale)
+        @php($label = strtoupper($locale))
+        <div class="col-12 col-md-6">
+            <label class="form-label" for="button_text_{{ $locale }}">
+                {{ __('Button Text') }} ({{ $label }})
+            </label>
+            <input
+                type="text"
+                class="form-control"
+                name="button_text[{{ $locale }}]"
+                id="button_text_{{ $locale }}"
+                value="{{ old("button_text.$locale", $service?->getTranslation('button_text', $locale, false)) }}"
+                placeholder="{{ __('Hubungi Kami') }}"
+            >
+            <small class="text-muted">{{ __('Teks tombol CTA. Kosongkan untuk default "Hubungi Kami".') }}</small>
+        </div>
+    @endforeach
 
-    {{-- Price Fields --}}
-    <div class="col-12 col-md-6">
-        <label class="form-label" for="price">{{ __('Price') }}</label>
-        <input 
-            type="text" 
-            name="price" 
-            id="price" 
-            value="{{ old('price', $service->price ?? '') }}" 
-            class="form-control"
-            placeholder="Starting at $1,800"
-        >
-        <small class="text-muted">{{ __('Contoh: "Starting at $1,800" atau "Custom Quote"') }}</small>
-    </div>
+    @foreach($locales as $locale)
+        @php($label = strtoupper($locale))
+        <div class="col-12">
+            <label class="form-label" for="features_{{ $locale }}">
+                {{ __('Features') }} ({{ $label }})
+            </label>
+            <textarea
+                class="form-control"
+                name="features[{{ $locale }}]"
+                id="features_{{ $locale }}"
+                rows="6"
+                placeholder="Professional Equipment..."
+            >{{ is_array($val = old("features.$locale", $service?->getTranslation('features', $locale, false))) ? implode("\n", $val) : $val }}</textarea>
+            <small class="text-muted">{{ __('Masukkan satu fitur per baris / Enter one feature per line.') }}</small>
+        </div>
+    @endforeach
 
-    <div class="col-12 col-md-6">
-        <label class="form-label" for="price_note">{{ __('Price Note') }}</label>
-        <input 
-            type="text" 
-            name="price_note" 
-            id="price_note" 
-            value="{{ old('price_note', $service->price_note ?? '') }}" 
-            class="form-control"
-            placeholder="Professional setup included"
-        >
-        <small class="text-muted">{{ __('Catatan tambahan di bawah harga') }}</small>
-    </div>
+    @foreach($locales as $locale)
+        @php($label = strtoupper($locale))
+        <div class="col-12 col-md-6">
+            <label class="form-label" for="price_{{ $locale }}">
+                {{ __('Price') }} ({{ $label }})
+            </label>
+            <input 
+                type="text" 
+                name="price[{{ $locale }}]" 
+                id="price_{{ $locale }}" 
+                value="{{ old("price.$locale", $service?->getTranslation('price', $locale, false)) }}" 
+                class="form-control"
+                placeholder="Starting at $1,800"
+            >
+            <small class="text-muted">{{ __('Contoh: "Starting at $1,800"') }}</small>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <label class="form-label" for="price_note_{{ $locale }}">
+                {{ __('Price Note') }} ({{ $label }})
+            </label>
+            <input 
+                type="text" 
+                name="price_note[{{ $locale }}]" 
+                id="price_note_{{ $locale }}" 
+                value="{{ old("price_note.$locale", $service?->getTranslation('price_note', $locale, false)) }}" 
+                class="form-control"
+                placeholder="Professional setup included"
+            >
+            <small class="text-muted">{{ __('Catatan tambahan di bawah harga') }}</small>
+        </div>
+    @endforeach
 
     <div class="col-12 col-lg-6">
-        <label class="form-label" for="image">{{ __('Image') }}</label>
+        <label class="form-label" for="image">{{ __('Main Image') }}</label>
         <input class="form-control" type="file" name="image" id="image" accept=".jpg,.jpeg,.png,.gif,.webp">
         <small class="text-muted d-block mt-1">
-            {{ __('Unggah gambar maksimal 2 MB (JPG, JPEG, PNG, GIF, atau WEBP). Disarankan ukuran 1200x800 piksel untuk tampilan optimal.') }}
+            {{ __('Unggah gambar maksimal 2 MB. Disarankan ukuran 1200x800 piksel.') }}
         </small>
         @if($isEdit && !empty($service->image))
             <div class="mt-2">
@@ -109,6 +133,46 @@
             </div>
         @endif
     </div>
+
+    <!-- Gallery Upload -->
+    <div class="col-12">
+        <label class="form-label" for="gallery_images">{{ __('Gallery Images') }}</label>
+        <input class="form-control" type="file" name="gallery_images[]" id="gallery_images" accept=".jpg,.jpeg,.png,.gif,.webp" multiple>
+        <small class="text-muted d-block mt-1">
+            {{ __('Unggah beberapa foto sekaligus untuk galeri layanan ini.') }}
+        </small>
+        
+        @if($isEdit && !empty($service->gallery_images))
+            <div class="mt-3">
+                <label class="form-label d-block text-muted small">{{ __('Galeri Saat Ini (Centang untuk menghapus)') }}</label>
+                <div class="d-flex flex-wrap gap-3">
+                    @foreach($service->gallery_images as $gPath)
+                        <div class="border rounded p-2 text-center" style="width: 120px;">
+                            <img src="{{ asset($gPath) }}" class="img-fluid rounded mb-2" style="height: 80px; object-fit: cover;">
+                            <div class="form-check justify-content-center d-flex">
+                                <input class="form-check-input" type="checkbox" name="remove_gallery[]" value="{{ $gPath }}" id="del_{{ md5($gPath) }}">
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </div>
+
+    <!-- Video Section -->
+    <div class="col-12 col-md-6">
+        <label class="form-label" for="video_url">{{ __('Video URL (YouTube/Vimeo/Google Drive)') }}</label>
+        <input 
+            type="url" 
+            name="video_url" 
+            id="video_url" 
+            value="{{ old('video_url', $service->video_url ?? '') }}" 
+            class="form-control"
+            placeholder="https://drive.google.com/file/d/..."
+        >
+        <small class="text-muted">{{ __('Masukkan link YouTube, Vimeo, atau Google Drive (Viewer link).') }}</small>
+    </div>
+
 
     <div class="col-6 col-md-3">
         <label class="form-label" for="sort_order">{{ __('Sort Order') }}</label>

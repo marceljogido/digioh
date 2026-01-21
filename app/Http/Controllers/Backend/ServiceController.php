@@ -59,7 +59,11 @@ class ServiceController extends Controller
     {
         $translationRules = array_merge(
             $this->translatableRules('name', true, 191),
-            $this->translatableRules('description', false)
+            $this->translatableRules('description', false),
+            $this->translatableRules('button_text', false, 50),
+            $this->translatableRules('features', false), 
+            $this->translatableRules('price', false, 100),
+            $this->translatableRules('price_note', false, 255)
         );
 
         $data = $request->validate($translationRules + [
@@ -68,16 +72,22 @@ class ServiceController extends Controller
             'status' => ['required', Rule::enum(ServiceStatus::class)],
             'featured_on_home' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
-            'features' => 'nullable|string',
-            'price' => 'nullable|string|max:100',
-            'price_note' => 'nullable|string|max:255',
+            'video_url' => 'nullable|url|max:255',
+            'gallery_images.*' => 'image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+            'remove_gallery' => 'nullable|array',
         ]);
 
         $imageFile = $data['image'] ?? null;
-        unset($data['image']);
+        $imageFile = $data['image'] ?? null;
+        $galleryFiles = $request->file('gallery_images');
+        
+        unset($data['image'], $data['video_path'], $data['gallery_images'], $data['remove_gallery']);
 
         $data['name'] = normalize_translations($request->input('name', []));
         $data['description'] = normalize_translations($request->input('description', []), allowEmpty: true);
+        $data['button_text'] = normalize_translations($request->input('button_text', []), allowEmpty: true);
+        $data['price'] = normalize_translations($request->input('price', []), allowEmpty: true);
+        $data['price_note'] = normalize_translations($request->input('price_note', []), allowEmpty: true);
         $data['featured_on_home'] = $request->boolean('featured_on_home');
         $data['status'] = $data['status'] ?? ServiceStatus::Draft->value;
         $data['is_active'] = $data['status'] === ServiceStatus::Published->value;
@@ -85,23 +95,30 @@ class ServiceController extends Controller
             ? $data['slug']
             : Str::slug($this->primaryTranslation($data['name']));
 
-        // Process features - convert text (one per line OR comma-separated) to array
-        if (isset($data['features']) && is_string($data['features'])) {
-            // First split by newlines, then by commas
-            $lines = preg_split('/\r\n|\r|\n/', $data['features']);
-            $features = [];
+        // Process features input (Textarea per locale) -> Array
+        $featuresInput = $request->input('features', []);
+        $processedFeatures = [];
+        foreach (available_locales() as $locale) {
+            $raw = $featuresInput[$locale] ?? '';
+            if (empty($raw)) continue;
+            
+            $lines = preg_split('/\r\n|\r|\n/', $raw);
+            $cleanLines = [];
             foreach ($lines as $line) {
-                // Split each line by comma too
-                $parts = explode(',', $line);
-                foreach ($parts as $part) {
-                    $trimmed = trim($part);
-                    if ($trimmed !== '') {
-                        $features[] = $trimmed;
-                    }
+                // Split each line by comma too is removed to support simpler text based list. 
+                // Wait, I should keep it for safety in case they paste comma separated? 
+                // The previous legacy logic did. But "One per line" is the instruction.
+                // Let's stick to newline for cleanliness.
+                $trimmed = trim($line);
+                if ($trimmed !== '') {
+                    $cleanLines[] = $trimmed;
                 }
             }
-            $data['features'] = array_values($features);
+            if (!empty($cleanLines)) {
+                $processedFeatures[$locale] = array_values($cleanLines);
+            }
         }
+        $data['features'] = $processedFeatures;
 
         if ($data['featured_on_home']) {
             $featuredCount = Service::where('featured_on_home', true)->count();
@@ -116,6 +133,54 @@ class ServiceController extends Controller
             $path = $imageFile->store('uploads/services', 'public');
             $data['image'] = Storage::url($path);
         }
+
+
+
+        // Handle Gallery Uploads
+        $galleryPaths = [];
+        if ($galleryFiles && is_array($galleryFiles)) {
+            foreach ($galleryFiles as $gFile) {
+                if ($gFile) {
+                    $path = $gFile->store('uploads/services/gallery', 'public');
+                    $galleryPaths[] = Storage::url($path);
+                }
+            }
+        }
+        $data['gallery_images'] = $galleryPaths;
+
+        if ($videoFile) {
+            $path = $videoFile->store('uploads/services/videos', 'public');
+            $data['video_path'] = Storage::url($path);
+        }
+
+        // Handle Gallery Uploads
+        $galleryPaths = [];
+        if ($galleryFiles && is_array($galleryFiles)) {
+            foreach ($galleryFiles as $gFile) {
+                if ($gFile) {
+                    $path = $gFile->store('uploads/services/gallery', 'public');
+                    $galleryPaths[] = Storage::url($path);
+                }
+            }
+        }
+        $data['gallery_images'] = $galleryPaths;
+
+        if ($videoFile) {
+            $path = $videoFile->store('uploads/services/videos', 'public');
+            $data['video_path'] = Storage::url($path);
+        }
+
+        // Handle Gallery Uploads
+        $galleryPaths = [];
+        if ($galleryFiles && is_array($galleryFiles)) {
+            foreach ($galleryFiles as $gFile) {
+                if ($gFile) {
+                    $path = $gFile->store('uploads/services/gallery', 'public');
+                    $galleryPaths[] = Storage::url($path);
+                }
+            }
+        }
+        $data['gallery_images'] = $galleryPaths; // For new create, simply set the array
 
         Service::create($data);
 
@@ -165,7 +230,11 @@ class ServiceController extends Controller
     {
         $translationRules = array_merge(
             $this->translatableRules('name', true, 191),
-            $this->translatableRules('description', false)
+            $this->translatableRules('description', false),
+            $this->translatableRules('button_text', false, 50),
+            $this->translatableRules('features', false),
+            $this->translatableRules('price', false, 100),
+            $this->translatableRules('price_note', false, 255)
         );
 
         $data = $request->validate($translationRules + [
@@ -174,16 +243,22 @@ class ServiceController extends Controller
             'status' => ['required', Rule::enum(ServiceStatus::class)],
             'featured_on_home' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
-            'features' => 'nullable|string',
-            'price' => 'nullable|string|max:100',
-            'price_note' => 'nullable|string|max:255',
+            'video_url' => 'nullable|url|max:255',
+            'gallery_images.*' => 'image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+            'remove_gallery' => 'nullable|array',
         ]);
 
         $imageFile = $data['image'] ?? null;
-        unset($data['image']);
+        $galleryFiles = $request->file('gallery_images');
+        $removeGallery = $request->input('remove_gallery', []);
+        
+        unset($data['image'], $data['gallery_images'], $data['remove_gallery']);
 
         $data['name'] = normalize_translations($request->input('name', []));
         $data['description'] = normalize_translations($request->input('description', []), allowEmpty: true);
+        $data['button_text'] = normalize_translations($request->input('button_text', []), allowEmpty: true);
+        $data['price'] = normalize_translations($request->input('price', []), allowEmpty: true);
+        $data['price_note'] = normalize_translations($request->input('price_note', []), allowEmpty: true);
         $data['featured_on_home'] = $request->boolean('featured_on_home');
         $data['status'] = $data['status'] ?? ServiceStatus::Draft->value;
         $data['is_active'] = $data['status'] === ServiceStatus::Published->value;
@@ -191,23 +266,26 @@ class ServiceController extends Controller
             ? $data['slug']
             : Str::slug($this->primaryTranslation($data['name']));
 
-        // Process features - convert text (one per line OR comma-separated) to array
-        if (isset($data['features']) && is_string($data['features'])) {
-            // First split by newlines, then by commas
-            $lines = preg_split('/\r\n|\r|\n/', $data['features']);
-            $features = [];
+        // Process features input (Textarea per locale) -> Array
+        $featuresInput = $request->input('features', []);
+        $processedFeatures = [];
+        foreach (available_locales() as $locale) {
+            $raw = $featuresInput[$locale] ?? '';
+            if (empty($raw)) continue;
+            
+            $lines = preg_split('/\r\n|\r|\n/', $raw);
+            $cleanLines = [];
             foreach ($lines as $line) {
-                // Split each line by comma too
-                $parts = explode(',', $line);
-                foreach ($parts as $part) {
-                    $trimmed = trim($part);
-                    if ($trimmed !== '') {
-                        $features[] = $trimmed;
-                    }
+                $trimmed = trim($line);
+                if ($trimmed !== '') {
+                    $cleanLines[] = $trimmed;
                 }
             }
-            $data['features'] = array_values($features);
+            if (!empty($cleanLines)) {
+                $processedFeatures[$locale] = array_values($cleanLines);
+            }
         }
+        $data['features'] = $processedFeatures;
 
         if ($data['featured_on_home']) {
             $featuredCount = Service::where('featured_on_home', true)
@@ -229,6 +307,28 @@ class ServiceController extends Controller
             $path = $imageFile->store('uploads/services', 'public');
             $data['image'] = Storage::url($path);
         }
+
+
+
+        // Handle Gallery
+        $currentGallery = $service->gallery_images ?? [];
+        
+        // Remove deleted items
+        if (!empty($removeGallery)) {
+            $currentGallery = array_diff($currentGallery, $removeGallery);
+        }
+
+        // Add new items
+        if ($galleryFiles && is_array($galleryFiles)) {
+            foreach ($galleryFiles as $gFile) {
+                if ($gFile) {
+                    $path = $gFile->store('uploads/services/gallery', 'public');
+                    $currentGallery[] = Storage::url($path);
+                }
+            }
+        }
+        
+        $data['gallery_images'] = array_values($currentGallery);
 
         $service->update($data);
 

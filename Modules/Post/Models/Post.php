@@ -180,6 +180,17 @@ class Post extends BaseModel
                 $provider = 'vimeo';
                 $embedUrl = 'https://player.vimeo.com/video/'.$videoId;
             }
+        } elseif (Str::contains($raw, 'drive.google.com')) {
+             $provider = 'google_drive';
+             // Convert /view to /preview for embedding
+             if (Str::contains($raw, '/view')) {
+                 $embedUrl = str_replace('/view', '/preview', $raw);
+             } elseif (!Str::contains($raw, '/preview')) {
+                 // Try to append /preview if it looks like a file link
+                 if (preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $raw)) {
+                      $embedUrl = rtrim($raw, '/') . '/preview';
+                 }
+             }
         } elseif (Str::endsWith(Str::lower($raw), ['.mp4', '.webm', '.ogg'])) {
             $provider = 'file';
             $embedUrl = $raw;

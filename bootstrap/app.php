@@ -26,5 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
             Request::HEADER_X_FORWARDED_AWS_ELB);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $e, Request $request) {
+            return back()->withErrors([
+                'file' => __('Ukuran file terlalu besar. Harap upload file yang lebih kecil atau hubungi admin untuk menaikkan limit server.'),
+            ])->withInput();
+        });
     })->create();

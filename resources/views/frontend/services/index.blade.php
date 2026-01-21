@@ -32,13 +32,16 @@
                     @foreach($services as $index => $service)
                         @php
                             $isEven = $index % 2 === 0;
-                            $features = $service->features ?? [];
+                            $features = $service->features;
+                            if (!is_array($features)) {
+                                $features = [];
+                            }
                         @endphp
                         
                         <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-16" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                             {{-- Image/Placeholder - Order changes based on index --}}
                             <div class="{{ $isEven ? 'lg:order-1' : 'lg:order-2' }}">
-                                <div class="aspect-[4/3] overflow-hidden rounded-[24px] bg-gradient-to-br from-slate-100 to-slate-50 shadow-lg">
+                                <a href="{{ route('frontend.services.show', $service->slug) }}" class="aspect-[4/3] block overflow-hidden rounded-[24px] bg-gradient-to-br from-slate-100 to-slate-50 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
                                     @if($service->image)
                                         <img src="{{ asset($service->image) }}" alt="{{ $service->name }}" class="h-full w-full object-cover">
                                     @else
@@ -52,7 +55,7 @@
                                             @endif
                                         </div>
                                     @endif
-                                </div>
+                                </a>
                             </div>
 
                             {{-- Content --}}
@@ -65,7 +68,9 @@
                                         </div>
                                     @endif
                                     <h2 class="text-2xl font-bold uppercase tracking-wide text-[#11224e]">
-                                        {{ $service->name }}
+                                        <a href="{{ route('frontend.services.show', $service->slug) }}" class="transition hover:text-[#5c83c4]">
+                                            {{ $service->name }}
+                                        </a>
                                     </h2>
                                 </div>
 
@@ -103,7 +108,7 @@
                                         @endif
                                     </div>
                                     <a href="{{ route('contact') }}" class="inline-flex items-center rounded-lg bg-[#11224e] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[#1a3366]">
-                                        {{ __('Hubungi Kami') }}
+                                        {{ $service->button_text ?: __('Hubungi Kami') }}
                                     </a>
                                 </div>
                             </div>
