@@ -30,7 +30,7 @@
     "Are you sure you want to delete this statistic?": "Apakah Anda yakin ingin menghapus statistik ini?",
     "Are you sure?": "Apakah Anda yakin?",
     "At": "Pada",
-    "Auto Translate ID → EN": "Terjemahkan Otomatis ID → EN",
+    "Auto Translate ID \u00e2\u2020\u2019 EN": "Terjemahkan Otomatis ID \u00e2\u2020\u2019 EN",
     "Back": "Kembali",
     "Back to List": "Kembali ke Daftar",
     "Back to Settings": "Kembali ke Pengaturan",
@@ -400,5 +400,6 @@
     "Why Choose Us": "Mengapa Memilih Kami",
     "Wujudkan event impian Anda bersama kami": "Wujudkan event impian Anda bersama kami",
     "Yes": "Ya",
-    "You have :count notifications": "Anda memiliki :count notifikasi"
+    "You have :count notifications": "Anda memiliki :count notifikasi",
+    "Lokasi kantor": "Lokasi Kantor"
 }

@@ -32,7 +32,7 @@
     "Are you sure?": "Are you sure?",
     "Area layanan": "Service area",
     "At": "At",
-    "Auto Translate ID → EN": "Auto Translate ID → EN",
+    "Auto Translate ID \u00e2\u2020\u2019 EN": "Auto Translate ID \u00e2\u2020\u2019 EN",
     "Ayo mulai": "Get started",
     "Back": "Back",
     "Back to List": "Back to List",
@@ -161,7 +161,7 @@
     "Info proyek": "Project info",
     "Instagram": "Instagram",
     "Intro": "Intro",
-    "Isi formulir atau hubungi kami — tim kami akan merespons dalam 1-2 hari kerja.": "Fill the form or contact us — our team will respond within 1–2 business days.",
+    "Isi formulir atau hubungi kami \u00e2\u20ac\u201d tim kami akan merespons dalam 1-2 hari kerja.": "Fill the form or contact us \u00e2\u20ac\u201d our team will respond within 1\u00e2\u20ac\u201c2 business days.",
     "Jabatan": "Position",
     "Januari": "January",
     "Jelajahi Ourwork": "Explore Our Work",
@@ -325,7 +325,7 @@
     "Reset Filter": "Reset Filter",
     "Restore": "Restore",
     "Return back": "Return back",
-    "Ringkas saja — ceritakan tujuan dan kebutuhan utama Anda.": "Keep it brief — tell us your goals and primary needs.",
+    "Ringkas saja \u00e2\u20ac\u201d ceritakan tujuan dan kebutuhan utama Anda.": "Keep it brief \u00e2\u20ac\u201d tell us your goals and primary needs.",
     "Ringkasan": "Summary",
     "Roles": "Roles",
     "roles": "roles",
@@ -433,5 +433,6 @@
     "Wujudkan event impian Anda bersama kami": "Make your dream event come true with us",
     "Yes": "Yes",
     "You have :count notifications": "You have :count notifications",
-    "DEBUG_TEST_KEY": "SUCCESS_LOADED"
+    "DEBUG_TEST_KEY": "SUCCESS_LOADED",
+    "Lokasi kantor": "Office Location"
 }

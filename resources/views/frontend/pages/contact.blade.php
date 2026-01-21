@@ -81,7 +81,7 @@
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21c4.243 0 7.5-3.134 7.5-7.5S16.243 6 12 6 4.5 9.134 4.5 13.5 7.757 21 12 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 11.25a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z"/></svg>
                         </span>
                         <div class="space-y-1">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-[#11224e]/60">{{ __('Lokasi studio') }}</p>
+                            <p class="text-xs font-semibold uppercase tracking-wide text-[#11224e]/60">{{ __('Lokasi kantor') }}</p>
                             <p class="text-sm font-semibold leading-relaxed text-[#11224e]">
                                 {{ $mapAddress }}
                             </p>
