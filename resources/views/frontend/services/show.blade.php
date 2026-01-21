@@ -76,40 +76,50 @@
                     </div>
                 @endif
 
-                {{-- Features as Tags --}}
+                {{-- 1. Keunggulan / Highlights Row (Features) --}}
                 @if(!empty($service->features) && is_array($service->features))
-                    <div class="flex flex-wrap gap-2">
+                    <div class="mb-6 flex flex-wrap gap-3">
                         @foreach($service->features as $feature)
-                             <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide text-white">{{ $feature }}</span>
+                            <div class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 py-2 backdrop-blur-sm transition hover:bg-white/10">
+                                <span class="text-sm font-bold text-white">
+                                    {{ $feature }}
+                                </span>
+                            </div>
                         @endforeach
                     </div>
                 @endif
 
-                {{-- Grid Info (Replacements for Period/Location) --}}
-                <div class="grid gap-4 text-sm text-white/80 sm:grid-cols-2">
-                    {{-- Box 1: Category/Price --}}
-                    <div class="rounded-2xl border border-white/20 bg-white/5 p-4">
-                        <p class="text-xs uppercase tracking-wide text-white/60">{{ __('Kategori') }}</p>
-                        <p class="text-lg font-semibold text-white">
-                            {{ $service->category ?? 'General' }}
-                        </p>
+                {{-- 2. Main Stats Row (Projects / Satisfaction / Status) --}}
+                <div class="flex flex-wrap gap-4">
+                    {{-- Proyek Count --}}
+                    <div class="flex min-w-[140px] flex-col items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 px-6 py-5 backdrop-blur-md transition hover:bg-white/15">
+                        <span class="text-center text-lg font-bold leading-tight text-[#ffa630]">
+                            {{ $service->posts->count() }}+
+                        </span>
+                        <span class="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
+                            {{ __('Project') }}
+                        </span>
                     </div>
-                    
-                    {{-- Box 2: Price or CTA --}}
-                    @if($service->price)
-                        <div class="rounded-2xl border border-white/20 bg-white/5 p-4">
-                            <p class="text-xs uppercase tracking-wide text-white/60">{{ __('Mulai Dari') }}</p>
-                            <p class="text-lg font-semibold text-white">{{ $service->price }}</p>
-                             @if($service->price_note)
-                                <p class="text-xs text-white/50">{{ $service->price_note }}</p>
-                            @endif
-                        </div>
-                    @else
-                         <div class="rounded-2xl border border-white/20 bg-white/5 p-4">
-                            <p class="text-xs uppercase tracking-wide text-white/60">{{ __('Status') }}</p>
-                            <p class="text-lg font-semibold text-white">{{ __('Tersedia') }}</p>
-                        </div>
-                    @endif
+
+                    {{-- Satisfaction (Static 100%) --}}
+                    <div class="flex min-w-[140px] flex-col items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 px-6 py-5 backdrop-blur-md transition hover:bg-white/15">
+                        <span class="text-center text-lg font-bold leading-tight text-[#5c83c4]">
+                            100%
+                        </span>
+                        <span class="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
+                            {{ __('Satisfaction') }}
+                        </span>
+                    </div>
+
+                    {{-- Status (Available) --}}
+                    <div class="flex min-w-[140px] flex-col items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 px-6 py-5 backdrop-blur-md transition hover:bg-white/15">
+                        <span class="text-center text-lg font-bold leading-tight text-[#ffa630]">
+                            {{ __('Available') }}
+                        </span>
+                        <span class="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
+                            {{ __('Status') }}
+                        </span>
+                    </div>
                 </div>
             </div>
 

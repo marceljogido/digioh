@@ -434,5 +434,10 @@
     "Yes": "Yes",
     "You have :count notifications": "You have :count notifications",
     "DEBUG_TEST_KEY": "SUCCESS_LOADED",
-    "Lokasi kantor": "Office Location"
+    "Lokasi kantor": "Office Location",
+    "Service Detail": "Service Detail",
+    "Mulai Dari": "Starting From",
+    "Tersedia": "Available",
+    "Feature": "Highlight",
+    "Project": "Project"
 }
