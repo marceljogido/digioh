@@ -90,37 +90,7 @@
                 @endif
 
                 {{-- 2. Main Stats Row (Projects / Satisfaction / Status) --}}
-                <div class="flex flex-wrap gap-4">
-                    {{-- Proyek Count --}}
-                    <div class="flex min-w-[140px] flex-col items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 px-6 py-5 backdrop-blur-md transition hover:bg-white/15">
-                        <span class="text-center text-lg font-bold leading-tight text-[#ffa630]">
-                            {{ $service->posts->count() }}+
-                        </span>
-                        <span class="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
-                            {{ __('Project') }}
-                        </span>
-                    </div>
 
-                    {{-- Satisfaction (Static 100%) --}}
-                    <div class="flex min-w-[140px] flex-col items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 px-6 py-5 backdrop-blur-md transition hover:bg-white/15">
-                        <span class="text-center text-lg font-bold leading-tight text-[#5c83c4]">
-                            100%
-                        </span>
-                        <span class="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
-                            {{ __('Satisfaction') }}
-                        </span>
-                    </div>
-
-                    {{-- Status (Available) --}}
-                    <div class="flex min-w-[140px] flex-col items-center justify-center rounded-[2rem] border border-white/20 bg-white/10 px-6 py-5 backdrop-blur-md transition hover:bg-white/15">
-                        <span class="text-center text-lg font-bold leading-tight text-[#ffa630]">
-                            {{ __('Available') }}
-                        </span>
-                        <span class="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
-                            {{ __('Status') }}
-                        </span>
-                    </div>
-                </div>
             </div>
 
             {{-- Right Column: Slider --}}
