@@ -210,7 +210,7 @@
 
                         <div class="col-span-6">
                             <?php
-                            $field_name = "mobile";
+                            $field_name = "phone";
                             $field_lable = label_case($field_name);
                             $field_placeholder = $field_lable;
                             $required = "";

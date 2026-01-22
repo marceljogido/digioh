@@ -160,7 +160,7 @@
                                 <span class="">{{ $$module_name_singular->$field_name }}</span>
                             </div>
                             <div class="">
-                                <span class="font-semibold">{{ label_case($field_name = "mobile") }}:</span>
+                                <span class="font-semibold">{{ label_case($field_name = "phone") }}:</span>
                                 <span class="">{{ $$module_name_singular->$field_name }}</span>
                             </div>
                         </div>

@@ -222,11 +222,13 @@ class UserController extends Controller
             'last_name' => 'required|min:3|max:191',
             'email' => 'required|email:rfc,dns|regex:/(.+)@(.+)\.(.+)/i|max:191|unique:users',
             'password' => 'required|confirmed|min:6',
+            'phone' => 'nullable|string|max:191',
             'roles' => 'nullable|array',
             'permissions' => 'nullable|array',
+            'avatar' => 'nullable|image|max:10240',
         ]);
 
-        $data_array = Arr::except($validated_data, ['_token', 'roles', 'permissions', 'password_confirmation']);
+        $data_array = Arr::except($validated_data, ['_token', 'roles', 'permissions', 'password_confirmation', 'avatar']);
 
         $data_array['name'] = $request->first_name.' '.$request->last_name;
         $data_array['password'] = $request->password;
@@ -239,6 +241,13 @@ class UserController extends Controller
 
         // Create a User
         $$module_name_singular = User::create($data_array);
+
+        // Avatar
+        if ($request->hasFile('avatar')) {
+            $media = $$module_name_singular->addMedia($request->file('avatar'))->toMediaCollection('avatar');
+            $$module_name_singular->avatar = $media->getUrl();
+            $$module_name_singular->save();
+        }
 
         // Sync Roles
         $$module_name_singular->syncRoles(isset($validated_data['roles']) ? $validated_data['roles'] : []);
@@ -445,15 +454,28 @@ class UserController extends Controller
             'first_name' => 'required|min:3|max:191',
             'last_name' => 'required|min:3|max:191',
             'email' => 'required|email:rfc,dns|regex:/(.+)@(.+)\.(.+)/i|max:191|unique:users,email,'.$id,
+            'phone' => 'nullable|string|max:191',
             'roles' => 'nullable|array',
             'permissions' => 'nullable|array',
+            'avatar' => 'nullable|image|max:10240',
         ]);
 
         $validated_data['name'] = $validated_data['first_name'].' '.$validated_data['last_name'];
 
         $$module_name_singular = User::findOrFail($id);
 
-        $$module_name_singular->update(Arr::except($validated_data, ['roles', 'permissions']));
+        $$module_name_singular->update(Arr::except($validated_data, ['roles', 'permissions', 'avatar']));
+
+        // Avatar
+        if ($request->hasFile('avatar')) {
+            if ($$module_name_singular->getMedia('avatar')->first()) {
+                $$module_name_singular->getMedia('avatar')->first()->delete();
+            }
+            $media = $$module_name_singular->addMedia($request->file('avatar'))->toMediaCollection('avatar');
+
+            $$module_name_singular->avatar = $media->getUrl();
+            $$module_name_singular->save();
+        }
 
         if ($id === 1) {
             $user->syncRoles(['super admin']);

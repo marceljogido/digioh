@@ -77,10 +77,45 @@
                                 {{ __("Select permissions from the list:") }}
 
                                 @if ($permissions->count())
-                                    @foreach ($permissions as $permission)
-                                        <div class="form-check">
-                                            {{ html()->label($permission->name)->for("permission-" . $permission->id)->class("form-check-label") }}
-                                            {{ html()->checkbox("permissions[]", in_array($permission->name, $$module_name_singular->permissions->pluck("name")->all()), $permission->name)->id("permission-" . $permission->id)->class("form-check-input") }}
+                                    @php
+                                        $groupedPermissions = $permissions->groupBy(function($item) {
+                                            $parts = explode('_', $item->name);
+                                            $suffix = end($parts);
+                                            
+                                            // Special cases
+                                            if ($item->name === 'view_backend') return 'Dashboard';
+                                            if ($item->name === 'edit_settings') return 'Settings';
+                                            if ($item->name === 'edit_users_permissions') return 'Users';
+                                            
+                                            // Renaming
+                                            if ($suffix === 'posts') return 'Our Work';
+                                            if ($suffix === 'clientlogos') return 'Client Logos';
+                                            
+                                            // Standard CRUD
+                                            return ucfirst($suffix);
+                                        })->sortKeys();
+                                    @endphp
+
+                                    @foreach ($groupedPermissions as $group => $items)
+                                        <div class="mb-3">
+                                            <div class="d-flex align-items-center border-bottom pb-1 mb-2">
+                                                <div class="form-check mb-0">
+                                                    <input type="checkbox" class="form-check-input group-select-all" id="group-{{ Str::slug($group) }}" data-group="{{ Str::slug($group) }}">
+                                                    <label class="form-check-label fw-bold" for="group-{{ Str::slug($group) }}">
+                                                        {{ $group }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row group-container-{{ Str::slug($group) }}">
+                                                @foreach ($items as $permission)
+                                                    <div class="col-md-6">
+                                                        <div class="form-check">
+                                                            {{ html()->label($permission->name)->for("permission-" . $permission->id)->class("form-check-label") }}
+                                                            {{ html()->checkbox("permissions[]", in_array($permission->name, $$module_name_singular->permissions->pluck("name")->all()), $permission->name)->id("permission-" . $permission->id)->class("form-check-input permission-item") }}
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     @endforeach
                                 @endif
@@ -128,4 +163,49 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Helper: Check state on load
+            document.querySelectorAll('.group-select-all').forEach(function(headerCheckbox) {
+                const groupId = headerCheckbox.dataset.group;
+                const container = document.querySelector('.group-container-' + groupId);
+                const allCheckboxes = container.querySelectorAll('.permission-item');
+                const allChecked = Array.from(allCheckboxes).every(c => c.checked);
+                const someChecked = Array.from(allCheckboxes).some(c => c.checked);
+                
+                headerCheckbox.checked = allChecked;
+                headerCheckbox.indeterminate = someChecked && !allChecked;
+            });
+
+            // Handle "Select All" click
+            document.querySelectorAll('.group-select-all').forEach(function(headerCheckbox) {
+                headerCheckbox.addEventListener('change', function() {
+                    const groupId = this.dataset.group;
+                    const container = document.querySelector('.group-container-' + groupId);
+                    const checkboxes = container.querySelectorAll('.permission-item');
+                    
+                    checkboxes.forEach(function(cb) {
+                        cb.checked = headerCheckbox.checked;
+                    });
+                });
+            });
+
+            // Handle individual checkbox change
+            document.querySelectorAll('.permission-item').forEach(function(itemCheckbox) {
+                itemCheckbox.addEventListener('change', function() {
+                    const container = this.closest('.row');
+                    const headerDiv = container.previousElementSibling;
+                    const headerCheckbox = headerDiv.querySelector('.group-select-all');
+                    
+                    const allCheckboxes = container.querySelectorAll('.permission-item');
+                    const allChecked = Array.from(allCheckboxes).every(c => c.checked);
+                    const someChecked = Array.from(allCheckboxes).some(c => c.checked);
+                    
+                    headerCheckbox.checked = allChecked;
+                    headerCheckbox.indeterminate = someChecked && !allChecked;
+                });
+            });
+        });
+    </script>
 @endsection

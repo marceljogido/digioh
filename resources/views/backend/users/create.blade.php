@@ -30,6 +30,13 @@
             <div class="col">
                 {{ html()->form("POST", route("backend.$module_name.store"))->acceptsFiles()->open() }}
 
+                <div class="form-group row mb-4">
+                    {{ html()->label(__("labels.backend.users.fields.avatar"))->class("col-md-2 form-label")->for("avatar") }}
+                    <div class="col-md-10">
+                        <input id="file-multiple-input" name="avatar" type="file" class="form-control" />
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-12 col-sm-6 mb-3">
                         <div class="form-group">
@@ -78,7 +85,7 @@
                     <div class="col-12 col-sm-6 mb-3">
                         <div class="form-group">
                             <?php
-                            $field_name = "mobile";
+                            $field_name = "phone";
                             $field_lable = label_case($field_name);
                             $field_placeholder = $field_lable;
                             $required = "";
@@ -195,9 +202,45 @@
                                     </div>
                                     <div class="card-body">
                                         @if ($permissions->count())
-                                            @foreach ($permissions as $permission)
-                                                <div class="checkbox">
-                                                    {{ html()->label( html()->checkbox("permissions[]", old("permissions") && in_array($permission->name, old("permissions")) ? true : false, $permission->name)->id("permission-" . $permission->id) ." " .$permission->name,)->for("permission-" . $permission->id) }}
+                                            @php
+                                                $groupedPermissions = $permissions->groupBy(function($item) {
+                                                    $parts = explode('_', $item->name);
+                                                    $suffix = end($parts);
+                                                    
+                                                    // Special cases
+                                                    if ($item->name === 'view_backend') return 'Dashboard';
+                                                    if ($item->name === 'edit_settings') return 'Settings';
+                                                    if ($item->name === 'edit_users_permissions') return 'Users';
+                                                    
+                                                    // Renaming
+                                                    if ($suffix === 'posts') return 'Our Work';
+                                                    if ($suffix === 'clientlogos') return 'Client Logos';
+                                                    
+                                                    // Standard CRUD
+                                                    return ucfirst($suffix);
+                                                })->sortKeys();
+                                            @endphp
+
+                                            @foreach ($groupedPermissions as $group => $items)
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center border-bottom pb-1 mb-2">
+                                                        <div class="form-check mb-0">
+                                                            <input type="checkbox" class="form-check-input group-select-all" id="group-{{ Str::slug($group) }}" data-group="{{ Str::slug($group) }}">
+                                                            <label class="form-check-label fw-bold" for="group-{{ Str::slug($group) }}">
+                                                                {{ $group }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row group-container-{{ Str::slug($group) }}">
+                                                        @foreach ($items as $permission)
+                                                            <div class="col-12">
+                                                                <div class="form-check">
+                                                                    {{ html()->checkbox("permissions[]", old("permissions") && in_array($permission->name, old("permissions")) ? true : false, $permission->name)->id("permission-" . $permission->id)->class("form-check-input permission-item") }}
+                                                                    {{ html()->label($permission->name)->for("permission-" . $permission->id)->class("form-check-label") }}
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         @endif
@@ -223,4 +266,40 @@
             </div>
         </div>
     </x-backend.layouts.create>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle "Select All" click
+            document.querySelectorAll('.group-select-all').forEach(function(headerCheckbox) {
+                headerCheckbox.addEventListener('change', function() {
+                    const groupId = this.dataset.group;
+                    const container = document.querySelector('.group-container-' + groupId);
+                    const checkboxes = container.querySelectorAll('.permission-item');
+                    
+                    checkboxes.forEach(function(cb) {
+                        cb.checked = headerCheckbox.checked;
+                    });
+                });
+            });
+
+            // Handle individual checkbox change to update "Select All" state
+            document.querySelectorAll('.permission-item').forEach(function(itemCheckbox) {
+                itemCheckbox.addEventListener('change', function() {
+                    const container = this.closest('.row'); // Note: container structure might be slightly different in Users view if not matching Roles exact div structure. 
+                    // In Roles view, container was div.row.group-container-slug.
+                    // Here I am creating the same structure.
+                    
+                    const headerDiv = container.previousElementSibling;
+                    const headerCheckbox = headerDiv.querySelector('.group-select-all');
+                    
+                    const allCheckboxes = container.querySelectorAll('.permission-item');
+                    const allChecked = Array.from(allCheckboxes).every(c => c.checked);
+                    const someChecked = Array.from(allCheckboxes).some(c => c.checked);
+                    
+                    headerCheckbox.checked = allChecked;
+                    headerCheckbox.indeterminate = someChecked && !allChecked;
+                });
+            });
+        });
+    </script>
 @endsection

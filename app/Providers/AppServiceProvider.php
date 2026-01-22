@@ -74,11 +74,10 @@ class AppServiceProvider extends ServiceProvider
         /**
          * Auth Event Listeners.
          */
-        // Event::listen(
-        //     'App\Events\Auth\UserLoginSuccess',
-        //     'App\Listeners\Auth\UpdateLoginData',
-        //     'App\Listeners\Auth\SendPodcastNotification'
-        // );
+        Event::listen(
+            'Illuminate\Auth\Events\Login',
+            'App\Listeners\Auth\UpdateLoginData'
+        );
 
         /**
          * Frontend Event Listeners.

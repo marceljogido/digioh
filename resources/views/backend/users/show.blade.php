@@ -64,7 +64,7 @@
                                 ["name" => "username", "type" => "text"],
                                 ["name" => "name", "type" => "text"],
                                 ["name" => "email", "type" => "text"],
-                                ["name" => "mobile", "type" => "text"],
+                                ["name" => "phone", "type" => "text"],
                                 ["name" => "gender", "type" => "text"],
                                 ["name" => "date_of_birth", "type" => "date"],
                                 ["name" => "address", "type" => "text"],
